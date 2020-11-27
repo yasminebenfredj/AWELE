@@ -1,18 +1,12 @@
+ #include <stdbool.h>
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <math.h>
+ #include "CodeAnglais.h"
+ 
 
-#include <stdio.h>
-#include <stdlib.h> //directive de processeur 
-#include <math.h> 
 
-
- struct Position {
-       int cells_player[12]; // each cell contains a certain number of seeds
-       int cells_computer[12];
-       bool computer_play; // boolean true if the computer has to play and false otherwise
-       int seeds_player; // seeds taken by the player
-       int seeds_computer; // seeds taken by the computer
- };
-
- int minMaxValue(Position* pos_current, computer_play, depth, depthMax){
+ int minMaxValue(Position* pos_current, bool computer_play, int depth,int depthMax){
        // computer_play is true if the computer has to play and false otherwise
        int tab_values[12];
        Position pos_next; // In C : created on the stack: = very fast
@@ -34,8 +28,12 @@
  			// pos_next is the new current poisition and we change the player
                        tab_values[i]=minMaxValue(&pos_next,!computer_play,depth+1,depthMax);
                } else {
-			if (computer_play) tab_values[i]=-100.
-			else tab_values[i]=+100;
+			if (computer_play) {
+                                tab_values[i]=-100. ;
+                        }
+			else {
+                                tab_values[i]=+100;
+                        }
                }
        }
        int res;
