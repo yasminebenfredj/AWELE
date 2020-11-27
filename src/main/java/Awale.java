@@ -1,5 +1,9 @@
 public class Awale {
-    public int minMaxValue(Position* pos_current, boolean computer_play, int depth,int depthMax){
+    Joueur joueur1 = new Joueur();
+    Joueur joueur2 = new Joueur();
+
+
+    public int minMaxValue(Position pos_current, boolean computer_play, int depth,int depthMax){
         // computer_play is true if the computer has to play and false otherwise
         int[] tab_values = new int[12] ;
         Position pos_next; // In C : created on the stack: = very fast
@@ -17,9 +21,9 @@ public class Awale {
             if (validMove(pos_current, computer_play,i)){
                 // WRITE function playMove(&pos_next,pos_current, computer_play,i)
                 // we play th emove i from pos_current and obtain the new position pos_next
-                playMove(&pos_next,pos_current, computer_play,i);
+                playMove(pos_next,pos_current, computer_play,i);
                 // pos_next is the new current poisition and we change the player
-                tab_values[i]=minMaxValue(&pos_next,!computer_play,depth+1,depthMax);
+                tab_values[i]=minMaxValue(pos_next,!computer_play,depth+1,depthMax);
             } else {
                 if (computer_play) {
                     tab_values[i]=-100 ;
@@ -36,5 +40,26 @@ public class Awale {
             // WRITE the code: res contains the MIN of tab_valuess
         }
         return res;
+    }
+
+
+    public boolean finalPosition(Position position , boolean computer_play , int depth)
+    {
+        return false;
+    }
+
+    public int  evaluation(Position position,  boolean computer_play , int depth)
+    {
+        return 0;
+    }
+
+    public boolean validMove(Position position,  boolean computer_play , int depth)
+    {
+        return false ;
+    }
+
+    public void playMove(Position position,  boolean computer_play , int depth)
+    {
+
     }
 }
