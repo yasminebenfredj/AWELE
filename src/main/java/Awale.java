@@ -56,7 +56,7 @@ public class Awale {
     /**
      *
      * @param position
-     * @param computerPlay
+     * @param computerPlay true if it's the playerComputer turn , false otherwise
      * @param depth
      * @return -96 if the player wins , 96 if the computer wins , 0 if it's a draw
      */
@@ -75,10 +75,14 @@ public class Awale {
      * @param depth
      * @return
      */
+    public int evaluation(Position position,  boolean computerPlay , int depth) { // TODO à améliorer
+        // the simplest evaluation function is the difference of the taken seeds
+        int nbSeedsPlayer = position.getPlayer().getSeeds(); // The player's number of taken seeds
+        int nbSeedsPlayerComputer = position.getPlayerComputer().getSeeds(); // The computer's number of taken seeds
 
-    public int  evaluation(Position position,  boolean computerPlay , int depth)
-    {
-        return 0;
+        int seedsDifference = nbSeedsPlayer - nbSeedsPlayerComputer ;
+
+        return seedsDifference;
     }
 
 
