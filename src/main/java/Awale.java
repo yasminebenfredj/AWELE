@@ -3,9 +3,22 @@ public class Awale {
         // computerPlay is true if the computer has to play and false otherwise
         int[] tabValues = new int[12] ;
         Position posNext; // In C : created on the stack: = very fast
-        //if (finalPosition(posCurrent, computerPlay, depth)){
+        if (finalPosition(posCurrent, computerPlay, depth)){
             // WRITE the code: returns VALUEMAX (=96) if the computer wins, -96 if it loses; 0 if draw
-        //}
+            int nbSeedsPlayer = posCurrent.getPlayer().getSeeds(); // The player's number of taken seeds
+            int nbSeedsPlayerComputer = posCurrent.getPlayerComputer().getSeeds(); // The computer's number of taken seeds
+
+            int seedsDifference = nbSeedsPlayer - nbSeedsPlayerComputer ;
+            if (seedsDifference > 0){ // the player wins
+                return  -96;
+            }
+            else if (seedsDifference < 0){ // the computer wins
+                return 96;
+            }
+            else{ //it's a draw (nbSeedsPlayer = nbSeedsPlayerComputer)
+                return 0 ;
+            }
+        }
         if (depth == depthMax) {
             return evaluation(posCurrent, computerPlay, depth);
             // the simplest evaluation function is the difference of the taken seeds
@@ -19,9 +32,9 @@ public class Awale {
             if (validMove(posCurrent, computerPlay,i)){
                 // WRITE function playMove(&posNext,posCurrent, computerPlay,i)
                 // we play the move i from posCurrent and obtain the new position posNext
-                //playMove(posNext,posCurrent, computerPlay,i);
+                playMove(posNext,posCurrent, computerPlay,i);
                 // posNext is the new current position and we change the player
-                //tabValues[i]=minMaxValue(posNext,!computerPlay,depth+1,depthMax);
+                tabValues[i]=minMaxValue(posNext,!computerPlay,depth+1,depthMax);
             } else {
                 if (computerPlay) {
                     tabValues[i]=-100 ;
@@ -47,23 +60,13 @@ public class Awale {
      * @param depth
      * @return -96 if the player wins , 96 if the computer wins , 0 if it's a draw
      */
-    /*public int finalPosition(Position position , boolean computerPlay , int depth) {
-        int nbSeedsPlayer = position.getPlayer().getSeeds(); // The player's number of taken seeds
-        int nbSeedsPlayerComputer = position.getPlayerComputer().getSeeds(); // The computer's number of taken seeds
+    public boolean finalPosition(Position position , boolean computerPlay , int depth) { // player plays first , then the playerComputer
+        if (computerPlay){
+            // not final Position because the last one to play is always playerComputer
 
-        int seedsDifference = nbSeedsPlayer - nbSeedsPlayerComputer ;
-        if (seedsDifference > 0){ // the player wins
-            return  -96;
         }
-        else if (seedsDifference < 0){ // the computer wins
-            return 96;
-        }
-        else{ //it's a draw (nbSeedsPlayer = nbSeedsPlayerComputer)
-            return 0 ;
-        }
+        return false;
     }
-
-     */
 
     /**
      *
