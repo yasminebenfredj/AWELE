@@ -51,7 +51,7 @@ public class Awale {
         int nbSeedsPlayer = position.getPlayer().getSeeds(); // The player's number of taken seeds
         int nbSeedsPlayerComputer = position.getPlayerComputer().getSeeds(); // The computer's number of taken seeds
 
-        int seedsDifference = nbSeedsPlayer - nbSeedsPlayerComputer ;
+        int seedsDifference = nbSeedsPlayer - nbSeedsPlayerComputer ; 
         if (seedsDifference > 0){ // the player wins
             return  -96;
         }
