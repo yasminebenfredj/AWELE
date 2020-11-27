@@ -1,6 +1,5 @@
 public class Awale {
-    Joueur joueur1 = new Joueur();
-    Joueur joueur2 = new Joueur();
+
 
 
     public int minMaxValue(Position pos_current, boolean computer_play, int depth,int depthMax){
@@ -13,6 +12,8 @@ public class Awale {
         if (depth == depthMax) {
             return evaluation(pos_current, computer_play, depth);
             // the simplest evealution fucntion is the difference of the taken seeds
+
+            // compare le nb de graine des joueur
         }
         for(int i=0;i<12;i++){
             // we play the move i
@@ -48,17 +49,36 @@ public class Awale {
         return false;
     }
 
+    /**
+     *
+     * @param position
+     * @param computer_play
+     * @param depth
+     * @return
+     */
+
     public int  evaluation(Position position,  boolean computer_play , int depth)
     {
         return 0;
     }
 
-    public boolean validMove(Position position,  boolean computer_play , int depth)
+
+
+
+
+    /**
+     *
+     * @param position
+     * @param computer_play
+     * @param movement
+     * @return true si le joueur peut gagner des graine avec ce mouvement
+     */
+    public boolean validMove(Position position,  boolean computer_play , int movement)
     {
         return false ;
     }
 
-    public void playMove(Position position,  boolean computer_play , int depth)
+    public void playMove(Position position,  boolean computer_play , int movement )
     {
 
     }

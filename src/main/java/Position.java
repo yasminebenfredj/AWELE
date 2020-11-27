@@ -4,13 +4,16 @@ public class Position {
     private int[] cellsComputer;
     private boolean computer_play; // boolean true if the computer has to play and false otherwise
     private int seedsPlayer; // seeds taken by the player
-    private int seedsComputer; // seeds taken by the computer
 
-    Position(int nbCellsPlayer , int nbCellsComputer , boolean computerPlay , int seedsPlayer , int seedsComputer){
-        this.cellsPlayer = new int[nbCellsPlayer] ; //12 cases par joueur au début
-        this.cellsComputer = new int[nbCellsComputer] ;
+    private Joueur joueur1;
+    private Joueur joueur2;
+
+    Position(int nbCells , boolean computerPlay , int seedsPlayer , int seedsComputer){
+
+        Joueur joueur1 = new Joueur(nbCells,seedsPlayer);
+        Joueur joueur2 = new Joueur(nbCells,seedsComputer);
         this.computer_play = computerPlay ;
-        this.seedsPlayer = seedsPlayer ;
-        this.seedsComputer = seedsComputer ;
+
+
     }
 }
