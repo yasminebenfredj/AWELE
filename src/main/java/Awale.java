@@ -1,17 +1,14 @@
 public class Awale {
-
-
-
     public int minMaxValue(Position posCurrent, boolean computerPlay, int depth,int depthMax){
         // computerPlay is true if the computer has to play and false otherwise
-        int[] tab_values = new int[12] ;
-        Position pos_next; // In C : created on the stack: = very fast
+        int[] tabValues = new int[12] ;
+        Position posNext; // In C : created on the stack: = very fast
         if (finalPosition(posCurrent, computerPlay, depth)){
             // WRITE the code: returns VALMAX (=96) if the computer wins, -96 if it loses; 0 if draw
         }
         if (depth == depthMax) {
             return evaluation(posCurrent, computerPlay, depth);
-            // the simplest evealution fucntion is the difference of the taken seeds
+            // the simplest evaluation function is the difference of the taken seeds
 
             // compare le nb de graine des joueur
         }
@@ -20,31 +17,31 @@ public class Awale {
             // WRITE function validMove(posCurrent, computerPlay,i)
             // it checks whether we can select the seeds in cell i and play (if there is no seed the function returns false)
             if (validMove(posCurrent, computerPlay,i)){
-                // WRITE function playMove(&pos_next,posCurrent, computerPlay,i)
-                // we play th emove i from posCurrent and obtain the new position pos_next
-                playMove(pos_next,posCurrent, computerPlay,i);
-                // pos_next is the new current poisition and we change the player
-                tab_values[i]=minMaxValue(pos_next,!computerPlay,depth+1,depthMax);
+                // WRITE function playMove(&posNext,posCurrent, computerPlay,i)
+                // we play the move i from posCurrent and obtain the new position posNext
+                playMove(posNext,posCurrent, computerPlay,i);
+                // posNext is the new current position and we change the player
+                tabValues[i]=minMaxValue(posNext,!computerPlay,depth+1,depthMax);
             } else {
                 if (computerPlay) {
-                    tab_values[i]=-100 ;
+                    tabValues[i]=-100 ;
                 }
                 else {
-                    tab_values[i]=+100;
+                    tabValues[i]=+100;
                 }
             }
         }
         int res;
         if (computerPlay){
-            // WRITE the code: res contains the MAX of tab_values
+            // WRITE the code: res contains the MAX of tabValues
         } else {
-            // WRITE the code: res contains the MIN of tab_valuess
+            // WRITE the code: res contains the MIN of tab_values
         }
         return res;
     }
 
 
-    public boolean finalPosition(Position position , boolean computer_play , int depth)
+    public boolean finalPosition(Position position , boolean computerPlay , int depth)
     {
         return false;
     }
@@ -52,12 +49,12 @@ public class Awale {
     /**
      *
      * @param position
-     * @param computer_play
+     * @param computerPlay
      * @param depth
      * @return
      */
 
-    public int  evaluation(Position position,  boolean computer_play , int depth)
+    public int  evaluation(Position position,  boolean computerPlay , int depth)
     {
         return 0;
     }
@@ -69,16 +66,16 @@ public class Awale {
     /**
      *
      * @param position
-     * @param computer_play
+     * @param computerPlay
      * @param movement
      * @return true si le joueur peut gagner des graine avec ce mouvement
      */
-    public boolean validMove(Position position,  boolean computer_play , int movement)
+    public boolean validMove(Position position,  boolean computerPlay , int movement)
     {
         return false ;
     }
 
-    public void playMove(Position position,  boolean computer_play , int movement )
+    public void playMove(Position position,  boolean computerPlay , int movement )
     {
 
     }

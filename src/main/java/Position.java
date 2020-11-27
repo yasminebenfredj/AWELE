@@ -2,7 +2,7 @@ public class Position {
 
     private int [] cellsPlayer; // each cell contains a certain number of seeds
     private int[] cellsComputer;
-    private boolean computer_play; // boolean true if the computer has to play and false otherwise
+    private boolean computerPlay; // boolean true if the computer has to play and false otherwise
     private int seedsPlayer; // seeds taken by the player
 
     private Joueur joueur1;
@@ -12,7 +12,7 @@ public class Position {
 
         Joueur joueur1 = new Joueur(nbCells,seedsPlayer);
         Joueur joueur2 = new Joueur(nbCells,seedsComputer);
-        this.computer_play = computerPlay ;
+        this.computerPlay = computerPlay ;
 
 
     }
