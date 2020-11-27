@@ -12,3 +12,5 @@
 **/*.xml
 
 .idea/
+
+target
