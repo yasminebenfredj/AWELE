@@ -4,7 +4,7 @@ public class Awale {
         int[] tabValues = new int[12] ;
         Position posNext; // In C : created on the stack: = very fast
         if (finalPosition(posCurrent, computerPlay, depth)){
-            // WRITE the code: returns VALMAX (=96) if the computer wins, -96 if it loses; 0 if draw
+            // WRITE the code: returns VALUEMAX (=96) if the computer wins, -96 if it loses; 0 if draw
         }
         if (depth == depthMax) {
             return evaluation(posCurrent, computerPlay, depth);
@@ -35,15 +35,32 @@ public class Awale {
         if (computerPlay){
             // WRITE the code: res contains the MAX of tabValues
         } else {
-            // WRITE the code: res contains the MIN of tab_values
+            // WRITE the code: res contains the MIN of tabValues
         }
         return res;
     }
 
+    /**
+     *
+     * @param position
+     * @param computerPlay
+     * @param depth
+     * @return -96 if the player wins , 96 if the computer wins , 0 if it's a draw
+     */
+    public int finalPosition(Position position , boolean computerPlay , int depth) {
+        int nbSeedsPlayer = position.getPlayer().getSeeds(); // The player's number of taken seeds
+        int nbSeedsPlayerComputer = position.getPlayerComputer().getSeeds(); // The computer's number of taken seeds
 
-    public boolean finalPosition(Position position , boolean computerPlay , int depth)
-    {
-        return false;
+        int seedsDifference = nbSeedsPlayer - nbSeedsPlayerComputer ;
+        if (seedsDifference > 0){ // the player wins
+            return  -96;
+        }
+        else if (seedsDifference < 0){ // the computer wins
+            return 96;
+        }
+        else{ //it's a draw (nbSeedsPlayer = nbSeedsPlayerComputer)
+            return 0 ;
+        }
     }
 
     /**
