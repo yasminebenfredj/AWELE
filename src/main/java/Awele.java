@@ -1,8 +1,11 @@
-public class Awale {
+public class Awele {
+
+
+
     public int minMaxValue(Position posCurrent, boolean computerPlay, int depth,int depthMax){
         // computerPlay is true if the computer has to play and false otherwise
         int[] tabValues = new int[12] ;
-        Position posNext; // In C : created on the stack: = very fast
+        Position posNext = null ; // In C : created on the stack: = very fast
         if (finalPosition(posCurrent, computerPlay, depth)){
             // WRITE the code: returns VALUEMAX (=96) if the computer wins, -96 if it loses; 0 if draw
             int nbSeedsPlayer = posCurrent.getPlayer().getSeeds(); // The player's number of taken seeds
@@ -61,10 +64,21 @@ public class Awale {
      * @return -96 if the player wins , 96 if the computer wins , 0 if it's a draw
      */
     public boolean finalPosition(Position position , boolean computerPlay , int depth) { // player plays first , then the playerComputer
+        boolean response = true;
+        Player player =position.getPlayer();
         if (computerPlay){
             // not final Position because the last one to play is always playerComputer
+            player = position.getPlayerComputer();
 
         }
+        for (int nbS: player.getCells()) {
+            if (nbS > 0) {
+                response = false;
+            }
+
+        }
+
+
         return false;
     }
 

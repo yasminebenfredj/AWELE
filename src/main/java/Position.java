@@ -8,14 +8,15 @@ public class Position {
 
 
     private Player player;
-    private Player playerComputer;
+    private Player computer;
 
     Position(int nbCells , boolean computerPlay , int seedsPlayer , int seedsComputer){
         this.computerPlay = computerPlay ;
 
-        Player player1 = new Player(nbCells,seedsPlayer);
-        Player player2 = new Player(nbCells,seedsComputer);
+        player = new Player(nbCells,seedsPlayer);
+        computer = new Player(nbCells,seedsComputer);
     }
+
 
     // Getters ...
     public Player getPlayer() {
@@ -23,6 +24,6 @@ public class Position {
     }
 
     public Player getPlayerComputer() {
-        return this.playerComputer;
+        return this.computer;
     }
 }
