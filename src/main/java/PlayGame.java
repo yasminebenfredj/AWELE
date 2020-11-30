@@ -65,4 +65,25 @@ public class PlayGame {
         player.setCells(tab);
         computer.setCells(tab);
     }
+
+    /**
+     * Cette méthode merge les cases des 2 joueurs pour passer d'un plateau à 12 cases à un plateau à 6 cases
+     */
+    private void changePlateau(){
+        mergeCells(player);
+
+        mergeCells(computer);
+    }
+    /**
+     * Cette méthode merge les cases d'un joueur
+     * @param player
+     */
+    private void mergeCells(Player player) {
+        int[] newPlayerCells = new int[6] ;
+        int[] playerCells = player.getCells() ;
+        for (int i = 0; i < playerCells.length - 1; i+=2 ) {
+            newPlayerCells[i] = playerCells[i] + playerCells[i + 1] ;
+        }
+        player.setCells(newPlayerCells);
+    }
 }
