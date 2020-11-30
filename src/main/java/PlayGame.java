@@ -1,28 +1,36 @@
 public class PlayGame {
-    final int nbCells = 12;
-    final int nbSeeds = 4;
+    final int nbCells;
+    final int nbSeeds;
     final Player player ;
     final Player computer ;
     private int[] cells ;
 
 
-    PlayGame(Player player , Player playerComputer ){
-        this.computer = playerComputer ;
-        this.player = player ;
+    public static void main(String[] args) {
+        PlayGame playGame = new PlayGame(12,4);
+        playGame.play();
+    }
+
+    PlayGame(int nbCells , int nbSeeds){
+        this.nbCells = nbCells;
+        this.nbSeeds = nbSeeds;
+        this.computer = new Player(nbCells,0,1);
+        this.player =  new Player(nbCells,0,2);
 
         this.cells = new int[nbCells * 2] ;
     }
-
-
 
     public void play(){
         seedDistribution();
 
         System.out.print("*** Debut du jeu ***");
-        playTurn(computer);
+
+        while (true){ //TODO condition d'arrêt à modifier
+            playTurn(computer);
+            playTurn(player);
+        }
 
     }
-
 
     public void playTurn(Player playerC) {
         int choice = playerC.chooseCell();  // indice de la case choisi
@@ -49,13 +57,6 @@ public class PlayGame {
         }
     }
 
-
-
-
-
-
-
-
     private  void seedDistribution(){
         int[] tab = new int[nbCells];
         for( int i = 0 ; i < nbCells ; i++){
@@ -64,22 +65,4 @@ public class PlayGame {
         player.setCells(tab);
         computer.setCells(tab);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }
