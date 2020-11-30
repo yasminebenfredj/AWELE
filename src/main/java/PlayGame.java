@@ -56,14 +56,14 @@ public class PlayGame {
             }
         }
 
-        collectSeeds(playerC);
+        collectSeeds(playerC , choic);
     }
 
     /**
      * Cette méthode récolte les graines
      * @param player
      */
-    public void collectSeeds(Player player){
+    public void collectSeeds(Player player ,int choice){
         int[] playerCells = player.getCells();
         int[] newPlayerCells = playerCells.clone() ;
 
