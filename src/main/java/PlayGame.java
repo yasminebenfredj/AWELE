@@ -19,25 +19,34 @@ public class PlayGame {
         seedDistribution();
 
         System.out.print("*** Debut du jeu ***");
-        start(computer);
+        playTurn(computer);
 
     }
 
 
-    public void start(Player playerC) {
-        int choice = playerC.chooseCell();
+    public void playTurn(Player playerC) {
+        int choice = playerC.chooseCell();  // indice de la case choisi
 
-        int nbSeedsIn = playerC.getCells()[choice];
-        for (int i = 0 ; i < nbSeedsIn ; i++) {
-            if((choice+i) % 2 == 0) {
-                playerC.setOneCell( choice - i);
+        int nbSeedsIn = playerC.getCells()[choice]; // nombre de graines dans la case choisi
+        for (int i = 1 ; i <= nbSeedsIn ; i++) {
+            if (choice - i < 0){
+                choice = (choice - i) % (nbCells*2) + 1 ;
+                if((choice) % 2 == 0) {
+                    playerC.setOneCell(choice );
+                }
+                else{
+                    computer.setOneCell(choice);
+                }
             }
-            else{
-                computer.setOneCell(choice - i);
+            else {
+                if((choice - i) % 2 == 0) {
+                    playerC.setOneCell( choice - i);
+                }
+                else{
+                    computer.setOneCell(choice - i);
+                }
             }
         }
-
-
     }
 
 
