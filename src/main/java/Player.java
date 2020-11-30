@@ -27,6 +27,10 @@ public class Player {
         return this.seeds;
     }
 
+    public void addSeeds(int seeds){
+        this.seeds += seeds ;
+    }
+
     public int[] getCells() {
         return cells;
     }

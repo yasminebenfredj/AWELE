@@ -55,6 +55,27 @@ public class PlayGame {
                 }
             }
         }
+
+        collectSeeds(playerC);
+    }
+
+    /**
+     * Cette méthode récolte les graines
+     * @param player
+     */
+    public void collectSeeds(Player player){
+        int[] playerCells = player.getCells();
+        int[] newPlayerCells = playerCells.clone() ;
+
+        for (int i = 0; i < playerCells.length; i++) {
+            if (playerCells[i] == 2 || playerCells[i] == 3){
+                player.addSeeds(playerCells[i]); //on ajoute les graines récoltées au graine du joueur
+                newPlayerCells[i] = 0 ; // la case devient vide
+            }
+            else { // si la case ne contient ni 2 ni 3 graines on arrête la récolte
+                break;
+            }
+        }
     }
 
     private  void seedDistribution(){
