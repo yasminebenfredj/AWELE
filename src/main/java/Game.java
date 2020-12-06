@@ -1,4 +1,4 @@
-public class PlayGame {
+public class Game {
     final int nbCells;
     final int nbSeeds;
     final Player player ;
@@ -7,11 +7,11 @@ public class PlayGame {
 
 
     public static void main(String[] args) {
-        PlayGame playGame = new PlayGame(12,4);
-        playGame.play();
+        Game game = new Game(12,4);
+        game.play();
     }
 
-    PlayGame(int nbCells , int nbSeeds){
+    Game(int nbCells , int nbSeeds){
         this.nbCells = nbCells;
         this.nbSeeds = nbSeeds;
         this.computer = new Player(nbCells,0,1);
@@ -71,6 +71,7 @@ public class PlayGame {
             if (playerCells[i] == 2 || playerCells[i] == 3){
                 player.addSeeds(playerCells[i]); //on ajoute les graines récoltées au graine du joueur
                 newPlayerCells[i] = 0 ; // la case devient vide
+                player.setCells(newPlayerCells); //update des cases du joueur
             }
             else { // si la case ne contient ni 2 ni 3 graines on arrête la récolte
                 break;
@@ -78,7 +79,10 @@ public class PlayGame {
         }
     }
 
-    private  void seedDistribution(){
+    /**
+     * Cette méthode met dans chaque case nbSeeds graines
+     */
+    private void seedDistribution(){
         int[] tab = new int[nbCells];
         for( int i = 0 ; i < nbCells ; i++){
             tab[i] = nbSeeds;
