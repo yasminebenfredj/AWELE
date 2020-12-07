@@ -4,7 +4,8 @@ public class Game {
     final Player player ;
     final Player computer ;
     private int[] cells ;
-    private int totalNbSeed ;
+    private int nbSeedsInGame;
+
 
 
     public static void main(String[] args) {
@@ -17,75 +18,93 @@ public class Game {
         this.nbSeeds = nbSeeds;
         this.computer = new Player(nbCells,0,true);
         this.player =  new Player(nbCells,0,false);
-        this.totalNbSeed = this.nbSeeds * this.nbCells * 2 ;
-
-
+        this.nbSeedsInGame = nbSeeds * nbCells * 2;
         cellsGeneration();
     }
 
     public void play(){
-        System.out.print("*** Debut du jeu ***");
+        System.out.print("\n<<< ***** >>> Debut du jeu <<< ***** >>>\n");
+        int i = 1;
 
         boolean currentSeedsInCells = this.currentSeedsInCells() >= 8 ;
         boolean seedsInComputerCells = this.seedsInComputerCells(this.computer) > 0 ;
         boolean seedsInPlayerCells = this.seedsInPlayerCells(this.player) > 0 ;
-        while (player.getSeeds()< this.totalNbSeed/2 && computer.getSeeds() < this.totalNbSeed/2 && currentSeedsInCells && seedsInComputerCells && seedsInPlayerCells){ //TODO condition d'arrêt à modifier
+
+        while (player.getSeeds()< this.nbSeedsInGame/2 && computer.getSeeds() < this.nbSeedsInGame/2 && currentSeedsInCells && seedsInComputerCells && seedsInPlayerCells){ //TODO condition d'arrêt à modifier
+            System.out.println("\n>>>>> Début du tour N° : "+ i +" <<<<<");
+
+            if (this.nbSeedsInGame <= 48)
+            {
+                System.out.println("\n<<< *** >>>\nIl ne reste plus que "+ this.nbSeedsInGame +" graines dans le jeu. Le plateau est merger. \n<<< *** >>>\n");
+                this.mergeCells(6);
+            }
+
+
+
+            System.out.println("\n      ** Joueur 1  " + computer.toString() + " ** ");
+
             playTurn(computer);
+
+            System.out.println("\n      ** Joueur 2  " + player.toString() + " ** ");
             playTurn(player);
+            System.out.println("<<<<< Fin du tour N° : "+ i +" >>>>>\n");
+
+            i++;
         }
+        System.out.println("<<< ***** >>> Fin du Jeu <<< ***** >>>\n");
+
 
     }
 
     /**
      * This methods plays a turn for a player
-     * @param playerC a player
+     * @param player a player
      */
-    public void playTurn(Player playerC) {
-        int choice = playerC.chooseCell();  // indice de la case choisi
+    public void playTurn (Player player)
+    {
+        int choice = player.chooseCell();  // indice de la case choisi
+        int nbSeedsIn = this.cells[choice]; // nombre de graines dans la case choisi
+        this.cells[choice] = 0 ; // on prend tous les graines de la case choisi pour jouer un tour
 
-        int nbSeedsIn = playerC.getCells()[choice]; // nombre de graines dans la case choisi
-        playerC.getCells()[choice] = 0 ; // on prend tous les graines de la case choisi pour jouer un tour
+        System.out.println("Il recupére les "+ nbSeedsIn +" graines de la case N° : " + (choice + 1) + " .");
 
-        for (int i = 1 ; i <= nbSeedsIn ; i++) {
-            if (choice - 1 < 0){
-                choice = (choice - 1) % (nbCells*2)  ;
-                if((choice) % 2 == 0) {
-                    playerC.setOneCell(choice);
-                }
-                else{
-                    computer.setOneCell(choice);
-                }
-            }
-            else {
-                choice = choice - 1 ;
-                if(choice % 2 == 0) {
-                    playerC.setOneCell(choice);
-                }
-                else{
-                    computer.setOneCell(choice);
-                }
-            }
+        int position = nextPosition(choice) ;
+        for (int i = 1  ; i <= nbSeedsIn ; i++ ) {
+
+            this.cells[position] += 1 ;
+            System.out.println("Il pose une graine dans la case  N° : " + (position + 1) + " .");
+            position = nextPosition(position);
+
         }
 
-        collectSeeds(playerC , choice , nbSeedsIn); //on collecte les graines à partir de la dernière case semer (qui est choice)
+        collectSeeds(player , choice , nbSeedsIn); //on collecte les graines à partir de la dernière case semer (qui est choice)
     }
 
     /**
      * This method collects the seeds for a player after he plays his turn
      * @param player
      */
-    public void collectSeeds(Player player ,int choice ,int nbSeedsIn){
-        for (int i = choice; i < choice + nbSeedsIn; i++) {
-            if (this.cells[i] == 2 || this.cells[i] == 3){ //si une case contient 2 ou 3 graines les joueurs les récolte
-                System.out.println("Le joueur : " + player + "a récolté " + this.cells[i] + " graines de la case " + i + " .");
-                player.addSeeds(this.cells[i]); //on ajoute les graines récoltées au graine du joueur
-                this.cells[i] = 0 ; // la case devient vide
+    public void collectSeeds(Player player ,int currentIndex ,int nbSeedsIn){
+        while (this.cells[currentIndex] == 2 || this.cells[currentIndex] == 3 )
+        {
+            int gains = this.cells[currentIndex] ;
+            if (currentIndex < nbSeedsIn) {
+                System.out.println(">> Il a récolté " + gains + " graines de la case " + (currentIndex + 1));
+                player.addSeeds(gains); //on ajoute les graines récoltées au graine du joueur
+                this.nbSeedsInGame -= gains; // on soustrait de la somme des graine presente dans le jeu
+                this.cells[currentIndex] = 0; // la case devient vide
+                currentIndex += 1;
             }
-            else { // si la case ne contient ni 2 ni 3 graines on arrête la récolte
-                System.out.println("Le joueur arrive sur une case qui contient " + this.cells[i] + " graines .Il arrête donc sa récolte.");
-                break;
+            else {
+                System.out.println(">> Il a récolté " + gains + " graines de la case " + ( currentIndex + 1 ));
+                player.addSeeds(gains); //on ajoute les graines récoltées au graine du joueur
+                this.nbSeedsInGame -= gains; // on soustrait de la somme des graine presente dans le jeu
+                this.cells[currentIndex] = 0 ; // la case devient vide
+                currentIndex -= 1 ;
+
             }
         }
+        System.out.println(">> Il arrive sur une case qui contient " + this.cells[currentIndex] + " graines .Il n'a rien à récolter. \n");
     }
 
     /**
@@ -106,7 +125,7 @@ public class Game {
      */
     private  void cellsGeneration() {
         this.cells = new int[this.nbCells * 2] ;
-        for (int i = 0; i <= this.nbCells * 2  ; i++) {
+        for (int i = 0; i < this.nbCells * 2  ; i++) {
             this.cells[i] = this.nbSeeds;
 
         }
@@ -123,6 +142,7 @@ public class Game {
         }
         return currentSeedsInCells ;
     }
+
 
     /**
      * This method computes the number of seeds in the cells belonging to the computer
@@ -152,6 +172,41 @@ public class Game {
             }
         }
         return seedsInPlayerCells ;
+    }
+
+
+
+    private  void printTable()
+    {
+
+    }
+
+
+
+
+    /**
+     * Cette methode permet de donner la case suivante dans laquel le joueur va poser une graine
+     * Si On arrive à la case 1 on repart à celle n°13
+     * Si On arrive à la case 24 on repart à celle n°12
+     * @param currentPosition
+     * @return
+     */
+    private int nextPosition(int currentPosition)
+    {
+        if (currentPosition < this.nbCells && currentPosition > 0 )
+        {
+            return currentPosition - 1 ;
+        }
+        else if (currentPosition >= this.nbCells && currentPosition < 23 ) {
+            return currentPosition + 1 ;
+        }
+        else if (currentPosition == 0 ) {
+            return this.nbCells;
+        }
+        else {
+            return this.nbCells - 1 ;
+        }
+
     }
 
 }

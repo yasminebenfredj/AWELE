@@ -1,13 +1,7 @@
-import Intelligence.Intelligence;
-
-import java.util.Random;
+import Intelligence.*;
 
 public class Player {
     private Intelligence intelligence;
-    Random random = new Random();
-
-
-    //private int[] cells; // each cell contains a certain number of seeds
     private int seeds; // seeds taken by the player
     private int[] indexes ;
     private boolean isComputer;
@@ -15,12 +9,13 @@ public class Player {
 
 
     public Player(int nbCellsPlayer, int seeds, boolean isComputer){
-        //this.cells = new int[nbCellsPlayer] ; //12 cases par joueur au début
         this.seeds = seeds ;
         this.isComputer = isComputer;
         this.indexes = new int[nbCellsPlayer];
         this.nbCellsPlayer = nbCellsPlayer;
         this.initIndexes();
+        this.initIntelligence();
+
     }
 
     // Getters ...
@@ -37,33 +32,37 @@ public class Player {
     }
 
 
-
     public int chooseCell(){
-        int index  =  random.nextInt(this.nbCellsPlayer);
-        return this.indexes[index] ;
+        return  this.intelligence.chooseCell() ;
     }
 
-    /*
-    public void setOneCell(int index) {
-        if (isComputer == true) {
-            this.cells[index/2]++;
-        }
-        else {
-            this.cells[(index-1)/2]++;
-        }
-    }
-*/
+
     private void initIndexes(){
-        for (int i = 0; i <= this.nbCellsPlayer  ; i++) {
+        for (int i = 0; i < this.nbCellsPlayer  ; i++) {
             if (isComputer) {
                 indexes[i] = (i * 2);
             }
             else
             {
                 indexes[i] = (i * 2) + 1;
-
             }
         }
+    }
+
+
+    private void initIntelligence()
+    {
+        if(isComputer) {
+            this.intelligence = new ComputerStrategy(nbCellsPlayer, indexes);
+        }
+        else {
+            this.intelligence = new PlayerStrategy(nbCellsPlayer, indexes);
+        }
+    }
+
+    @Override
+    public String toString(){
+        return intelligence.toString();
     }
 
 

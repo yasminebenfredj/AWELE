@@ -1,6 +1,6 @@
 public class Awele {
 
-
+/*
 
     public int minMaxValue(Position posCurrent, boolean computerPlay, int depth,int depthMax){
         // computerPlay is true if the computer has to play and false otherwise
@@ -63,6 +63,7 @@ public class Awele {
      * @param depth
      * @return -96 if the player wins , 96 if the computer wins , 0 if it's a draw
      */
+/*
     public boolean finalPosition(Position position , boolean computerPlay , int depth) { // player plays first , then the playerComputer
         boolean response = true;
         Player player =position.getPlayer();
@@ -89,6 +90,7 @@ public class Awele {
      * @param depth
      * @return
      */
+/*
     public int evaluation(Position position,  boolean computerPlay , int depth) { // TODO à améliorer
         // the simplest evaluation function is the difference of the taken seeds
         int nbSeedsPlayer = position.getPlayer().getSeeds(); // The player's number of taken seeds
@@ -110,6 +112,7 @@ public class Awele {
      * @param movement
      * @return true si le joueur peut gagner des graine avec ce mouvement
      */
+/*
     public boolean validMove(Position position,  boolean computerPlay , int movement)
     {
         return false ;
@@ -119,4 +122,5 @@ public class Awele {
     {
 
     }
+    */
 }
