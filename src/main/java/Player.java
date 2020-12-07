@@ -28,6 +28,10 @@ public class Player {
         return this.seeds;
     }
 
+    public boolean isComputer() {
+        return this.isComputer;
+    }
+
     public void addSeeds(int seeds){
         this.seeds += seeds ;
     }

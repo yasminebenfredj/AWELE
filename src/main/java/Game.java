@@ -17,7 +17,7 @@ public class Game {
         this.nbSeeds = nbSeeds;
         this.computer = new Player(nbCells,0,true);
         this.player =  new Player(nbCells,0,false);
-        this.totalNbSeed = nbSeeds * nbCells * 2 ;
+        this.totalNbSeed = this.nbSeeds * this.nbCells * 2 ;
 
 
         cellsGeneration();
@@ -25,8 +25,11 @@ public class Game {
 
     public void play(){
         System.out.print("*** Debut du jeu ***");
-        
-        while (player.getSeeds()>= this.totalNbSeed/2 || computer.getSeeds() >= this.totalNbSeed/2){ //TODO condition d'arrêt à modifier
+
+        boolean currentSeedsInCells = this.currentSeedsInCells() >= 8 ;
+        boolean seedsInComputerCells = this.seedsInComputerCells(this.computer) > 0 ;
+        boolean seedsInPlayerCells = this.seedsInPlayerCells(this.player) > 0 ;
+        while (player.getSeeds()< this.totalNbSeed/2 && computer.getSeeds() < this.totalNbSeed/2 && currentSeedsInCells && seedsInComputerCells && seedsInPlayerCells){ //TODO condition d'arrêt à modifier
             playTurn(computer);
             playTurn(player);
         }
@@ -119,6 +122,36 @@ public class Game {
             currentSeedsInCells += this.cells[i] ;
         }
         return currentSeedsInCells ;
+    }
+
+    /**
+     * This method computes the number of seeds in the cells belonging to the computer
+     * @param computer the player
+     * @return the number of seeds in the cells belonging to the computer
+     */
+    private int seedsInComputerCells(Player computer) {
+        int seedsInPlayerCells = 0 ;
+        for (int i = 0; i < this.cells.length; i++) {
+            if (i%2 == 0){
+                seedsInPlayerCells ++ ;
+            }
+        }
+        return seedsInPlayerCells ;
+    }
+
+    /**
+     * This method computes the number of seeds in the cells belonging to the player
+     * @param player the player
+     * @return the number of seeds in the cells belonging to the player
+     */
+    private int seedsInPlayerCells(Player player) {
+        int seedsInPlayerCells = 0 ;
+        for (int i = 0; i < this.cells.length; i++) {
+            if(i%2 != 0){
+                seedsInPlayerCells ++ ;
+            }
+        }
+        return seedsInPlayerCells ;
     }
 
 }
