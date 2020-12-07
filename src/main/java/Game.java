@@ -1,5 +1,5 @@
 public class Game {
-    final int nbCells;
+    int nbCells;
     final int nbSeeds;
     final Player player ;
     final Player computer ;
@@ -14,10 +14,11 @@ public class Game {
     Game(int nbCells , int nbSeeds){
         this.nbCells = nbCells;
         this.nbSeeds = nbSeeds;
-        this.computer = new Player(nbCells,0,1);
-        this.player =  new Player(nbCells,0,2);
+        this.computer = new Player(nbCells,0,true);
+        this.player =  new Player(nbCells,0,false);
 
-        this.cells = new int[nbCells * 2] ;
+
+        cellsGeneration();
     }
 
     public void play(){
@@ -56,7 +57,7 @@ public class Game {
             }
         }
 
-        collectSeeds(playerC , choic);
+        collectSeeds(playerC , choice);
     }
 
     /**
@@ -91,24 +92,32 @@ public class Game {
         computer.setCells(tab);
     }
 
-    /**
-     * Cette méthode merge les cases des 2 joueurs pour passer d'un plateau à 12 cases à un plateau à 6 cases
-     */
-    private void changePlateau(){
-        mergeCells(player);
 
-        mergeCells(computer);
-    }
     /**
-     * Cette méthode merge les cases d'un joueur
-     * @param player
+     * Cette méthode merge les cases du jeu pour passer d'un plateau à 12 cases à un plateau à 6 cases
+     * @param newNbCells le nouveau nombre de cellule
      */
-    private void mergeCells(Player player) {
-        int[] newPlayerCells = new int[6] ;
-        int[] playerCells = player.getCells() ;
-        for (int i = 0; i < playerCells.length - 1; i+=2 ) {
-            newPlayerCells[i] = playerCells[i] + playerCells[i + 1] ;
+    private void mergeCells(int newNbCells) {
+        int[] newCells = new int[newNbCells] ;
+        for (int i = 0; i < nbCells - 1; i+=2 ) {
+            newCells[i] = this.cells[i] + this.cells[i + 1] ;
         }
-        player.setCells(newPlayerCells);
+        this.nbCells = newNbCells;
+        this.cells = newCells;
     }
+
+
+    /**
+     * cette méthode cree les cellules des tables
+     */
+    private  void cellsGeneration()
+    {
+        this.cells = new int[nbCells * 2] ;
+        for (int i = 0; i <= nbCells * 2  ; i++) {
+            cells[i] = nbSeeds;
+
+        }
+    }
+
+
 }

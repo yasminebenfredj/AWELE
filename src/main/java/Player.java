@@ -1,7 +1,5 @@
 import Intelligence.Intelligence;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 public class Player {
@@ -9,17 +7,20 @@ public class Player {
     Random random = new Random();
 
 
-    private int[] cells; // each cell contains a certain number of seeds
+    //private int[] cells; // each cell contains a certain number of seeds
     private int seeds; // seeds taken by the player
     private int[] indexes ;
-    private  int j;
+    private boolean isComputer;
+    private int nbCellsPlayer;
 
 
-    public Player(int nbCellsPlayer, int seeds,int j){
-        this.cells = new int[nbCellsPlayer] ; //12 cases par joueur au début
+    public Player(int nbCellsPlayer, int seeds, boolean isComputer){
+        //this.cells = new int[nbCellsPlayer] ; //12 cases par joueur au début
         this.seeds = seeds ;
-        this.j = j;
-        indexes = new int[cells.length];
+        this.isComputer = isComputer;
+        this.indexes = new int[nbCellsPlayer];
+        this.nbCellsPlayer = nbCellsPlayer;
+        this.initIndexes();
     }
 
     // Getters ...
@@ -31,39 +32,35 @@ public class Player {
         this.seeds += seeds ;
     }
 
-    public int[] getCells() {
-        return cells;
-    }
 
-    public void setCells(int[] cells) {
-        this.cells = cells;
-    }
 
     public int chooseCell(){
-        return random.nextInt(cells.length);
+        int index  =  random.nextInt(this.nbCellsPlayer);
+        return this.indexes[index] ;
     }
 
+    /*
     public void setOneCell(int index) {
-        if (j == 1) {
+        if (isComputer == true) {
             this.cells[index/2]++;
         }
         else {
             this.cells[(index-1)/2]++;
         }
     }
-/*
-    private void initIndexes(int j ){
-        if(j == 1){
-            for (int i = 0; i < cells.length ; i++) {
-                indexes[i] = ((i*2));
+*/
+    private void initIndexes(){
+        for (int i = 0; i <= this.nbCellsPlayer  ; i++) {
+            if (isComputer) {
+                indexes[i] = (i * 2);
             }
-        }else
-        {
-            for (int i = 0; i < cells.length ; i++) {
-                indexes[i] = ((i*2)+1);
+            else
+            {
+                indexes[i] = (i * 2) + 1;
+
             }
         }
     }
-*/
+
 
 }
