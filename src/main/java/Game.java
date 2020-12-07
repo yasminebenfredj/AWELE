@@ -33,31 +33,38 @@ public class Game {
 
     }
 
+    /**
+     * This methods plays a turn for a player
+     * @param playerC a player
+     */
     public void playTurn(Player playerC) {
         int choice = playerC.chooseCell();  // indice de la case choisi
 
         int nbSeedsIn = playerC.getCells()[choice]; // nombre de graines dans la case choisi
+        playerC.getCells()[choice] = 0 ; // on prend tous les graines de la case choisi pour jouer un tour
+
         for (int i = 1 ; i <= nbSeedsIn ; i++) {
-            if (choice - i < 0){
-                choice = (choice - i) % (nbCells*2) + 1 ;
+            if (choice - 1 < 0){
+                choice = (choice - 1) % (nbCells*2)  ;
                 if((choice) % 2 == 0) {
-                    playerC.setOneCell(choice );
+                    playerC.setOneCell(choice);
                 }
                 else{
                     computer.setOneCell(choice);
                 }
             }
             else {
-                if((choice - i) % 2 == 0) {
-                    playerC.setOneCell( choice - i);
+                choice = choice - 1 ;
+                if(choice % 2 == 0) {
+                    playerC.setOneCell(choice);
                 }
                 else{
-                    computer.setOneCell(choice - i);
+                    computer.setOneCell(choice);
                 }
             }
         }
 
-        collectSeeds(playerC , choice);
+        collectSeeds(playerC , choice); //on collecte
     }
 
     /**
