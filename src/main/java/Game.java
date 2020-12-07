@@ -72,10 +72,12 @@ public class Game {
     public void collectSeeds(Player player ,int choice ,int nbSeedsIn){
         for (int i = choice; i < choice + nbSeedsIn; i++) {
             if (this.cells[i] == 2 || this.cells[i] == 3){ //si une case contient 2 ou 3 graines les joueurs les récolte
+                System.out.println("Le joueur : " + player + "a récolté " + this.cells[i] + "graines de la case " + i);
                 player.addSeeds(this.cells[i]); //on ajoute les graines récoltées au graine du joueur
                 this.cells[i] = 0 ; // la case devient vide
             }
             else { // si la case ne contient ni 2 ni 3 graines on arrête la récolte
+                System.out.println("Le joueur arrive sur une case qui contient " + this.cells[i] + "graines .Il arrête donc sa récolte");
                 break;
             }
         }
