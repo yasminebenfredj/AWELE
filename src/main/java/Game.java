@@ -64,22 +64,18 @@ public class Game {
             }
         }
 
-        collectSeeds(playerC , choice); //on collecte
+        collectSeeds(playerC , choice , nbSeedsIn); //on collecte les graines à partir de la dernière case semer (qui est choice)
     }
 
     /**
      * Cette méthode récolte les graines
      * @param player
      */
-    public void collectSeeds(Player player ,int choice){
-        int[] playerCells = player.getCells();
-        int[] newPlayerCells = playerCells.clone() ;
-
-        for (int i = 0; i < playerCells.length; i++) {
-            if (playerCells[i] == 2 || playerCells[i] == 3){
-                player.addSeeds(playerCells[i]); //on ajoute les graines récoltées au graine du joueur
-                newPlayerCells[i] = 0 ; // la case devient vide
-                player.setCells(newPlayerCells); //update des cases du joueur
+    public void collectSeeds(Player player ,int choice ,int nbSeedsIn){
+        for (int i = choice; i < choice + nbSeedsIn; i++) {
+            if (this.cells[i] == 2 || this.cells[i] == 3){ //si une case contient 2 ou 3 graines les joueurs les récolte
+                player.addSeeds(this.cells[i]); //on ajoute les graines récoltées au graine du joueur
+                this.cells[i] = 0 ; // la case devient vide
             }
             else { // si la case ne contient ni 2 ni 3 graines on arrête la récolte
                 break;

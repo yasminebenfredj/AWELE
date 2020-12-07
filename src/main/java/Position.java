@@ -13,8 +13,8 @@ public class Position {
     Position(int nbCells , boolean computerPlay , int seedsPlayer , int seedsComputer){
         this.computerPlay = computerPlay ;
 
-        player = new Player(nbCells,seedsPlayer);
-        computer = new Player(nbCells,seedsComputer);
+        //player = new Player(nbCells,seedsPlayer);
+        //computer = new Player(nbCells,seedsComputer);
     }
 
 
