@@ -22,8 +22,6 @@ public class Game {
     }
 
     public void play(){
-        seedDistribution();
-
         System.out.print("*** Debut du jeu ***");
 
         while (true){ //TODO condition d'arrêt à modifier
@@ -68,7 +66,7 @@ public class Game {
     }
 
     /**
-     * Cette méthode récolte les graines
+     * This method collects the seeds for a player after he plays his turn
      * @param player
      */
     public void collectSeeds(Player player ,int choice ,int nbSeedsIn){
@@ -84,19 +82,6 @@ public class Game {
     }
 
     /**
-     * Cette méthode met dans chaque case nbSeeds graines
-     */
-    private void seedDistribution(){
-        int[] tab = new int[nbCells];
-        for( int i = 0 ; i < nbCells ; i++){
-            tab[i] = nbSeeds;
-        }
-        player.setCells(tab);
-        computer.setCells(tab);
-    }
-
-
-    /**
      * Cette méthode merge les cases du jeu pour passer d'un plateau à 12 cases à un plateau à 6 cases
      * @param newNbCells le nouveau nombre de cellule
      */
@@ -109,18 +94,27 @@ public class Game {
         this.cells = newCells;
     }
 
-
     /**
-     * cette méthode cree les cellules des tables
+     * This method generates the cells and put nbSeeds in each cell
      */
-    private  void cellsGeneration()
-    {
-        this.cells = new int[nbCells * 2] ;
-        for (int i = 0; i <= nbCells * 2  ; i++) {
-            cells[i] = nbSeeds;
+    private  void cellsGeneration() {
+        this.cells = new int[this.nbCells * 2] ;
+        for (int i = 0; i <= this.nbCells * 2  ; i++) {
+            this.cells[i] = this.nbSeeds;
 
         }
     }
 
+    /**
+     * This method gives the current number of seeds remaining in the cells
+     * @return the current number of seeds remaining in the cells
+     */
+    private int currentSeedsInCells(){
+        int currentSeedsInCells = 0 ;
+        for (int i = 0; i < this.cells.length; i++) {
+            currentSeedsInCells += this.cells[i] ;
+        }
+        return currentSeedsInCells ;
+    }
 
 }
