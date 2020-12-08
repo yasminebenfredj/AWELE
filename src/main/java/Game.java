@@ -7,6 +7,7 @@ public class Game {
     private int[] cells ;
     private int nbSeedsInGame;
     private int totalNbSeed ;
+    private static String endOfGameReason ;
     private boolean isMerged ;
 
     public static void main(String[] args) {
@@ -18,8 +19,8 @@ public class Game {
         this.isMerged = false ;
         this.nbCells = nbCells;
         this.nbSeeds = nbSeeds;
-        this.computer = new Player(nbCells,0,true);
-        this.player =  new Player(nbCells,0,false);
+        this.computer = new Player(1,nbCells,0,true);
+        this.player =  new Player(2,nbCells,0,false);
         this.nbSeedsInGame = this.nbSeeds * this.nbCells * 2;
         this.totalNbSeed = this.nbSeeds * this.nbCells * 2 ;
         cellsGeneration();
@@ -126,7 +127,6 @@ public class Game {
         this.cells = new int[this.nbCells * 2] ;
         for (int i = 0; i < this.nbCells * 2  ; i++) {
             this.cells[i] = this.nbSeeds;
-
         }
     }
 
@@ -181,31 +181,26 @@ public class Game {
     }
 
     /**
-     * Cette methode permet de donner la case precedente dans laquel le joueur va verifier s'il peut recuperer des graine
+     * Cette methode permet de donner la case précédente dans laquelle le joueur va verifier s'il peut récupérer des graines
      * Si On arrive à la case 1 on repart à celle n°13
      * Si On arrive à la case 24 on repart à celle n°12
      * @param currentPosition
      * @return
      */
-    private int precedentPosition(int currentPosition)
-    {
-        if (currentPosition <= this.nbCells && currentPosition >= 0 )
-        {
+    private int precedentPosition(int currentPosition) {
+        if (currentPosition <= this.nbCells && currentPosition >= 0 ) {
             return currentPosition + 1 ;
         }
-        else  {
+        else {
             return currentPosition - 1 ;
         }
-
-
     }
-
 
     /**
      * Le jeu continue tant que:
-     * 1) Le nombre des graine en jeu est superieur à 9
+     * 1) Le nombre des graine en jeu est supérieur ou égal à 8
      * 2) Aucun des joueurs n'est affamer
-     * 3) Aucun des joueur ne possede + que la moitier des graines (ici 48)
+     * 3) Aucun des joueur ne possède + que la moitié des graines (ici 48)
      *
      * @return
      */
@@ -213,7 +208,7 @@ public class Game {
         boolean currentSeedsInCells = this.nbSeedsInGame < 8 ;
         boolean seedsInComputerCells = this.seedsInComputerCells() == 0 ;
         boolean seedsInPlayerCells = this.seedsInPlayerCells() == 0 ;
-        boolean maxSeedsByPlayer = player.getSeeds() >= (this.totalNbSeed/ 2) || (computer.getSeeds() >= this.totalNbSeed/2) ;
+        boolean maxSeedsByPlayer = player.getSeeds() > (this.totalNbSeed/ 2) || (computer.getSeeds() > this.totalNbSeed/2) ;
         return currentSeedsInCells || seedsInComputerCells || seedsInPlayerCells || maxSeedsByPlayer;
     }
 
@@ -224,30 +219,51 @@ public class Game {
     private void getWinner() {
         System.out.println(Colors.BLUE);
 
-        System.out.println("********************************* FIN DU JEU ********************************** \n");
+        System.out.println("********************************* FIN DU JEU ***********************************************");
 
         int seedsDifference = computer.getSeeds() - player.getSeeds() ;
         if (seedsDifference > 0){
-            System.out.println(">> Joueur 1 "+ Colors.PARTY + computer.toString() + Colors.PARTY+ " remporte la partie. \n" );
+            System.out.println(">> Joueur " + computer.getPlayerNumber() + Colors.PARTY + computer.toString() + Colors.PARTY+ " remporte la partie" );
         }
         else if (seedsDifference < 0){
-            System.out.println(">> Joueur 2 " + Colors.PARTY + player.toString() + Colors.PARTY+ " remporte la partie. \n" );
+            System.out.println(">> Joueur " + player.getPlayerNumber() + Colors.PARTY + player.toString() + Colors.PARTY+ " remporte la partie" );
         }
         else {
             System.out.println(" Égalité entre le joueur " + computer.toString() + " et le joueur " + player.toString()+"\n");
         }
+        this.printEndGameReason();
 
-        System.out.println("******************************* SCORE FINAL *************************************");
-        System.out.println(" Joueur 1 " + computer.toString() + " : " + computer.getSeeds());
-        System.out.println(" Joueur 2 " + player.toString() + " : " + player.getSeeds());
-        System.out.println("********************************************************************************* ");
+        System.out.println("******************************* SCORE FINAL ************************************************");
+        System.out.println(" Joueur " + computer.getPlayerNumber() + " " + computer.toString() + " : " + computer.getSeeds());
+        System.out.println(" Joueur " + player.getPlayerNumber() + " " +player.toString() + " : " + player.getSeeds());
+        System.out.println("******************************************************************************************** ");
 
         System.out.println(Colors.RESET);
     }
 
+    private void printEndGameReason(){
+        System.out.print(" Raison de fin du jeu : ");
+        if (this.nbSeedsInGame < 8){
+            this.endOfGameReason = " Le nombre de graines actuelles dans les cellules est inférieurs à 8 ";
+        }
+        if (this.seedsInComputerCells() == 0){
+            this.endOfGameReason = " Le nombre de graines des cases correspondant au joueur " + computer.toString() + computer.getPlayerNumber() + " est nulle " ;
+        }
+        if (this.seedsInPlayerCells() == 0){
+            this.endOfGameReason = " Le nombre de graines des cases correspondant au joueur " + player.toString() + player.getPlayerNumber() + " est nulle " ;
+        }
+        if (this.player.getSeeds() > (this.totalNbSeed/ 2)){
+            this.endOfGameReason = " Le joueur" + player.toString() + player.getPlayerNumber() + " possède plus que la moitié des graines " ;
+        }
+        if (this.computer.getSeeds() > (this.totalNbSeed/ 2)){
+            this.endOfGameReason = " Le joueur" + computer.toString() + computer.getPlayerNumber() + " possède plus que la moitié des graines " ;
+        }
+        System.out.println(endOfGameReason);
+    }
 
-
-
+    /**
+     * This method prints all the cells with the number of their seeds
+     */
     private  void printTable() {
         String barre = "________________________________";
         String indexes1 = "Numéro des cases          :  ";
@@ -283,13 +299,15 @@ public class Game {
 
     }
 
-
+    /**
+     * This method prints the current score after each
+     */
     public  void  printScore() {
         System.out.println(Colors.RED +"________________________________");
         System.out.println(" < *** > SCORE ACTUELLE < *** > ");
 
-        System.out.println("Joueur 1 " + computer.toString() + " : " + computer.getSeeds());
-        System.out.println("Joueur 2 " + player.toString() + " : " + player.getSeeds());
+        System.out.println("Joueur " + computer.getPlayerNumber() + " " + computer.toString() + " : " + computer.getSeeds());
+        System.out.println("Joueur " + player.getPlayerNumber() + " " + player.toString() + " : " + player.getSeeds());
         System.out.println("________________________________"+ Colors.RESET);
 
     }

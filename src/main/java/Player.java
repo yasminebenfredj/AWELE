@@ -6,9 +6,11 @@ public class Player {
     private int[] indexes ;
     private boolean isComputer;
     private int nbCells;
+    private int playerNumber; // 1 ou 2
 
 
-    public Player(int nbCellsPlayer, int seeds, boolean isComputer){
+    public Player(int playerNumber , int nbCellsPlayer, int seeds, boolean isComputer){
+        this.playerNumber = playerNumber;
         this.seeds = seeds ;
         this.isComputer = isComputer;
         this.nbCells = nbCellsPlayer;
@@ -20,6 +22,10 @@ public class Player {
     // Getters ...
     public int getSeeds() {
         return this.seeds;
+    }
+
+    public int getPlayerNumber() {
+        return this.playerNumber;
     }
 
     public boolean isComputer() {
@@ -51,8 +57,7 @@ public class Player {
             if (isComputer) {
                 indexes[i] = (i * 2);
             }
-            else
-            {
+            else {
                 indexes[i] = (i * 2) + 1;
             }
         }
