@@ -1,7 +1,7 @@
 package Intelligence;
 
 /**
- * Cette classe est la strategie de notre IA
+ * Cette classe est la stratégie de notre IA
  */
 public class ComputerStrategy extends Intelligence {
 

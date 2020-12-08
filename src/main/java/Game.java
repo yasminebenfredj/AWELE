@@ -148,7 +148,7 @@ public class Game {
      */
     private int seedsInPlayerCells() {
         int seedsInPlayerCells = 0 ;
-        for (int i = 0; i < this.cells.length; i++) {
+        for (int i = 0; i < this.nbCells * 2; i++) {
             if(i%2 != 0){
                 seedsInPlayerCells ++ ;
             }
@@ -202,21 +202,21 @@ public class Game {
     private void getWinner() {
         System.out.println(Colors.BLUE);
 
-        System.out.println(" ******************** Fin du jeu ******************** ");
+        System.out.println(" ******************** FIN DU JEU ******************** ");
 
         int seedsDifference = computer.getSeeds() - player.getSeeds() ;
         if (seedsDifference > 0){
-            System.out.println("Le joueur " + computer.toString() + " remporte la partie ");
+            System.out.println(" Le joueur 1 " + computer.toString() + " remporte la partie " + Colors.PARTY);
         }
         else if (seedsDifference < 0){
-            System.out.println("Le joueur " + player.toString() + " remporte la partie ");
+            System.out.println(" Le joueur 2 " + player.toString() + " remporte la partie " + Colors.PARTY);
         }
         else {
-            System.out.println("Égalité entre les joueurs " + computer.toString() + " et le joueur " + player.toString() );
+            System.out.println(" Égalité entre les joueurs " + computer.toString() + " et le joueur " + player.toString() );
         }
-        System.out.println(" < *** > SCORE FINAL < *** > ");
-        System.out.println("Joueur 1 " + computer.toString() + " : " + computer.getSeeds());
-        System.out.println("Joueur 2 " + player.toString() + "      : " + player.getSeeds());
+        System.out.println(" ******* SCORE FINAL ******* ");
+        System.out.println(" Joueur 1 " + computer.toString() + " : " + computer.getSeeds());
+        System.out.println(" Joueur 2 " + player.toString() + " : " + player.getSeeds());
 
         System.out.println(" **************************************************** ");
 
@@ -267,7 +267,7 @@ public class Game {
         System.out.println(" < *** > SCORE ACTUELLE < *** > ");
 
         System.out.println("Joueur 1 " + computer.toString() + " : " + computer.getSeeds());
-        System.out.println("Joueur 2 " + player.toString() + "      : " + player.getSeeds());
+        System.out.println("Joueur 2 " + player.toString() + " : " + player.getSeeds());
         System.out.println("________________________________"+ Colors.RESET);
 
     }

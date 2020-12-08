@@ -3,7 +3,7 @@ package Intelligence;
 import java.util.Scanner;
 
 /**
- * Cette classe est la strategie de l'autre joueur
+ * Cette classe est la stratégie de l'autre joueur
  */
 public class PlayerStrategy extends Intelligence {
 

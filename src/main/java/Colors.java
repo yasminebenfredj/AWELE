@@ -22,5 +22,6 @@ public class Colors {
     public static final String CYAN_BACKGROUND = "\033[46m";   // CYAN
     public static final String WHITE_BACKGROUND = "\033[47m";  // WHITE
 
-
+    // Emoji
+    public static final String PARTY = "\uD83C\uDF89 \uD83C\uDF89 \uD83C\uDF89" ;
 }
