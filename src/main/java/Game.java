@@ -8,8 +8,6 @@ public class Game {
     private int nbSeedsInGame;
     private int totalNbSeed ;
 
-
-
     public static void main(String[] args) {
         Game game = new Game(12,4);
         game.play();
@@ -20,7 +18,7 @@ public class Game {
         this.nbSeeds = nbSeeds;
         this.computer = new Player(nbCells,0,true);
         this.player =  new Player(nbCells,0,false);
-        this.nbSeedsInGame = nbSeeds * nbCells * 2;
+        this.nbSeedsInGame = this.nbSeeds * this.nbCells * 2;
         this.totalNbSeed = this.nbSeeds * this.nbCells * 2 ;
         cellsGeneration();
     }
@@ -30,11 +28,10 @@ public class Game {
         int i = 1;
 
 
-
         while ( !this.endOfGame() ) {
             System.out.println("\n <<<<< Tour N°  "+ i +" >>>>> ");
 
-            if (this.nbSeedsInGame <= 48)
+            if (this.nbSeedsInGame <= this.nbCells * this.nbSeeds)
             {
                 System.out.println("\n<<< *** >>>\nIl ne reste plus que "+ this.nbSeedsInGame +" graines dans le jeu. Le plateau est merger. \n<<< *** >>>\n");
                 this.mergeCells(6);
@@ -280,7 +277,7 @@ public class Game {
         System.out.println(" < *** > SCORE ACTUELLE < *** > ");
 
         System.out.println("Joueur 1 " + computer.toString() + " : " + computer.getSeeds());
-        System.out.println("Joueur 2 " + player.toString() + "     : " + player.getSeeds());
+        System.out.println("Joueur 2 " + player.toString() + "      : " + player.getSeeds());
         System.out.println("________________________________"+ Colors.RESET);
 
     }
