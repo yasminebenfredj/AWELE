@@ -13,7 +13,6 @@ public class PlayerStrategy extends Intelligence {
 
     @Override
     public int chooseCell() {
-        System.out.println("C'est votre tour ! ");
         System.out.println("Entrer le numero de la case que vous voulez jouer parmis les suivantes : ");
         printCells();
         Scanner scanne = new Scanner(System. in );
@@ -23,14 +22,14 @@ public class PlayerStrategy extends Intelligence {
 
     @Override
     public String toString() {
-        return "PLAYER (You) ";
+        return "YOU";
     }
 
     public void printCells()
     {
-        String output = " | ";
+        String output = "| ";
         for (int i : super.getIndexes()) {
-            output+=  i + " | ";
+            output+=  (i+1) + " | ";
         }
         System.out.println(output);
 

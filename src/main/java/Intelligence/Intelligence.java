@@ -5,13 +5,13 @@ import java.util.Random;
 public abstract class Intelligence {
 
     private int[] indexes;
-    private int nbCellsPlayer;
+    private int nbCells;
     private Random random;
 
     public  Intelligence(int nbCellsPlayer, int[] indexes)
     {
         this.indexes = indexes;
-        this.nbCellsPlayer = nbCellsPlayer;
+        this.nbCells = nbCellsPlayer;
         this.random = new Random();
     }
 
@@ -28,7 +28,7 @@ public abstract class Intelligence {
 
     /*
      *
-     ***********************  Les Getter ***************************
+     ***********************  Les Getter and Setter ***************************
      *
      */
 
@@ -36,12 +36,20 @@ public abstract class Intelligence {
         return indexes;
     }
 
-    public int getNbCellsPlayer() {
-        return nbCellsPlayer;
+    public int getNbCells() {
+        return nbCells;
     }
 
     public Random getRandom() {
         return random;
+    }
+
+    public void setIndexes(int[] newIndexes) {
+        this.indexes = newIndexes;
+    }
+
+    public void setNbCells(int nbCells) {
+        this.nbCells = nbCells;
     }
 
 

@@ -13,7 +13,7 @@ public class ComputerStrategy extends Intelligence {
 
     @Override
     public int chooseCell(){
-        int index  =  super.getRandom().nextInt(super.getNbCellsPlayer());
+        int index  =  super.getRandom().nextInt(super.getNbCells());
         return super.getIndexes()[index] ;
     }
     @Override
