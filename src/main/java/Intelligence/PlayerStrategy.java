@@ -20,11 +20,6 @@ public class PlayerStrategy extends Intelligence {
         return cell-1 ;
     }
 
-    @Override
-    public String toString() {
-        return "YOU";
-    }
-
     public void printCells() {
         String output = "| ";
         for (int i : super.getIndexes()) {
@@ -32,5 +27,10 @@ public class PlayerStrategy extends Intelligence {
         }
         System.out.println(output);
 
+    }
+
+    @Override
+    public String toString() {
+        return " YOU ";
     }
 }

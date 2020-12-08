@@ -61,10 +61,10 @@ public class Player {
 
     private void initIntelligence() {
         if(isComputer) {
-            this.intelligence = new ComputerStrategy(nbCells, indexes);
+            this.intelligence = new RandomStrategy(nbCells, indexes);
         }
         else {
-            this.intelligence = new PlayerStrategy(nbCells, indexes);
+            this.intelligence = new RandomStrategy(nbCells, indexes);
         }
     }
 
