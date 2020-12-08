@@ -5,8 +5,8 @@ public class Game {
     final Player player ;
     final Player computer ;
     private int[] cells ;
-    private int nbSeedsInGame;
-    private int totalNbSeed ;
+    private int nbSeedsInGame; //current seeds in the game(cells)
+    private final int totalNbSeed ; //constante
 
     public static void main(String[] args) {
         Game game = new Game(12,4);
@@ -31,8 +31,7 @@ public class Game {
         while ( !this.endOfGame() ) {
             System.out.println("\n <<<<< Tour N°  "+ i +" >>>>> ");
 
-            if (this.nbSeedsInGame <= this.nbCells * this.nbSeeds)
-            {
+            if (this.nbSeedsInGame <= this.nbCells * this.nbSeeds) {
                 System.out.println("\n<<< *** >>>\nIl ne reste plus que "+ this.nbSeedsInGame +" graines dans le jeu. Le plateau est merger. \n<<< *** >>>\n");
                 this.mergeCells(6);
             }
@@ -48,18 +47,15 @@ public class Game {
             printScore();
             i++;
         }
-        System.out.println("<<< ***** >>> Fin du Jeu <<< ***** >>>\n");
-
-
-
+        //End of the game we print the winner and the final score
+        this.getWinner();
     }
 
     /**
      * This methods plays a turn for a player
      * @param player a player
      */
-    public void playTurn (Player player)
-    {
+    public void playTurn (Player player) {
         int choice = player.chooseCell();  // indice de la case choisi
         int nbSeedsIn = this.cells[choice]; // nombre de graines dans la case choisi
         this.cells[choice] = 0 ; // on prend tous les graines de la case choisi pour jouer un tour
@@ -75,7 +71,6 @@ public class Game {
             position = nextPosition(position);
 
         }
-
         collectSeeds(player , choice , nbSeedsIn); //on collecte les graines à partir de la dernière case semer (qui est choice)
     }
 
@@ -84,8 +79,7 @@ public class Game {
      * @param player
      */
     public void collectSeeds(Player player ,int currentIndex ,int nbSeedsIn){
-        while (this.cells[currentIndex] == 2 || this.cells[currentIndex] == 3 )
-        {
+        while (this.cells[currentIndex] == 2 || this.cells[currentIndex] == 3 ) {
             int gains = this.cells[currentIndex] ;
             if (currentIndex < nbSeedsIn) {
                 System.out.println(">> Récolte " + gains + " graines de la case N° " + (currentIndex + 1));
@@ -135,26 +129,12 @@ public class Game {
     }
 
     /**
-     * This method gives the current number of seeds remaining in the cells
-     * @return the current number of seeds remaining in the cells XD
-     */
-    private int currentSeedsInCells(){
-        int currentSeedsInCells = 0 ;
-        for (int i = 0; i < this.cells.length; i++) {
-            currentSeedsInCells += this.cells[i] ;
-        }
-        return currentSeedsInCells ;
-    }
-
-
-    /**
      * This method computes the number of seeds in the cells belonging to the computer
-     * @param computer the player
      * @return the number of seeds in the cells belonging to the computer
      */
-    private int seedsInComputerCells(Player computer) {
+    private int seedsInComputerCells() {
         int seedsInPlayerCells = 0 ;
-        for (int i = 0; i < this.cells.length; i++) {
+        for (int i = 0; i < this.nbCells*2; i++) {
             if (i%2 == 0){
                 seedsInPlayerCells ++ ;
             }
@@ -164,10 +144,9 @@ public class Game {
 
     /**
      * This method computes the number of seeds in the cells belonging to the player
-     * @param player the player
      * @return the number of seeds in the cells belonging to the player
      */
-    private int seedsInPlayerCells(Player player) {
+    private int seedsInPlayerCells() {
         int seedsInPlayerCells = 0 ;
         for (int i = 0; i < this.cells.length; i++) {
             if(i%2 != 0){
@@ -177,8 +156,6 @@ public class Game {
         return seedsInPlayerCells ;
     }
 
-
-
     /**
      * Cette methode permet de donner la case suivante dans laquel le joueur va poser une graine
      * Si On arrive à la case 1 on repart à celle n°13
@@ -186,10 +163,8 @@ public class Game {
      * @param currentPosition
      * @return
      */
-    private int nextPosition(int currentPosition)
-    {
-        if (currentPosition < this.nbCells && currentPosition > 0 )
-        {
+    private int nextPosition(int currentPosition) {
+        if (currentPosition < this.nbCells && currentPosition > 0 ) {
             return currentPosition - 1 ;
         }
         else if (currentPosition >= this.nbCells && currentPosition < (this.nbCells * 2) - 1 ) {
@@ -201,7 +176,6 @@ public class Game {
         else {
             return this.nbCells - 1 ;
         }
-
     }
 
 
@@ -213,29 +187,46 @@ public class Game {
      *
      * @return
      */
-    private boolean endOfGame()
-    {
+    private boolean endOfGame() {
         boolean currentSeedsInCells = this.nbSeedsInGame < 8 ;
-        boolean seedsInComputerCells = this.seedsInComputerCells(this.computer) == 0 ;
-        boolean seedsInPlayerCells = this.seedsInPlayerCells(this.player) == 0 ;
+        boolean seedsInComputerCells = this.seedsInComputerCells() == 0 ;
+        boolean seedsInPlayerCells = this.seedsInPlayerCells() == 0 ;
         boolean maxSeedsByPlayer = player.getSeeds() >= (this.totalNbSeed/ 2) || (computer.getSeeds() >= this.totalNbSeed/2) ;
         return currentSeedsInCells || seedsInComputerCells || seedsInPlayerCells || maxSeedsByPlayer;
     }
 
 
     /**
-     * Cette methode affiche le score et le joueur à la fin du jeu
+     * Cette methode affiche le score et le joueur gagnant à la fin du jeu
      */
-    private void getTheWinner()
-    {
+    private void getWinner() {
+        System.out.println(Colors.BLUE);
 
+        System.out.println(" ******************** Fin du jeu ******************** ");
+
+        int seedsDifference = computer.getSeeds() - player.getSeeds() ;
+        if (seedsDifference > 0){
+            System.out.println("Le joueur " + computer.toString() + " remporte la partie ");
+        }
+        else if (seedsDifference < 0){
+            System.out.println("Le joueur " + player.toString() + " remporte la partie ");
+        }
+        else {
+            System.out.println("Égalité entre les joueurs " + computer.toString() + " et le joueur " + player.toString() );
+        }
+        System.out.println(" < *** > SCORE FINAL < *** > ");
+        System.out.println("Joueur 1 " + computer.toString() + " : " + computer.getSeeds());
+        System.out.println("Joueur 2 " + player.toString() + "      : " + player.getSeeds());
+
+        System.out.println(" **************************************************** ");
+
+        System.out.println(Colors.RESET);
     }
 
 
 
 
-    private  void printTable()
-    {
+    private  void printTable() {
         String barre = "________________________________";
         String indexes1 = "Numéro des cases          :  ";
         String seeds1 = "Nombre de graine par case :  ";
@@ -271,8 +262,7 @@ public class Game {
     }
 
 
-    public  void  printScore()
-    {
+    public  void  printScore() {
         System.out.println(Colors.RED +"________________________________");
         System.out.println(" < *** > SCORE ACTUELLE < *** > ");
 

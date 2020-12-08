@@ -30,7 +30,6 @@ public class Player {
         this.seeds += seeds ;
     }
 
-
     /**
      * Permet au joueur de choisir une case à jouer parmi les cienne
      * @return le choix du joueur
@@ -38,8 +37,7 @@ public class Player {
     public int chooseCell(){
         int choice = this.intelligence.chooseCell() ;
 
-        while (( choice  > this.nbCells*2 || choice < 1 ||(choice % 2) == 0 )&& !isComputer)
-        {
+        while (( choice  > this.nbCells*2 || choice < 1 ||(choice % 2) == 0 )&& !isComputer) {
             System.out.println("Vous n'avez pas accés à cette case, recommencez ...");
             choice = this.intelligence.chooseCell() ;
         }
@@ -61,8 +59,7 @@ public class Player {
     }
 
 
-    private void initIntelligence()
-    {
+    private void initIntelligence() {
         if(isComputer) {
             this.intelligence = new ComputerStrategy(nbCells, indexes);
         }
@@ -75,8 +72,7 @@ public class Player {
      * Cette methode va permettre au joueur d'avoir le nouveau plateau apres avoir merger
      * @param newNbCells nouvelle taille du tableau
      */
-    public void mergeCells(int newNbCells)
-    {
+    public void mergeCells(int newNbCells) {
         this.nbCells = newNbCells;
         initIndexes(newNbCells);
         intelligence.setIndexes(this.indexes);
@@ -87,9 +83,5 @@ public class Player {
     public String toString(){
         return intelligence.toString();
     }
-
-
-
-
 
 }

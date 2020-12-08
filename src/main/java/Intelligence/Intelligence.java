@@ -8,8 +8,7 @@ public abstract class Intelligence {
     private int nbCells;
     private Random random;
 
-    public  Intelligence(int nbCellsPlayer, int[] indexes)
-    {
+    public  Intelligence(int nbCellsPlayer, int[] indexes) {
         this.indexes = indexes;
         this.nbCells = nbCellsPlayer;
         this.random = new Random();
@@ -19,11 +18,9 @@ public abstract class Intelligence {
      *
      * @return Choix de l'intelligence
      */
-    public abstract  int chooseCell();
+    public abstract int chooseCell();
 
     public abstract String toString();
-
-
 
 
     /*
@@ -51,6 +48,5 @@ public abstract class Intelligence {
     public void setNbCells(int nbCells) {
         this.nbCells = nbCells;
     }
-
 
 }
