@@ -7,7 +7,6 @@ public class Game {
     private int[] cells ;
     private int nbSeedsInGame;
     private int totalNbSeed ;
-    private static String endOfGameReason ;
     private boolean isMerged ;
 
     public static void main(String[] args) {
@@ -231,7 +230,7 @@ public class Game {
         else {
             System.out.println(" Égalité entre le joueur " + computer.toString() + " et le joueur " + player.toString()+"\n");
         }
-        this.printEndGameReason();
+        System.out.println(this.printEndGameReason());
 
         System.out.println("******************************* SCORE FINAL ************************************************");
         System.out.println(" Joueur " + computer.getPlayerNumber() + " " + computer.toString() + " : " + computer.getSeeds());
@@ -241,24 +240,23 @@ public class Game {
         System.out.println(Colors.RESET);
     }
 
-    private void printEndGameReason(){
+    private String printEndGameReason(){
         System.out.print(" Raison de fin du jeu : ");
         if (this.nbSeedsInGame < 8){
-            this.endOfGameReason = " Le nombre de graines actuelles dans les cellules est inférieurs à 8 ";
+            return " Le nombre de graines actuelles dans les cellules est inférieurs à 8 ";
         }
-        if (this.seedsInComputerCells() == 0){
-            this.endOfGameReason = " Le nombre de graines des cases correspondant au joueur " + computer.toString() + computer.getPlayerNumber() + " est nulle " ;
+        else if (this.seedsInComputerCells() == 0){
+            return " Le nombre de graines des cases correspondant au joueur " + computer.toString() + computer.getPlayerNumber() + " est nulle " ;
         }
-        if (this.seedsInPlayerCells() == 0){
-            this.endOfGameReason = " Le nombre de graines des cases correspondant au joueur " + player.toString() + player.getPlayerNumber() + " est nulle " ;
+        else if (this.seedsInPlayerCells() == 0){
+            return " Le nombre de graines des cases correspondant au joueur " + player.toString() + player.getPlayerNumber() + " est nulle " ;
         }
-        if (this.player.getSeeds() > (this.totalNbSeed/ 2)){
-            this.endOfGameReason = " Le joueur" + player.toString() + player.getPlayerNumber() + " possède plus que la moitié des graines " ;
+        else if (this.player.getSeeds() > (this.totalNbSeed/ 2)){
+            return " Le joueur" + player.toString() + player.getPlayerNumber() + " possède plus que la moitié des graines " ;
         }
-        if (this.computer.getSeeds() > (this.totalNbSeed/ 2)){
-            this.endOfGameReason = " Le joueur" + computer.toString() + computer.getPlayerNumber() + " possède plus que la moitié des graines " ;
+        else { //this.computer.getSeeds() > (this.totalNbSeed/ 2)
+            return " Le joueur" + computer.toString() + computer.getPlayerNumber() + " possède plus que la moitié des graines " ;
         }
-        System.out.println(endOfGameReason);
     }
 
     /**
