@@ -74,31 +74,23 @@ public class Game {
             position = nextPosition(position);
 
         }
-        collectSeeds(player , choice , nbSeedsIn); //on collecte les graines à partir de la dernière case semer (qui est choice)
+        collectSeeds(player , choice); //on collecte les graines à partir de la dernière case semer (qui est choice)
     }
 
     /**
      * This method collects the seeds for a player after he plays his turn
      * @param player
      */
-    public void collectSeeds(Player player ,int currentIndex ,int nbSeedsIn){
+    public void collectSeeds(Player player ,int currentIndex){
         while (this.cells[currentIndex] == 2 || this.cells[currentIndex] == 3 ) {
             int gains = this.cells[currentIndex] ;
-            if (currentIndex < nbSeedsIn) {
-                System.out.println(">> Récolte " + gains + " graines de la case N° " + (currentIndex + 1));
-                player.addSeeds(gains); //on ajoute les graines récoltées au graine du joueur
-                this.nbSeedsInGame -= gains; // on soustrait de la somme des graine presente dans le jeu
-                this.cells[currentIndex] = 0; // la case devient vide
-                currentIndex = precedentPosition(currentIndex);
-            }
-            else {
-                System.out.println(">> Récolte " + gains + " graines de la case N° " + ( currentIndex + 1 ));
-                player.addSeeds(gains); //on ajoute les graines récoltées au graine du joueur
-                this.nbSeedsInGame -= gains; // on soustrait de la somme des graine presente dans le jeu
-                this.cells[currentIndex] = 0 ; // la case devient vide
-                currentIndex = precedentPosition(currentIndex);
 
-            }
+            System.out.println(">> Récolte " + gains + " graines de la case N° " + (currentIndex + 1));
+            player.addSeeds(gains); //on ajoute les graines récoltées au graines du joueur
+            this.nbSeedsInGame -= gains; // on soustrait de la somme des graines présente dans le jeu
+            this.cells[currentIndex] = 0; // la case devient vide
+            currentIndex = precedentPosition(currentIndex);
+
         }
         System.out.println(">>> Case N° " + ( currentIndex + 1 )+" contient " + this.cells[currentIndex] + " graines. Pas de récolte. \n");
     }
