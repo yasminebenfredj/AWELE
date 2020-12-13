@@ -1,12 +1,12 @@
 
 public class Game {
     int nbCells;
-    final int nbSeeds;
+    final int nbSeeds;  // Number of Seeds per Cell
     final Player player ;
     final Player computer ;
     private int[] cells ;
-    private int nbSeedsInGame;
-    private int totalNbSeed ;
+    private int nbSeedsInGame; // Number of Seeds still in game(not collected yet)
+    private final int totalNbSeed ; // Constant that represents the initial number of seeds
     private boolean isMerged ;
 
     public static void main(String[] args) {
@@ -33,17 +33,18 @@ public class Game {
         while ( !this.endOfGame() ) {
             System.out.println("\n <<<<< Tour N°  "+ i +" >>>>> ");
 
-            if (this.nbSeedsInGame <= this.nbCells * this.nbSeeds) {
+            if (!isMerged && this.nbSeedsInGame <= this.totalNbSeed/2) {
                 System.out.println("\n<<< *** >>>\nIl ne reste plus que "+ this.nbSeedsInGame +" graines dans le jeu. Le plateau est merger. \n<<< *** >>>\n");
                 this.mergeCells(6);
+                isMerged = true ;
             }
 
             printTable();
-            System.out.println("\n      *** Joueur 1  - " + computer.toString() + " - *** ");
+            System.out.println("\n      *** Joueur 1  - " + computer.toString() + computer.getPlayerNumber() + " - *** ");
             playTurn(computer);
 
             printTable();
-            System.out.println("\n      *** Joueur 2  - " + player.toString() + " - *** ");
+            System.out.println("\n      *** Joueur 2  - " + player.toString() + player.getPlayerNumber() + " - *** ");
             playTurn(player);
 
             printScore();

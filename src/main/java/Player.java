@@ -44,7 +44,7 @@ public class Player {
         int choice = this.intelligence.chooseCell() ;
 
         while (( choice  > this.nbCells*2 || choice < 1 ||(choice % 2) == 0 )&& !isComputer) {
-            System.out.println("Vous n'avez pas accés à cette case, recommencez ...");
+            System.out.println("Vous n'avez pas accès à cette case, recommencez ...");
             choice = this.intelligence.chooseCell() ;
         }
         return  choice;
