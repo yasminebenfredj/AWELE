@@ -8,6 +8,7 @@ public class Game {
     private int nbSeedsInGame; // Number of Seeds still in game(not collected yet)
     private final int totalNbSeed ; // Constant that represents the initial number of seeds
     private boolean isMerged ;
+    private Position currentPosition ;
 
     public static void main(String[] args) {
         Game game = new Game(12,4);
@@ -20,6 +21,7 @@ public class Game {
         this.nbSeeds = nbSeeds;
         this.computer = new Player(1,nbCells,0,true);
         this.player =  new Player(2,nbCells,0,false);
+        this.currentPosition = new Position(this.computer,this.player,this.cells);
         this.nbSeedsInGame = this.nbSeeds * this.nbCells * 2;
         this.totalNbSeed = this.nbSeeds * this.nbCells * 2 ;
         cellsGeneration();
@@ -92,6 +94,7 @@ public class Game {
             currentIndex = precedentPosition(currentIndex);
 
         }
+        this.currentPosition = new Position(this.computer,this.player,this.cells);
         System.out.println(">>> Case N° " + ( currentIndex + 1 )+" contient " + this.cells[currentIndex] + " graines. Pas de récolte. \n");
     }
 
