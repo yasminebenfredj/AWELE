@@ -211,8 +211,7 @@ public class Game {
         boolean currentSeedsInCells = this.nbSeedsInGame < 8 ;
         boolean seedsInComputerCells = this.seedsInComputerCells() == 0 ;
         boolean seedsInPlayerCells = this.seedsInPlayerCells() == 0 ;
-        boolean maxSeedsByPlayer = player.getSeeds() > (this.totalNbSeed/ 2) || (computer.getSeeds() > this.totalNbSeed/2) ;
-        return currentSeedsInCells || seedsInComputerCells || seedsInPlayerCells || maxSeedsByPlayer;
+        return currentSeedsInCells || seedsInComputerCells || seedsInPlayerCells ;
     }
 
 
@@ -252,14 +251,8 @@ public class Game {
         else if (this.seedsInComputerCells() == 0){
             return " Le nombre de graines des cases correspondant au joueur " + computer.toString() + computer.getPlayerNumber() + " est nulle " ;
         }
-        else if (this.seedsInPlayerCells() == 0){
+        else { // this.seedsInPlayerCells() == 0
             return " Le nombre de graines des cases correspondant au joueur " + player.toString() + player.getPlayerNumber() + " est nulle " ;
-        }
-        else if (this.player.getSeeds() > (this.totalNbSeed/ 2)){
-            return " Le joueur" + player.toString() + player.getPlayerNumber() + " possède plus que la moitié des graines " ;
-        }
-        else { //this.computer.getSeeds() > (this.totalNbSeed/ 2)
-            return " Le joueur" + computer.toString() + computer.getPlayerNumber() + " possède plus que la moitié des graines " ;
         }
     }
 
@@ -317,7 +310,8 @@ public class Game {
 
     public void checkValidate( int choice ) {
         if( this.cells[choice] == 0) {
-            System.out.println(Colors.RED+ " Erreur case vide!  Vous Avez perdu ! "+Colors.RESET);
+            System.out.println(Colors.RED+ "WRONG MOVE : YOU CHOOSE AN EMPTY CELL ! GAME OVER ! "+Colors.RESET);
+            throw new WrongMoveException("A cell with zero seeds was chosen !") ;
         }
 
     }
