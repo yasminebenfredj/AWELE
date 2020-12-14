@@ -44,11 +44,11 @@ public class Game {
             }
 
             printTable();
-            System.out.println("\n      *** Joueur 1  - " + computer.toString() + computer.getPlayerNumber() + " - *** ");
+            System.out.println("\n      *** Joueur " + computer.getPlayerNumber() + " -" + computer.toString()  + "-*** ");
             playTurn(computer);
 
             printTable();
-            System.out.println("\n      *** Joueur 2  - " + player.toString() + player.getPlayerNumber() + " - *** ");
+            System.out.println("\n      *** Joueur " + player.getPlayerNumber() + " -" + player.toString()  + "-*** ");
             playTurn(player);
 
             printScore();
@@ -95,7 +95,6 @@ public class Game {
             this.nbSeedsInGame -= gains; // on soustrait de la somme des graines présente dans le jeu
             this.cells[currentIndex] = 0; // la case devient vide
             currentIndex = precedentPosition(currentIndex, this.nbCells);
-
         }
         this.currentPosition = new Position(this.computer,this.player,this.cells);
         System.out.println(">>> Case N° " + ( currentIndex + 1 )+" contient " + this.cells[currentIndex] + " graines. Pas de récolte. \n");
@@ -190,16 +189,14 @@ public class Game {
      * @return
      */
     public static int precedentPosition(int currentPosition, int nbCells) {
-        /*
-        if (currentPosition <= nbCells && currentPosition >= 0 ) {
-            return currentPosition + 1 ;
+        int previousPosition = (currentPosition - 1 )% (nbCells * 2) ;
+        if (previousPosition < 0 && nbCells==12) {
+            previousPosition+=24;
         }
-        else {
-            return currentPosition - 1 ;
+        if (previousPosition < 0 && nbCells==6) {
+            previousPosition+=12;
         }
-
-         */
-        return (currentPosition - 1 )% (nbCells * 2);
+        return previousPosition;
     }
 
     /**
