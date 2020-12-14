@@ -1,3 +1,4 @@
+import java.awt.*;
 
 public class Game {
     int nbCells;
@@ -26,6 +27,7 @@ public class Game {
         this.totalNbSeed = this.nbSeeds * this.nbCells * 2 ;
         cellsGeneration();
     }
+
 
     public void play(){
         System.out.print("\n<<< ***** >>>  Debut du jeu  <<< ***** >>>\n");
@@ -61,19 +63,20 @@ public class Game {
      * @param player a player
      */
     public void playTurn (Player player) {
-        int choice = player.chooseCell();  // indice de la case choisi
+        int choice = player.chooseCell(this.cells);  // indice de la case choisi
+        checkValidate(choice);
         int nbSeedsIn = this.cells[choice]; // nombre de graines dans la case choisi
         this.cells[choice] = 0 ; // on prend tous les graines de la case choisi pour jouer un tour
 
         System.out.println("Ramasse "+ nbSeedsIn +" graines de la case N° : " + (choice + 1) + " .");
 
-        int position = nextPosition(choice) ;
+        int position = nextPosition(choice, this.nbCells) ;
         for (int i = 1  ; i <= nbSeedsIn ; i++ ) {
 
             this.cells[position] += 1 ;
             System.out.println("Ajoute 1 graine à la Case  N° : " + (position + 1) + " .");
             choice = position;
-            position = nextPosition(position);
+            position = nextPosition(position, this.nbCells);
 
         }
         collectSeeds(player , choice); //on collecte les graines à partir de la dernière case semer (qui est choice)
@@ -91,7 +94,7 @@ public class Game {
             player.addSeeds(gains); //on ajoute les graines récoltées au graines du joueur
             this.nbSeedsInGame -= gains; // on soustrait de la somme des graines présente dans le jeu
             this.cells[currentIndex] = 0; // la case devient vide
-            currentIndex = precedentPosition(currentIndex);
+            currentIndex = precedentPosition(currentIndex, this.nbCells);
 
         }
         this.currentPosition = new Position(this.computer,this.player,this.cells);
@@ -160,19 +163,23 @@ public class Game {
      * @param currentPosition
      * @return
      */
-    private int nextPosition(int currentPosition) {
-        if (currentPosition < this.nbCells && currentPosition > 0 ) {
+    public static int nextPosition(int currentPosition, int nbCells) {
+        /*
+        if (currentPosition < nbCells && currentPosition > 0 ) {
             return currentPosition - 1 ;
         }
-        else if (currentPosition >= this.nbCells && currentPosition < (this.nbCells * 2) - 1 ) {
+        else if (currentPosition >= nbCells && currentPosition < (nbCells * 2) - 1 ) {
             return currentPosition + 1 ;
         }
         else if (currentPosition == 0 ) {
-            return this.nbCells;
+            return nbCells;
         }
         else {
-            return this.nbCells - 1 ;
+            return nbCells - 1 ;
         }
+
+         */
+        return (currentPosition +1 )% (nbCells * 2);
     }
 
     /**
@@ -182,13 +189,17 @@ public class Game {
      * @param currentPosition
      * @return
      */
-    private int precedentPosition(int currentPosition) {
-        if (currentPosition <= this.nbCells && currentPosition >= 0 ) {
+    public static int precedentPosition(int currentPosition, int nbCells) {
+        /*
+        if (currentPosition <= nbCells && currentPosition >= 0 ) {
             return currentPosition + 1 ;
         }
         else {
             return currentPosition - 1 ;
         }
+
+         */
+        return (currentPosition - 1 )% (nbCells * 2);
     }
 
     /**
@@ -275,7 +286,7 @@ public class Game {
             }
 
         }
-        for (int i = nbCells; i < nbCells * 2 ; i++) {
+        for (int i = nbCells * 2 -1 ; i >= nbCells  ; i--) {
             indexes2 += "|_"+( i+1 )+"_|";
             seeds2 += "|  "+ this.cells[i]+" |";
 
@@ -283,12 +294,12 @@ public class Game {
         }
         System.out.println(Colors.PURPLE + barre);
         System.out.println(" < Plateau 1 > ");
-        System.out.println(indexes2);
-        System.out.println(seeds2);
-        System.out.println(barre);
-        System.out.println(" < Plateau 2 > ");
         System.out.println(indexes1);
         System.out.println(seeds1);
+        System.out.println(barre);
+        System.out.println(" < Plateau 2 > ");
+        System.out.println(indexes2);
+        System.out.println(seeds2);
         System.out.println(barre + Colors.RESET);
 
     }
@@ -303,6 +314,14 @@ public class Game {
         System.out.println("Joueur " + computer.getPlayerNumber() + " " + computer.toString() + " : " + computer.getSeeds());
         System.out.println("Joueur " + player.getPlayerNumber() + " " + player.toString() + " : " + player.getSeeds());
         System.out.println("________________________________"+ Colors.RESET);
+
+    }
+
+
+    public void checkValidate( int choice ) {
+        if( this.cells[choice] == 0) {
+            System.out.println(Colors.RED+ " Erreur case vide!  Vous Avez perdu ! "+Colors.RESET);
+        }
 
     }
 

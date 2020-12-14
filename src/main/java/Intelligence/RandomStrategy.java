@@ -11,9 +11,21 @@ public class RandomStrategy extends Intelligence {
     }
 
     @Override
-    public int chooseCell(){
+    public int chooseCell(int[] cells){
         int index  =  super.getRandom().nextInt(super.getNbCells());
-        return super.getIndexes()[index] ;
+        int resp =  super.getIndexes()[index];
+
+        while( !possible(resp, cells)) {
+            index  =  super.getRandom().nextInt(super.getNbCells());
+            resp =  super.getIndexes()[index];
+        }
+
+        return resp ;
+    }
+
+    private boolean possible(int  index , int[] cells) {
+        return cells[index] != 0;
+
     }
 
     @Override

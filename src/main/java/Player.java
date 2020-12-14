@@ -40,12 +40,12 @@ public class Player {
      * Permet au joueur de choisir une case à jouer parmi les cienne
      * @return le choix du joueur
      */
-    public int chooseCell(){
-        int choice = this.intelligence.chooseCell() ;
+    public int chooseCell(int[] cells){
+        int choice = this.intelligence.chooseCell(cells) ;
 
         while (( choice  > this.nbCells*2 || choice < 1 ||(choice % 2) == 0 )&& !isComputer) {
             System.out.println("Vous n'avez pas accès à cette case, recommencez ...");
-            choice = this.intelligence.chooseCell() ;
+            choice = this.intelligence.chooseCell(cells) ;
         }
         return  choice;
     }
@@ -69,7 +69,7 @@ public class Player {
             this.intelligence = new RandomStrategy(nbCells, indexes);
         }
         else {
-            this.intelligence = new RandomStrategy(nbCells, indexes);
+            this.intelligence = new PlayerStrategy(nbCells, indexes);
         }
     }
 

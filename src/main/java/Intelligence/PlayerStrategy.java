@@ -12,7 +12,7 @@ public class PlayerStrategy extends Intelligence {
     }
 
     @Override
-    public int chooseCell() {
+    public int chooseCell(int[] cells) {
         System.out.println("Entrer le numéro de la case que vous voulez jouer parmis les suivantes : ");
         printCells();
         Scanner scanne = new Scanner(System. in );

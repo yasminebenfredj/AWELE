@@ -18,7 +18,7 @@ public abstract class Intelligence {
      *
      * @return Choix de l'intelligence
      */
-    public abstract int chooseCell();
+    public abstract int chooseCell(int [] cells);
 
     public abstract String toString();
 
