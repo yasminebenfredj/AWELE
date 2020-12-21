@@ -1,12 +1,14 @@
 package Intelligence;
 
 
+import core.Position;
+
 /**
  * Cette classe est la stratégie de notre IA
  */
 public class ComputerStrategy extends Intelligence {
     boolean[] chosenCells = new boolean[getNbCells()];
-    //Game game = new Game();
+    //core.Game game = new core.Game();
 
 
     public ComputerStrategy(int nbCellsPlayer, int[] indexes) {
@@ -21,6 +23,10 @@ public class ComputerStrategy extends Intelligence {
         return super.getIndexes()[index] ;
     }
 
+    @Override
+    public void setCurrentPosition(Position position) {
+
+    }
 
 
     private int minMaxValue(int [] cells) {

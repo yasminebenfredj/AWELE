@@ -1,3 +1,5 @@
+package core;
+
 public class Position {
     private boolean computerPlay; // true if the computer has to play and false otherwise
     private Player player;

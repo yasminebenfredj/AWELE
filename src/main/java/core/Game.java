@@ -1,4 +1,7 @@
-import java.awt.*;
+package core;
+
+import Exceptions.WrongMoveException;
+import utility.Colors;
 
 public class Game {
     int nbCells;
@@ -87,7 +90,7 @@ public class Game {
      * This method collects the seeds for a player after he plays his turn
      * @param player
      */
-    public void collectSeeds(Player player ,int currentIndex){
+    public void collectSeeds(Player player , int currentIndex){
         while (this.cells[currentIndex] == 2 || this.cells[currentIndex] == 3 ) {
             int gains = this.cells[currentIndex] ;
 
@@ -98,6 +101,7 @@ public class Game {
             currentIndex = precedentPosition(currentIndex, this.nbCells);
         }
         this.currentPosition = new Position(this.computer,this.player,this.cells);
+        player.setCurrentPosition(currentPosition);
         System.out.println(">>> Case N° " + ( currentIndex + 1 )+" contient " + this.cells[currentIndex] + " graines. Pas de récolte. \n");
     }
 
@@ -299,7 +303,7 @@ public class Game {
 
     public void checkValidate( int choice ) {
         if( this.cells[choice] == 0) {
-            System.out.println(Colors.RED+ "WRONG MOVE : YOU CHOOSE AN EMPTY CELL ! GAME OVER ! "+Colors.RESET);
+            System.out.println(Colors.RED+ "WRONG MOVE : YOU CHOOSE AN EMPTY CELL ! GAME OVER ! "+ Colors.RESET);
             throw new WrongMoveException("A cell with zero seeds was chosen !") ;
         }
 

@@ -1,6 +1,8 @@
+package Exceptions;
+
 public class WrongMoveException extends RuntimeException{
 
-    WrongMoveException(String exception){
+    public WrongMoveException(String exception){
         super(exception);
     }
 }

@@ -1,5 +1,7 @@
 package Intelligence;
 
+import core.Position;
+
 import java.util.Random;
 
 public abstract class Intelligence {
@@ -19,6 +21,8 @@ public abstract class Intelligence {
      * @return Choix de l'intelligence
      */
     public abstract int chooseCell(int [] cells);
+
+    public abstract void setCurrentPosition(Position position);
 
     public abstract String toString();
 

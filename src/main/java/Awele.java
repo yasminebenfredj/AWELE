@@ -1,11 +1,12 @@
+/*
 public class Awele {
 
-/*
 
-    public int minMaxValue(Position posCurrent, boolean computerPlay, int depth,int depthMax){
+
+    public int minMaxValue(core.Position posCurrent, boolean computerPlay, int depth,int depthMax){
         // computerPlay is true if the computer has to play and false otherwise
         int[] tabValues = new int[12] ;
-        Position posNext = null ; // In C : created on the stack: = very fast
+        core.Position posNext = null ; // In C : created on the stack: = very fast
         if (finalPosition(posCurrent, computerPlay, depth)){
             // WRITE the code: returns VALUEMAX (=96) if the computer wins, -96 if it loses; 0 if draw
             int nbSeedsPlayer = posCurrent.getPlayer().getSeeds(); // The player's number of taken seeds
@@ -64,11 +65,11 @@ public class Awele {
      * @return -96 if the player wins , 96 if the computer wins , 0 if it's a draw
      */
 /*
-    public boolean finalPosition(Position position , boolean computerPlay , int depth) { // player plays first , then the playerComputer
+    public boolean finalPosition(core.Position position , boolean computerPlay , int depth) { // player plays first , then the playerComputer
         boolean response = true;
-        Player player =position.getPlayer();
+        core.Player player =position.getPlayer();
         if (computerPlay){
-            // not final Position because the last one to play is always playerComputer
+            // not final core.Position because the last one to play is always playerComputer
             player = position.getPlayerComputer();
 
         }
@@ -82,7 +83,7 @@ public class Awele {
 
         return false;
     }
-
+*/
     /**
      *
      * @param position
@@ -91,7 +92,7 @@ public class Awele {
      * @return
      */
 /*
-    public int evaluation(Position position,  boolean computerPlay , int depth) { // TODO à améliorer
+    public int evaluation(core.Position position,  boolean computerPlay , int depth) { // TODO à améliorer
         // the simplest evaluation function is the difference of the taken seeds
         int nbSeedsPlayer = position.getPlayer().getSeeds(); // The player's number of taken seeds
         int nbSeedsPlayerComputer = position.getPlayerComputer().getSeeds(); // The computer's number of taken seeds
@@ -101,7 +102,7 @@ public class Awele {
         return seedsDifference;
     }
 
-
+*/
 
 
 
@@ -113,14 +114,16 @@ public class Awele {
      * @return true si le joueur peut gagner des graine avec ce mouvement
      */
 /*
-    public boolean validMove(Position position,  boolean computerPlay , int movement)
+    public boolean validMove(core.Position position,  boolean computerPlay , int movement)
     {
         return false ;
     }
 
-    public void playMove(Position position,  boolean computerPlay , int movement )
+    public void playMove(core.Position position,  boolean computerPlay , int movement )
     {
 
     }
-    */
+
 }
+
+*/

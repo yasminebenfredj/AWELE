@@ -1,3 +1,5 @@
+package core;
+
 import Intelligence.*;
 
 public class Player {
@@ -63,13 +65,16 @@ public class Player {
         }
     }
 
+    public void setCurrentPosition(Position position){
+        this.intelligence.setCurrentPosition(position);
+    }
 
     private void initIntelligence() {
         if(isComputer) {
             this.intelligence = new RandomStrategy(nbCells, indexes);
         }
         else {
-            this.intelligence = new PlayerStrategy(nbCells, indexes);
+            this.intelligence = new RandomStrategy(nbCells, indexes);
         }
     }
 

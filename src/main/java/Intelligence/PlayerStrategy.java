@@ -1,5 +1,7 @@
 package Intelligence;
 
+import core.Position;
+
 import java.util.Scanner;
 
 /**
@@ -18,6 +20,11 @@ public class PlayerStrategy extends Intelligence {
         Scanner scanne = new Scanner(System. in );
         int cell = scanne.nextInt();
         return cell-1 ;
+    }
+
+    @Override
+    public void setCurrentPosition(Position position) {
+
     }
 
     public void printCells() {

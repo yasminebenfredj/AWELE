@@ -1,6 +1,8 @@
 package Intelligence;
 
 
+import core.Position;
+
 /**
  * Cette classe est la stratégie Random
  */
@@ -21,6 +23,11 @@ public class RandomStrategy extends Intelligence {
         }
 
         return resp ;
+    }
+
+    @Override
+    public void setCurrentPosition(Position position) {
+
     }
 
     private boolean possible(int  index , int[] cells) {
