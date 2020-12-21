@@ -70,13 +70,14 @@ public class Game {
 
         System.out.println("Ramasse "+ nbSeedsIn +" graines de la case N° : " + (choice + 1) + " .");
 
-        int position = nextPosition(choice, this.nbCells) ;
+        int initialPosition = choice;
+        int position = nextPosition(choice, this.nbCells,this.nbCells*2+1) ;//this.nbCells*2+1 :n'importe quel nombre  > nbCells*2 marche
         for (int i = 1  ; i <= nbSeedsIn ; i++ ) {
 
             this.cells[position] += 1 ;
             System.out.println("Ajoute 1 graine à la Case  N° : " + (position + 1) + " .");
             choice = position;
-            position = nextPosition(position, this.nbCells);
+            position = nextPosition(position, this.nbCells,initialPosition);
 
         }
         collectSeeds(player , choice); //on collecte les graines à partir de la dernière case semer (qui est choice)
@@ -162,22 +163,10 @@ public class Game {
      * @param currentPosition
      * @return
      */
-    public static int nextPosition(int currentPosition, int nbCells) {
-        /*
-        if (currentPosition < nbCells && currentPosition > 0 ) {
-            return currentPosition - 1 ;
+    public static int nextPosition(int currentPosition, int nbCells,int initialPosition) {
+        if (currentPosition + 1 == initialPosition){
+            return (currentPosition + 2 ) % (nbCells * 2);
         }
-        else if (currentPosition >= nbCells && currentPosition < (nbCells * 2) - 1 ) {
-            return currentPosition + 1 ;
-        }
-        else if (currentPosition == 0 ) {
-            return nbCells;
-        }
-        else {
-            return nbCells - 1 ;
-        }
-
-         */
         return (currentPosition +1 )% (nbCells * 2);
     }
 
