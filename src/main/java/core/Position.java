@@ -5,14 +5,19 @@ public class Position {
     private Player player;
     private Player computer;
     private int[] cells;
+    private Game game;
 
-    Position(Player computer , Player player , int[] cells){
+    Position(Game game, Player computer , Player player , int[] cells){
+        this.game = game;
         this.computer = computer;
         this.player = player;
         this.cells = cells;
     }
 
 
+    public boolean isFinalPosition(){
+        return this.game.endOfGame();
+    }
     // Getters ...
     public Player getPlayer() {
         return this.player;

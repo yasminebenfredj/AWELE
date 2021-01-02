@@ -25,7 +25,10 @@ public class Game {
         this.nbSeeds = nbSeeds;
         this.computer = new Player(1,nbCells,0,true);
         this.player =  new Player(2,nbCells,0,false);
-        this.currentPosition = new Position(this.computer,this.player,this.cells);
+        this.currentPosition = new Position(this, this.computer,this.player,this.cells);
+        computer.setCurrentPosition(this.currentPosition);
+        player.setCurrentPosition(this.currentPosition);
+
         this.nbSeedsInGame = this.nbSeeds * this.nbCells * 2;
         this.totalNbSeed = this.nbSeeds * this.nbCells * 2 ;
         cellsGeneration();
@@ -100,7 +103,7 @@ public class Game {
             this.cells[currentIndex] = 0; // la case devient vide
             currentIndex = precedentPosition(currentIndex, this.nbCells);
         }
-        this.currentPosition = new Position(this.computer,this.player,this.cells);
+        this.currentPosition = new Position(this, this.computer,this.player,this.cells);
         player.setCurrentPosition(currentPosition);
         System.out.println(">>> Case N° " + ( currentIndex + 1 )+" contient " + this.cells[currentIndex] + " graines. Pas de récolte. \n");
     }
@@ -200,7 +203,7 @@ public class Game {
      *
      * @return
      */
-    private boolean endOfGame() {
+    public boolean endOfGame() {
         boolean currentSeedsInCells = this.nbSeedsInGame < 8 ;
         boolean seedsInComputerCells = this.seedsInComputerCells() == 0 ;
         boolean seedsInPlayerCells = this.seedsInPlayerCells() == 0 ;
