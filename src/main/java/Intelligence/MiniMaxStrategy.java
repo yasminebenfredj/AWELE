@@ -45,7 +45,6 @@ public class MiniMaxStrategy extends Intelligence{
     }
 
     private int[] simulateTurn(int choice,int[] cells){
-        //System.out.println("Simulate Turn ");
         int nbSeedsIn = cells[choice]; // nombre de graines dans la case choisi
         cells[choice] = 0 ; // on prend tous les graines de la case choisi pour jouer un tour
 
@@ -80,14 +79,10 @@ public class MiniMaxStrategy extends Intelligence{
         return nbSeedsComputer - nbSeedsPlayer;
     }
 
-    private int miniMax(Position position,int depth,boolean maximizingPlayer){
+    private int miniMax(Position position,int depth,boolean maximizingPlayer) {
         if (depth == 0 || position.isFinalPosition()){
-            System.out.println("Iff : " + Arrays.toString(position.getCells()));
             if (position.isFinalPosition()){
-                System.out.println("ba");
                 int seedsDifference = position.getPlayerComputer().getSeeds() - position.getPlayer().getSeeds();
-                System.out.println("Seeds diff : " + seedsDifference);
-                //System.exit(0);
                 if (seedsDifference > 0){//computer wins
                     return position.getGame().getNbCells() * 2 *  position.getGame().getNbSeeds();//96
                 }
@@ -99,7 +94,6 @@ public class MiniMaxStrategy extends Intelligence{
                 }
             }
             else {//depth is zero
-                System.out.println("Évaluation : " + evaluation(position));
                 return evaluation(position); //@TODO update currentPosition when needed in the coming code
             }
         }
@@ -110,8 +104,8 @@ public class MiniMaxStrategy extends Intelligence{
             for (int i = 0; i < super.getIndexes().length; i++) {
                 if (position.getCells()[super.getIndexes()[i]] != 0){ // >0
                     int[] newCells = simulateTurn(super.getIndexes()[i],position.getCells().clone());
-                    //Position newPos = new Position(position.getGame(),position.getPlayerComputer(), position.getPlayer(),newCells);
-                    position = new Position(position.getGame(),position.getPlayerComputer(), position.getPlayer(),newCells);
+                    //position = new Position(position.getGame(),position.getPlayerComputer(), position.getPlayer(),newCells);
+                    position.setCells(newCells);
                     double newScore = miniMax(position,depth - 1,false);
                     if (newScore > value){
                         value = newScore;
@@ -120,7 +114,6 @@ public class MiniMaxStrategy extends Intelligence{
                 }
             }
             return index;
-            //return (int) value;
         }
         else {
             double value = Double.POSITIVE_INFINITY;
@@ -129,7 +122,8 @@ public class MiniMaxStrategy extends Intelligence{
             for (int i = 0; i < super.getIndexes().length; i++) {
                 if (position.getCells()[super.getIndexes()[i]] != 0){ // >0
                     int[] newCells = simulateTurn(super.getIndexes()[i],position.getCells().clone());
-                    position = new Position(position.getGame(),position.getPlayerComputer(), position.getPlayer(),newCells);
+                    //position = new Position(position.getGame(),position.getPlayerComputer(), position.getPlayer(),newCells);
+                    position.setCells(newCells);
                     double newScore = miniMax(position,depth - 1,true);
                     if (newScore < value){
                         value = newScore;
@@ -138,12 +132,10 @@ public class MiniMaxStrategy extends Intelligence{
                 }
             }
             return index;
-            //return (int) value;
         }
     }
     @Override
-    public int chooseCell(int[] cells) {
-        //@TODO
+    public int chooseCell(int[] cells) {//@TODO
         return miniMax(currentPosition , 4,true);
     }
 

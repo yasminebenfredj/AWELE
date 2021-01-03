@@ -34,4 +34,8 @@ public class Position {
     public int[] getCells() {
         return cells;
     }
+
+    public void setCells(int[] cells) {
+        this.cells = cells;
+    }
 }

@@ -89,6 +89,11 @@ public class Player {
         intelligence.setNbCells(newNbCells);
 
     }
+
+    public int[] getIndexes() {
+        return indexes;
+    }
+
     @Override
     public String toString(){
         return intelligence.toString();
