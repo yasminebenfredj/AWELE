@@ -25,13 +25,13 @@ public class Game {
         this.nbSeeds = nbSeeds;
         this.computer = new Player(1,nbCells,0,true);
         this.player =  new Player(2,nbCells,0,false);
-        this.currentPosition = new Position(this, this.computer,this.player,this.cells);
-        computer.setCurrentPosition(this.currentPosition);
-        player.setCurrentPosition(this.currentPosition);
-
         this.nbSeedsInGame = this.nbSeeds * this.nbCells * 2;
         this.totalNbSeed = this.nbSeeds * this.nbCells * 2 ;
         cellsGeneration();
+
+        this.currentPosition = new Position(this, this.computer,this.player,this.cells);
+        computer.setCurrentPosition(this.currentPosition);
+        player.setCurrentPosition(this.currentPosition);
     }
 
 
@@ -310,6 +310,14 @@ public class Game {
             throw new WrongMoveException("A cell with zero seeds was chosen !") ;
         }
 
+    }
+
+    public int getNbCells() {
+        return nbCells;
+    }
+
+    public int getNbSeeds() {
+        return nbSeeds;
     }
 
 }
