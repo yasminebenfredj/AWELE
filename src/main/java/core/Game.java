@@ -16,7 +16,32 @@ public class Game {
 
     public static void main(String[] args) {
         Game game = new Game(12,4);
-        game.play();
+        int computerWins = 0;
+        int playerWins = 0;
+        int draw = 0;
+        boolean statMode = false;
+        if (statMode){
+            for (int i = 0; i < 100; i++) {
+                game.play();
+                int seedsDifference = game.computer.getSeeds() - game.player.getSeeds();
+                if (seedsDifference > 0){
+                    computerWins ++;
+                }
+                else if (seedsDifference < 0){
+                    playerWins ++;
+                }
+                else {
+                    draw ++;
+                }
+                game = new Game(12,4);
+            }
+            System.out.println("Computer winrate : " + computerWins);
+            System.out.println("Player winrate : " + playerWins);
+            System.out.println("Draw rate : " + draw);
+        }
+        else {
+            game.play();
+        }
     }
 
     Game(int nbCells , int nbSeeds){
