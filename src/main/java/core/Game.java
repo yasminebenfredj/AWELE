@@ -55,10 +55,23 @@ public class Game {
 
             printTable();
             System.out.println("\n      *** Joueur " + player.getPlayerNumber() + " -" + player.toString()  + "-*** ");
-            playTurn(player);
+
+            if (!(this.seedsPlayerCells(this.player) == 0)){//si le joueur a encore des graines dans ces cases après le tour de l'autre joueur = il peut jouer,sinon il est affamé
+                playTurn(player);
+            }
+            else {
+                System.out.println("Le joueur " + player.getPlayerNumber() + " -" + player.toString() + "- ne peut pas jouer car il a été affamé par l'adversaire");
+            }
 
             printScore();
             i++;
+        }
+
+        if (this.seedsPlayerCells(this.computer) == 0){//si on affame l'adversaire on gagne tous les pions du plateau.
+            this.player.addSeeds(this.nbSeedsInGame);
+        }
+        else if (this.seedsPlayerCells(this.player) == 0){//si on affame l'adversaire on gagne tous les pions du plateau.
+            this.computer.addSeeds(this.nbSeedsInGame);
         }
         //End of the game we print the winner and the final score
         this.getWinner();
@@ -136,29 +149,14 @@ public class Game {
     }
 
     /**
-     * This method computes the number of seeds in the cells belonging to the computer
-     * @return the number of seeds in the cells belonging to the computer
-     */
-    private int seedsInComputerCells() {
-        int seedsInPlayerCells = 0 ;
-        for (int i = 0; i < this.nbCells*2; i++) {
-            if (i%2 == 0){
-                seedsInPlayerCells ++ ;
-            }
-        }
-        return seedsInPlayerCells ;
-    }
-
-    /**
-     * This method computes the number of seeds in the cells belonging to the player
+     * This method computes the number of seeds in the cells belonging to a given player
+     * @param player the given player
      * @return the number of seeds in the cells belonging to the player
      */
-    private int seedsInPlayerCells() {
+    private int seedsPlayerCells(Player player) {
         int seedsInPlayerCells = 0 ;
-        for (int i = 0; i < this.nbCells * 2; i++) {
-            if(i%2 != 0){
-                seedsInPlayerCells ++ ;
-            }
+        for (int i = 0; i < player.getIndexes().length; i++) {
+                seedsInPlayerCells += this.cells[player.getIndexes()[i]] ;
         }
         return seedsInPlayerCells ;
     }
@@ -205,8 +203,8 @@ public class Game {
      */
     public boolean endOfGame() {
         boolean currentSeedsInCells = this.nbSeedsInGame < 8 ;
-        boolean seedsInComputerCells = this.seedsInComputerCells() == 0 ;
-        boolean seedsInPlayerCells = this.seedsInPlayerCells() == 0 ;
+        boolean seedsInComputerCells = this.seedsPlayerCells(this.computer) == 0 ;
+        boolean seedsInPlayerCells = this.seedsPlayerCells(this.player) == 0 ;
         return currentSeedsInCells || seedsInComputerCells || seedsInPlayerCells ;
     }
 
@@ -244,11 +242,11 @@ public class Game {
         if (this.nbSeedsInGame < 8){
             return " Le nombre de graines actuelles dans les cellules est inférieurs à 8 ";
         }
-        else if (this.seedsInComputerCells() == 0){
-            return " Le nombre de graines des cases correspondant au joueur " + computer.toString() + computer.getPlayerNumber() + " est nulle " ;
+        else if (this.seedsPlayerCells(this.computer) == 0){
+            return " Le nombre de graines des cases correspondant au joueur " + computer.toString() + computer.getPlayerNumber() + "\n est nulle.Il a été affamé. " ;
         }
-        else { // this.seedsInPlayerCells() == 0
-            return " Le nombre de graines des cases correspondant au joueur " + player.toString() + player.getPlayerNumber() + " est nulle " ;
+        else { // this.seedsPlayerCells(this.player) == 0
+            return " Le nombre de graines des cases correspondant au joueur " + player.toString() + player.getPlayerNumber() + "\n est nulle.Il a été affamé. " ;
         }
     }
 
@@ -310,6 +308,10 @@ public class Game {
             throw new WrongMoveException("A cell with zero seeds was chosen !") ;
         }
 
+    }
+
+    public int[] getCells() {
+        return cells;
     }
 
     public int getNbCells() {
