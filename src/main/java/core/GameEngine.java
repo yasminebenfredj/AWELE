@@ -137,7 +137,7 @@ public class GameEngine {
     }
 
     /**
-     * This method generates the cells and put nbSeeds in each cell
+     * Cette méthode initialise les cases et met nbSeeds graines dans chaque case
      */
     private  void cellsGeneration() {
         this.cells = new int[this.nbCells * 2] ;
@@ -148,8 +148,9 @@ public class GameEngine {
 
     /**
      * This method computes the number of seeds in the cells belonging to a given player
-     * @param player the given player
-     * @return the number of seeds in the cells belonging to the player
+     * Cette méthode calcule le nombre de graines dans les cases d'un joueur
+     * @param player un joueur
+     * @return le nombre de graines dans les cases du joueur
      */
     private int seedsPlayerCells(Player player) {
         int seedsInPlayerCells = 0 ;
@@ -258,7 +259,7 @@ public class GameEngine {
     }
 
     /**
-     * This method prints all the cells with the number of their seeds
+     * Cette méhode print tous les cases avec le nombre de graines qu'elles contiennent
      */
     private  void printTable() {
         String barre = "________________________________";
@@ -296,7 +297,7 @@ public class GameEngine {
     }
 
     /**
-     * This method prints the current score after each
+     * Cette méthode print le score actuelle
      */
     public  void  printScore() {
         System.out.println(Colors.RED +"________________________________");
@@ -314,10 +315,14 @@ public class GameEngine {
      */
     public void checkValidate( int choice ) {
         if( this.cells[choice] == 0) {
-            System.out.println(Colors.RED+ "WRONG MOVE : YOU CHOOSE AN EMPTY CELL ! GAME OVER ! "+ Colors.RESET);
-            throw new WrongMoveException("A cell with zero seeds was chosen !") ;
+            System.out.println(Colors.RED+ "FAUX PAS : UNE CASE VIDE A ÉTÉ CHOISI ! JEU TERMINÉ ! "+ Colors.RESET);
+            throw new WrongMoveException("Une case qui ne contient pas de graines a été choisi !") ;
         }
 
+    }
+
+    public boolean isMerged() {
+        return isMerged;
     }
 
     public int[] getCells() {
