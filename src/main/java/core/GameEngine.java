@@ -5,46 +5,18 @@ import utility.Colors;
 
 public class Game {
     int nbCells;
-    final int nbSeeds;  // Number of Seeds per Cell
-    final Player player ;
-    final Player computer ;
+    final int nbSeeds;
+    public final Player player ;
+    public final Player computer ;
     private int[] cells ;
-    private int nbSeedsInGame; // Number of Seeds still in game(not collected yet)
-    private final int totalNbSeed ; // Constant that represents the initial number of seeds
+    private int nbSeedsInGame;
+    private final int totalNbSeed ;
     private boolean isMerged ;
     private Position currentPosition ;
 
-    public static void main(String[] args) {
-        Game game = new Game(12,4);
-        int computerWins = 0;
-        int playerWins = 0;
-        int draw = 0;
-        boolean statMode = false;
-        if (statMode){
-            for (int i = 0; i < 100; i++) {
-                game.play();
-                int seedsDifference = game.computer.getSeeds() - game.player.getSeeds();
-                if (seedsDifference > 0){
-                    computerWins ++;
-                }
-                else if (seedsDifference < 0){
-                    playerWins ++;
-                }
-                else {
-                    draw ++;
-                }
-                game = new Game(12,4);
-            }
-            System.out.println("Computer winrate : " + computerWins);
-            System.out.println("Player winrate : " + playerWins);
-            System.out.println("Draw rate : " + draw);
-        }
-        else {
-            game.play();
-        }
-    }
 
-    Game(int nbCells , int nbSeeds){
+
+    public Game( int nbCells , int nbSeeds){
         this.isMerged = false ;
         this.nbCells = nbCells;
         this.nbSeeds = nbSeeds;
@@ -59,13 +31,20 @@ public class Game {
         player.setCurrentPosition(this.currentPosition);
     }
 
-
+    /**
+     * Cette methode permet de lancer une partie du jeu AWELE :
+     * 1) le jeu va tourner jusqu'a ce qu'un des joueur gagne la partie
+     * 2) les tableau mergent lorsque le nombre de graine restant en jeu se divise par 2 ,
+     * on passe alors à 6 cases par joueur au lieu de 12.
+     *
+     * 3) si un joueur est affamé le jeu s'arrete et l'autre joueur collecte les graine en jeu
+     */
     public void play(){
         System.out.print("\n<<< ***** >>>  Debut du jeu  <<< ***** >>>\n");
         int i = 1;
 
 
-        while ( !this.endOfGame() ) {
+        while (!this.endOfGame() ) {
             System.out.println("\n <<<<< Tour N°  "+ i +" >>>>> ");
 
             if (!isMerged && this.nbSeedsInGame <= this.totalNbSeed/2) {
@@ -76,17 +55,21 @@ public class Game {
 
             printTable();
             System.out.println("\n      *** Joueur " + computer.getPlayerNumber() + " -" + computer.toString()  + "-*** ");
-            playTurn(computer);
-
+            if (!this.endOfGame()){
+                playTurn(computer);
+            }
+            else {
+                break;
+            }
             printTable();
             System.out.println("\n      *** Joueur " + player.getPlayerNumber() + " -" + player.toString()  + "-*** ");
-
-            if (!(this.seedsPlayerCells(this.player) == 0)){//si le joueur a encore des graines dans ces cases après le tour de l'autre joueur = il peut jouer,sinon il est affamé
+            if (!this.endOfGame()){
                 playTurn(player);
             }
             else {
-                System.out.println("Le joueur " + player.getPlayerNumber() + " -" + player.toString() + "- ne peut pas jouer car il a été affamé par l'adversaire");
+                break;
             }
+
 
             printScore();
             i++;
@@ -94,17 +77,23 @@ public class Game {
 
         if (this.seedsPlayerCells(this.computer) == 0){//si on affame l'adversaire on gagne tous les pions du plateau.
             this.player.addSeeds(this.nbSeedsInGame);
-        }
+    }
         else if (this.seedsPlayerCells(this.player) == 0){//si on affame l'adversaire on gagne tous les pions du plateau.
             this.computer.addSeeds(this.nbSeedsInGame);
         }
-        //End of the game we print the winner and the final score
         this.getWinner();
+    }
+    private void finalAction() {
+
     }
 
     /**
-     * This methods plays a turn for a player
-     * @param player a player
+     * Cette methode permet au joueur de jouer son tour :
+     * 1) recupere l'indice de la cellule que le joueur va joueur
+     * 2) récupere les graine dans cette meme cellule
+     * 3) distribue les graine dans les cellules suivante
+     * 4) lui permet de collecter les graine qu'il a gagner
+     * @param player le joueur qui joue le tour
      */
     public void playTurn (Player player) {
         int choice = player.chooseCell(this.cells);  // indice de la case choisi
@@ -128,17 +117,18 @@ public class Game {
     }
 
     /**
-     * This method collects the seeds for a player after he plays his turn
-     * @param player
+     * Cette methode permet de collecter les graine dans les cases precedant le dernier mouvement d'un joueur
+     * il ne collecte que les cases qui contienent 2 ou 3 graines.
+     * @param player le joueur qui vient de distribuer ses graines, et le meme qui va en collecter
      */
     public void collectSeeds(Player player , int currentIndex){
         while (this.cells[currentIndex] == 2 || this.cells[currentIndex] == 3 ) {
             int gains = this.cells[currentIndex] ;
 
             System.out.println(">> Récolte " + gains + " graines de la case N° " + (currentIndex + 1));
-            player.addSeeds(gains); //on ajoute les graines récoltées au graines du joueur
-            this.nbSeedsInGame -= gains; // on soustrait de la somme des graines présente dans le jeu
-            this.cells[currentIndex] = 0; // la case devient vide
+            player.addSeeds(gains);
+            this.nbSeedsInGame -= gains;
+            this.cells[currentIndex] = 0;
             currentIndex = precedentPosition(currentIndex, this.nbCells);
         }
         this.currentPosition = new Position(this, this.computer,this.player,this.cells);
@@ -209,11 +199,8 @@ public class Game {
      */
     public static int precedentPosition(int currentPosition, int nbCells) {
         int previousPosition = (currentPosition - 1 )% (nbCells * 2) ;
-        if (previousPosition < 0 && nbCells==12) {
-            previousPosition+=24;
-        }
-        if (previousPosition < 0 && nbCells==6) {
-            previousPosition+=12;
+        if (previousPosition < 0 ) {
+            previousPosition += nbCells*2;
         }
         return previousPosition;
     }
@@ -262,6 +249,10 @@ public class Game {
         System.out.println(Colors.RESET);
     }
 
+    /**
+     * Cette methode eprmet d'afficher la raison de la fin de la partie
+     * @return
+     */
     private String printEndGameReason(){
         System.out.print(" Raison de fin du jeu : ");
         if (this.nbSeedsInGame < 8){
@@ -270,9 +261,10 @@ public class Game {
         else if (this.seedsPlayerCells(this.computer) == 0){
             return " Le nombre de graines des cases correspondant au joueur " + computer.toString() + computer.getPlayerNumber() + "\n est nulle.Il a été affamé. " ;
         }
-        else { // this.seedsPlayerCells(this.player) == 0
+        else if (this.seedsPlayerCells(this.player) == 0) {
             return " Le nombre de graines des cases correspondant au joueur " + player.toString() + player.getPlayerNumber() + "\n est nulle.Il a été affamé. " ;
         }
+        return null;
     }
 
     /**
@@ -326,7 +318,10 @@ public class Game {
 
     }
 
-
+    /**
+     * Cette methode va verifier qu'il y a des graine dans la cellule que le joueur souhaite jouer
+     * @param choice l'indice d ela cellule choisi
+     */
     public void checkValidate( int choice ) {
         if( this.cells[choice] == 0) {
             System.out.println(Colors.RED+ "WRONG MOVE : YOU CHOOSE AN EMPTY CELL ! GAME OVER ! "+ Colors.RESET);

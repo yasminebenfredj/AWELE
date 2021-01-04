@@ -5,9 +5,9 @@ public class Position {
     private Player player;
     private Player computer;
     private int[] cells;
-    private Game game;
+    private GameEngine game;
 
-    public Position(Game game, Player computer , Player player , int[] cells){
+    public Position(GameEngine game, Player computer , Player player , int[] cells){
         this.game = game;
         this.computer = computer;
         this.player = player;
@@ -27,7 +27,7 @@ public class Position {
         return this.computer;
     }
 
-    public Game getGame() {
+    public GameEngine getGame() {
         return game;
     }
 

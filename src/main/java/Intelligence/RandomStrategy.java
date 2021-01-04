@@ -17,7 +17,7 @@ public class RandomStrategy extends Intelligence {
         int index  =  super.getRandom().nextInt(super.getNbCells());
         int resp =  super.getIndexes()[index];
 
-        while( !possible(resp, cells)) {
+        while(!super.possible(resp, cells)) {
             index  =  super.getRandom().nextInt(super.getNbCells());
             resp =  super.getIndexes()[index];
         }
@@ -27,11 +27,6 @@ public class RandomStrategy extends Intelligence {
 
     @Override
     public void setCurrentPosition(Position position) {
-
-    }
-
-    private boolean possible(int  index , int[] cells) {
-        return cells[index] != 0;
 
     }
 

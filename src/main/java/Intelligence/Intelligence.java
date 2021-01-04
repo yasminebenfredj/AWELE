@@ -53,4 +53,9 @@ public abstract class Intelligence {
         this.nbCells = nbCells;
     }
 
+    public boolean possible(int  index , int[] cells) {
+        return cells[index] != 0;
+
+    }
+
 }

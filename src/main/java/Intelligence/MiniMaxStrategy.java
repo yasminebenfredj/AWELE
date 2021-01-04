@@ -1,10 +1,9 @@
 package Intelligence;
 
-import core.Game;
+import core.GameEngine;
 import core.Position;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class MiniMaxStrategy extends Intelligence{
     private Position currentPosition;
@@ -49,12 +48,12 @@ public class MiniMaxStrategy extends Intelligence{
         cells[choice] = 0 ; // on prend tous les graines de la case choisi pour jouer un tour
 
         int initialPosition = choice;
-        int position = Game.nextPosition(choice, super.getNbCells(),super.getNbCells()*2+1) ;//this.nbCells*2+1 :n'importe quel nombre  > nbCells*2 marche
+        int position = GameEngine.nextPosition(choice, super.getNbCells(),super.getNbCells()*2+1) ;//this.nbCells*2+1 :n'importe quel nombre  > nbCells*2 marche
         for (int i = 1  ; i <= nbSeedsIn ; i++ ) {
 
             cells[position] += 1 ;
             choice = position;
-            position = Game.nextPosition(position, super.getNbCells(),initialPosition);
+            position = GameEngine.nextPosition(position, super.getNbCells(),initialPosition);
         }
         return this.simulateCollectSeeds(cells,choice); //on collecte les graines à partir de la dernière case semer (qui est choice)
     }
@@ -66,7 +65,7 @@ public class MiniMaxStrategy extends Intelligence{
             //@TODO player.addSeeds(gains); //on ajoute les graines récoltées au graines du joueur
             //this.nbSeedsInGame -= gains; // on soustrait de la somme des graines présente dans le jeu
             cells[currentIndex] = 0; // la case devient vide
-            currentIndex = Game.precedentPosition(currentIndex, super.getNbCells());
+            currentIndex = GameEngine.precedentPosition(currentIndex, super.getNbCells());
         }
         //this.currentPosition = new Position(this, this.computer,this.player,cells);
         //player.setCurrentPosition(currentPosition);
