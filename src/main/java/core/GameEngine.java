@@ -3,7 +3,7 @@ package core;
 import Exceptions.WrongMoveException;
 import utility.Colors;
 
-public class Game {
+public class GameEngine {
     int nbCells;
     final int nbSeeds;
     public final Player player ;
@@ -14,9 +14,7 @@ public class Game {
     private boolean isMerged ;
     private Position currentPosition ;
 
-
-
-    public Game( int nbCells , int nbSeeds){
+    public GameEngine(int nbCells , int nbSeeds){
         this.isMerged = false ;
         this.nbCells = nbCells;
         this.nbSeeds = nbSeeds;
@@ -55,36 +53,21 @@ public class Game {
 
             printTable();
             System.out.println("\n      *** Joueur " + computer.getPlayerNumber() + " -" + computer.toString()  + "-*** ");
-            if (!this.endOfGame()){
-                playTurn(computer);
-            }
-            else {
-                break;
-            }
+            playTurn(computer);
+
             printTable();
-            System.out.println("\n      *** Joueur " + player.getPlayerNumber() + " -" + player.toString()  + "-*** ");
             if (!this.endOfGame()){
+                System.out.println("\n      *** Joueur " + player.getPlayerNumber() + " -" + player.toString()  + "-*** ");
                 playTurn(player);
             }
             else {
                 break;
             }
 
-
             printScore();
             i++;
         }
-
-        if (this.seedsPlayerCells(this.computer) == 0){//si on affame l'adversaire on gagne tous les pions du plateau.
-            this.player.addSeeds(this.nbSeedsInGame);
-    }
-        else if (this.seedsPlayerCells(this.player) == 0){//si on affame l'adversaire on gagne tous les pions du plateau.
-            this.computer.addSeeds(this.nbSeedsInGame);
-        }
-        this.getWinner();
-    }
-    private void finalAction() {
-
+        finalAction();
     }
 
     /**
@@ -219,15 +202,42 @@ public class Game {
         boolean seedsInPlayerCells = this.seedsPlayerCells(this.player) == 0 ;
         return currentSeedsInCells || seedsInComputerCells || seedsInPlayerCells ;
     }
+    /**
+     * Cette methode permet de terminer la partie :
+     * 1) afficher la raison de la fin
+     * 2) afficher le score final
+     * 3 ) afficher le gagant
+     *
+     */
+    private void finalAction() {
+        System.out.println(Colors.BLUE);
+        System.out.println("********************************* FIN DU JEU ***********************************************");
 
+        String printEndGameReason = "Le nombre de graines actuelles en jeu est inférieurs à 8. ";
+        if (this.seedsPlayerCells(this.computer) == 0){
+            this.player.addSeeds(this.nbSeedsInGame);
+            this.nbSeedsInGame = 0;
+            printEndGameReason = "Le joueur" + computer.toString() + computer.getPlayerNumber() + " a été affamé. " ;
 
+        }
+        else if (this.seedsPlayerCells(this.player) == 0){
+            this.computer.addSeeds(this.nbSeedsInGame);
+            this.nbSeedsInGame = 0;
+            printEndGameReason = "Le joueur" + player.toString() + player.getPlayerNumber() + " a été affamé. " ;
+
+        }
+        System.out.println(">> " + printEndGameReason);
+
+        this.getWinner();
+        System.out.println(Colors.RESET);
+
+    }
     /**
      * Cette methode affiche le score et le joueur gagnant à la fin du jeu
      */
     private void getWinner() {
-        System.out.println(Colors.BLUE);
-
-        System.out.println("********************************* FIN DU JEU ***********************************************");
+        System.out.print(Colors.YELLOW);
+        System.out.println("********************************** GAGNANT ************************************************** ");
 
         int seedsDifference = computer.getSeeds() - player.getSeeds() ;
         if (seedsDifference > 0){
@@ -239,32 +249,12 @@ public class Game {
         else {
             System.out.println(" Égalité entre le joueur " + computer.toString() + " et le joueur " + player.toString()+"\n");
         }
-        System.out.println(this.printEndGameReason());
-
         System.out.println("******************************* SCORE FINAL ************************************************");
         System.out.println(" Joueur " + computer.getPlayerNumber() + " " + computer.toString() + " : " + computer.getSeeds());
         System.out.println(" Joueur " + player.getPlayerNumber() + " " +player.toString() + " : " + player.getSeeds());
         System.out.println("******************************************************************************************** ");
 
         System.out.println(Colors.RESET);
-    }
-
-    /**
-     * Cette methode eprmet d'afficher la raison de la fin de la partie
-     * @return
-     */
-    private String printEndGameReason(){
-        System.out.print(" Raison de fin du jeu : ");
-        if (this.nbSeedsInGame < 8){
-            return " Le nombre de graines actuelles dans les cellules est inférieurs à 8 ";
-        }
-        else if (this.seedsPlayerCells(this.computer) == 0){
-            return " Le nombre de graines des cases correspondant au joueur " + computer.toString() + computer.getPlayerNumber() + "\n est nulle.Il a été affamé. " ;
-        }
-        else if (this.seedsPlayerCells(this.player) == 0) {
-            return " Le nombre de graines des cases correspondant au joueur " + player.toString() + player.getPlayerNumber() + "\n est nulle.Il a été affamé. " ;
-        }
-        return null;
     }
 
     /**
