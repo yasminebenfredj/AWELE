@@ -6,12 +6,16 @@ public class Position {
     private Player computer;
     private int[] cells;
     private GameEngine game;
+    private int[] actions;
+    public int id  = 0;
+    public int depth= 1;
 
     public Position(GameEngine game, Player computer , Player player , int[] cells){
         this.game = game;
         this.computer = computer;
         this.player = player;
         this.cells = cells;
+        this.actions = new int[game.getNbCells()];
     }
 
 
@@ -23,7 +27,11 @@ public class Position {
         return this.player;
     }
 
-    public Player getPlayerComputer() {
+    public void setGame(GameEngine game) {
+        this.game = game;
+    }
+
+    public Player getComputer() {
         return this.computer;
     }
 
@@ -37,5 +45,16 @@ public class Position {
 
     public void setCells(int[] cells) {
         this.cells = cells;
+    }
+
+
+
+    @Override
+    public Position clone()
+    {
+        Position position =  new Position(this.game.clone(), this.computer.clone(), this.player.clone(), this.cells.clone());
+        position.depth = depth;
+        position.id = id;
+        return position;
     }
 }

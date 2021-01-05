@@ -19,6 +19,9 @@ public class Player {
         this.initIntelligence();
 
     }
+    public Player(){
+
+    }
 
     /**
      * Cette methode va permettre d'initialiser l'inteligence que va adapter le joueur:
@@ -30,7 +33,7 @@ public class Player {
      */
     private void initIntelligence() {
         if(isComputer) {
-            this.intelligence = new RandomStrategy(nbCells, indexes);
+            this.intelligence = new ComputerStrategy(nbCells, indexes);
         }
         else {
             this.intelligence = new RandomStrategy(nbCells, indexes);
@@ -113,6 +116,19 @@ public class Player {
     @Override
     public String toString(){
         return intelligence.toString();
+    }
+
+    @Override
+    public Player clone()
+    {
+        Player player = new Player();
+        player.playerNumber = this.playerNumber ;
+        player.seeds = this.seeds  ;
+        player.isComputer = this.isComputer ;
+        player.nbCells = this.nbCells ;
+        player.indexes = this.indexes;
+        player.intelligence = this.intelligence;
+        return player;
     }
 
 }

@@ -9,6 +9,7 @@ public abstract class Intelligence {
     private int[] indexes;
     private int nbCells;
     private Random random;
+    private Position currentPosition;
 
     public  Intelligence(int nbCellsPlayer, int[] indexes) {
         this.indexes = indexes;
@@ -22,7 +23,15 @@ public abstract class Intelligence {
      */
     public abstract int chooseCell(int [] cells);
 
-    public abstract void setCurrentPosition(Position position);
+    public void setCurrentPosition(Position position)
+    {
+        this.currentPosition = position;
+    }
+
+    public Position getCurrentPosition()
+    {
+        return currentPosition;
+    }
 
     public abstract String toString();
 

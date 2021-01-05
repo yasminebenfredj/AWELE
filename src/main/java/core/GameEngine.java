@@ -6,11 +6,11 @@ import utility.Colors;
 public class GameEngine {
     int nbCells;
     final int nbSeeds;
-    public final Player player ;
-    public final Player computer ;
+    public Player player ;
+    public Player computer ;
     private int[] cells ;
-    private int nbSeedsInGame;
-    private final int totalNbSeed ;
+    public int nbSeedsInGame;
+    public final int totalNbSeed ;
     private boolean isMerged ;
     private Position currentPosition ;
 
@@ -24,9 +24,13 @@ public class GameEngine {
         this.totalNbSeed = this.nbSeeds * this.nbCells * 2 ;
         cellsGeneration();
 
-        this.currentPosition = new Position(this, this.computer,this.player,this.cells);
-        computer.setCurrentPosition(this.currentPosition);
-        player.setCurrentPosition(this.currentPosition);
+    }
+    public GameEngine(int nbCells , int nbSeeds, boolean isMerged){
+        this.isMerged = isMerged;
+        this.nbCells = nbCells;
+        this.nbSeeds = nbSeeds;
+        this.totalNbSeed = this.nbSeeds * this.nbCells * 2 ;
+
     }
 
     /**
@@ -51,9 +55,17 @@ public class GameEngine {
                 isMerged = true ;
             }
 
+            this.currentPosition = new Position(this.clone(), computer.clone(),player.clone(), cells.clone());
+            computer.setCurrentPosition(this.currentPosition);
+            player.setCurrentPosition(this.currentPosition);
+
             printTable();
             System.out.println("\n      *** Joueur " + computer.getPlayerNumber() + " -" + computer.toString()  + "-*** ");
             playTurn(computer);
+
+            this.currentPosition.setGame(this);
+            computer.setCurrentPosition(this.currentPosition);
+            player.setCurrentPosition(this.currentPosition);
 
             printTable();
             if (!this.endOfGame()){
@@ -114,8 +126,6 @@ public class GameEngine {
             this.cells[currentIndex] = 0;
             currentIndex = precedentPosition(currentIndex, this.nbCells);
         }
-        this.currentPosition = new Position(this, this.computer,this.player,this.cells);
-        player.setCurrentPosition(currentPosition);
         System.out.println(">>> Case N° " + ( currentIndex + 1 )+" contient " + this.cells[currentIndex] + " graines. Pas de récolte. \n");
     }
 
@@ -329,12 +339,28 @@ public class GameEngine {
         return cells;
     }
 
+    public void setCells(int[] cells) {
+        this.cells = cells;
+    }
+
     public int getNbCells() {
         return nbCells;
     }
 
     public int getNbSeeds() {
         return nbSeeds;
+    }
+
+    @Override
+    public GameEngine clone()
+    {
+        GameEngine gameEngine = new GameEngine(nbCells, nbSeeds, false);
+        gameEngine.player = player.clone();
+        gameEngine.computer = computer.clone();
+        gameEngine.nbSeedsInGame = nbSeedsInGame;
+        gameEngine.cells = this.cells.clone();
+        return gameEngine;
+
     }
 
 }

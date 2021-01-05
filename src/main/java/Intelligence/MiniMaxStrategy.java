@@ -34,7 +34,7 @@ public class MiniMaxStrategy extends Intelligence{
             if (cells[indexes[i]] !=0){//the cell is not empty
                 newCells = simulateTurn(indexes[i] , position.getCells().clone());
                 //position.getGame().playTurn(position.getPlayerComputer());
-                Position newPosition = new Position(position.getGame(),position.getPlayerComputer(),position.getPlayer(),newCells);//@TODO not sure
+                Position newPosition = new Position(position.getGame(),position.getComputer(),position.getPlayer(),newCells);//@TODO not sure
                 childPositions.add(newPosition);
                 cells = position.getCells().clone();//shallow copy
             }
@@ -73,7 +73,7 @@ public class MiniMaxStrategy extends Intelligence{
     }
 
     private int evaluation(Position position){//@TODO Améliorer
-        int nbSeedsComputer = position.getPlayerComputer().getSeeds();
+        int nbSeedsComputer = position.getComputer().getSeeds();
         int nbSeedsPlayer = position.getPlayer().getSeeds();
         return nbSeedsComputer - nbSeedsPlayer;
     }
@@ -81,7 +81,7 @@ public class MiniMaxStrategy extends Intelligence{
     private int miniMax(Position position,int depth,boolean maximizingPlayer) {
         if (depth == 0 || position.isFinalPosition()){
             if (position.isFinalPosition()){
-                int seedsDifference = position.getPlayerComputer().getSeeds() - position.getPlayer().getSeeds();
+                int seedsDifference = position.getComputer().getSeeds() - position.getPlayer().getSeeds();
                 if (seedsDifference > 0){//computer wins
                     return position.getGame().getNbCells() * 2 *  position.getGame().getNbSeeds();//96
                 }
