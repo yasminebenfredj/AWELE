@@ -33,10 +33,10 @@ public class Player {
      */
     private void initIntelligence() {
         if(isComputer) {
-            this.intelligence = new ComputerStrategy(nbCells, indexes);
+            this.intelligence = new MiniMaxStrategy(nbCells, indexes);
         }
         else {
-            this.intelligence = new RandomStrategy(nbCells, indexes);
+            this.intelligence = new ComputerStrategy(nbCells, indexes);
         }
     }
 

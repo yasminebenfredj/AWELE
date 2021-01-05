@@ -38,7 +38,11 @@ public class Main {
             System.out.println("Draw rate : " + draw);
         }
         else {
+            long startTime = System.currentTimeMillis();
             game.play();
+            long endTime = System.currentTimeMillis();
+            long timeElapsed = endTime - startTime;
+            System.out.println("Execution time : " + timeElapsed + "ms");
         }
     }
 }

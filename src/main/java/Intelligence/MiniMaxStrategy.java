@@ -7,9 +7,11 @@ import java.util.ArrayList;
 
 public class MiniMaxStrategy extends Intelligence{
     private Position currentPosition;
+    private boolean isMerged ;
 
     public MiniMaxStrategy(int nbCellsPlayer, int[] indexes) {
         super(nbCellsPlayer, indexes);
+        this.isMerged = false;
     }
 
     public int[] fullIndexes(Position position){//only indexes that are not empty
@@ -78,7 +80,29 @@ public class MiniMaxStrategy extends Intelligence{
         return nbSeedsComputer - nbSeedsPlayer;
     }
 
-    private int miniMax(Position position,int depth,boolean maximizingPlayer) {
+    private int evaluation2(Position position){//@TODO Améliorer
+        int nbSeedsComputer = position.getComputer().getSeeds();
+        int nbSeedsPlayer = position.getPlayer().getSeeds();
+        int seedsDifference = nbSeedsComputer - nbSeedsPlayer;
+        if (seedsDifference > 0){
+            return 1;
+        }
+        else if (seedsDifference < 0){
+            return -1;
+        }
+        else {
+            return 0;
+        }
+    }
+
+    private int miniMax(Position position,int depth,double alpha,double beta,boolean maximizingPlayer) {
+        if (position.getGame().isMerged() && !isMerged){//@TODO
+            System.out.println("Mergedddddddd");
+            position.setCells(position.getGame().getCells().clone());
+
+            isMerged = true;
+        }
+
         if (depth == 0 || position.isFinalPosition()){
             if (position.isFinalPosition()){
                 int seedsDifference = position.getComputer().getSeeds() - position.getPlayer().getSeeds();
@@ -101,14 +125,19 @@ public class MiniMaxStrategy extends Intelligence{
             int random  =  super.getRandom().nextInt(super.getNbCells());
             int index =  super.getIndexes()[random];
             for (int i = 0; i < super.getIndexes().length; i++) {
-                if (position.getCells()[super.getIndexes()[i]] != 0){ // >0
+                //if (position.getCells()[super.getIndexes()[i]] != 0){ // >0
+                if (position.getGame().getCells()[super.getIndexes()[i]] != 0){ // >0
                     int[] newCells = simulateTurn(super.getIndexes()[i],position.getCells().clone());
                     //position = new Position(position.getGame(),position.getPlayerComputer(), position.getPlayer(),newCells);
                     position.setCells(newCells);
-                    double newScore = miniMax(position,depth - 1,false);
+                    double newScore = miniMax(position,depth - 1,alpha,beta,false);
                     if (newScore > value){
                         value = newScore;
                         index = super.getIndexes()[i];
+                    }
+                    alpha = Math.max(alpha , value);//pruning
+                    if (alpha >= beta){
+                        break;
                     }
                 }
             }
@@ -119,14 +148,19 @@ public class MiniMaxStrategy extends Intelligence{
             int random  =  super.getRandom().nextInt(super.getNbCells());
             int index =  super.getIndexes()[random];
             for (int i = 0; i < super.getIndexes().length; i++) {
-                if (position.getCells()[super.getIndexes()[i]] != 0){ // >0
+                //if (position.getCells()[super.getIndexes()[i]] != 0){ // >0
+                if (position.getGame().getCells()[super.getIndexes()[i]] != 0){ // >0
                     int[] newCells = simulateTurn(super.getIndexes()[i],position.getCells().clone());
                     //position = new Position(position.getGame(),position.getPlayerComputer(), position.getPlayer(),newCells);
                     position.setCells(newCells);
-                    double newScore = miniMax(position,depth - 1,true);
+                    double newScore = miniMax(position,depth - 1,alpha,beta,true);
                     if (newScore < value){
                         value = newScore;
                         index = super.getIndexes()[i];
+                    }
+                    beta = Math.min(beta , value);
+                    if (alpha >= beta){
+                        break;
                     }
                 }
             }
@@ -134,8 +168,9 @@ public class MiniMaxStrategy extends Intelligence{
         }
     }
     @Override
-    public int chooseCell(int[] cells) {//@TODO
-        return miniMax(currentPosition , 4,true);
+    public int chooseCell(int[] cells) {//@TODO depth 1 ça marche meme avec 1000 partie so ?
+        int miniMax = miniMax(currentPosition , 4,Double.NEGATIVE_INFINITY,Double.POSITIVE_INFINITY,true);
+        return miniMax;
     }
 
     @Override
