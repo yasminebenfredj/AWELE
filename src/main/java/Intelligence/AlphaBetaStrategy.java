@@ -8,6 +8,7 @@ import java.util.ArrayList;
 public class AlphaBetaStrategy extends Intelligence {
     private State currentState;
     private int maxDepth = 3;
+    private int initScore = 0;
 
     private int MAX = 10000;
     private int MIN = -10000;
@@ -19,63 +20,80 @@ public class AlphaBetaStrategy extends Intelligence {
     @Override
     public int chooseCell(State state) {
         this.currentState = state.clone();
-        return playAlphaBeta(0,MIN,MAX,true,this.currentState).choices;
+        initScore = state.getGame().computer.getSeeds();
+
+        int[] solution = playAlphaBeta(0,MIN,MAX,true,this.currentState);
+        System.out.println(solution[0] + " " + solution[1]);
+        return solution[0];
     }
 
 
-    private State playAlphaBeta(int depth,int alpha, int beta, boolean max,  State state) {
-
+    private int[] playAlphaBeta(int depth,int alpha, int beta, boolean max,  State state) {
+        int[] x = new int[2];
         //Si on attend la profondeur max on donne la differeance de score entre les 2 joueurs
         if (depth == this.maxDepth || state.getGame().endOfGame()) {
-            state.node =  state.getGame().computer.getSeeds() - state.getGame().player.getSeeds();
-            return state;
+
+            state.node =  state.getGame().computer.getSeeds() - initScore ;
+            x = new int[]{0, state.node};
+            return x;
         }
         State finalState = state;
 
         // Si on fait un Max
         if (max) {
-            int best = this.MAX;
+            int best = this.MIN;
             ArrayList<Integer> nodes = allPossibilities(super.getIndexes(),state.getGame().getCells());
+            System.out.println(nodes);
             for (int i = 0; i < nodes.size() ; i++) {
-                State newState = playAction(nodes.get(i),true,state.clone());
-                State value = playAlphaBeta(depth +1 ,alpha , beta ,false,newState);
+                System.out.println("Index jouer " + nodes.get(i));
 
-                if(best > value.node){
-                    best = value.node;
-                    finalState = value;
-                    finalState.choices = nodes.get(i);
+                State newState = playAction(nodes.get(i),true,state.clone());
+                int value = playAlphaBeta(depth +1 ,alpha , beta ,false,newState)[1];
+
+                if(best < value){
+                    best = value;
 
                 }
                 alpha = Math.max(alpha, best);
 
                 if(beta <= alpha) {
+                    System.out.println("break "+ beta +" <= "+ alpha);
                     break;
                 }
+                x = new int[]{nodes.get(i), best};
+
             }
 
-            return finalState;
+            return x ;
         }
         else
         {
-            int best = this.MIN;
+            int best = this.MAX;
             ArrayList<Integer> nodes = allPossibilities(super.getOtherIndexes(),state.getGame().getCells());
+            System.out.println(nodes);
 
             for (int i = 0; i < nodes.size() ; i++) {
+                System.out.println("Index jouer " + nodes.get(i));
                 State newState = playAction(nodes.get(i),false ,state.clone());
                 newState.choices = nodes.get(i);
-                State value = playAlphaBeta(depth +1 ,alpha , beta ,true, newState);
+                int value = playAlphaBeta(depth +1 ,alpha , beta ,true, newState)[1];
 
-                if (best < value.node)
+                if (best > value)
                 {
-                    best = value.node;
-                    finalState = value;
-                    finalState.choices = nodes.get(i);
+                    best = value;
                 }
                 beta = Math.min(beta, best);
 
-                if(beta <= alpha) break;
+                if(beta <= alpha)
+                {
+                    System.out.println("break "+ beta +" <= "+ alpha);
+
+                    break;
+                }
+                x = new int[]{nodes.get(i), best};
+
             }
-            return finalState;
+            return x;
         }
     }
 
@@ -105,8 +123,8 @@ public class AlphaBetaStrategy extends Intelligence {
 
     private State playAction(int coup, boolean isComp, State myState)
     {
-        //System.out.println(isComp + " false / player  : " + myState.getGame().player.getSeeds());
-        //System.out.println(isComp + " true / computer  : " + myState.getGame().computer.getSeeds());
+        System.out.println(isComp + " player  : " + myState.getGame().player.getSeeds() +
+                "  computer  : " + myState.getGame().computer.getSeeds());
 
         int[] cellules = myState.getGame().getCells().clone();
         int nbSeedsIn = cellules[coup];
@@ -138,8 +156,8 @@ public class AlphaBetaStrategy extends Intelligence {
             }
         }
         myState.getGame().setCells(cellules);
-        //System.out.println(isComp + " false / player  : " + myState.getGame().player.getSeeds());
-        //System.out.println(isComp + " true / computer  : " + myState.getGame().computer.getSeeds());
+        System.out.println(isComp + " player  : " + myState.getGame().player.getSeeds() +
+                "  computer  : " + myState.getGame().computer.getSeeds());
 
         return myState;
     }
