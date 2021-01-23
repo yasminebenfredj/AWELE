@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 public class AlphaBetaStrategy extends Intelligence {
     private State currentState;
-    private int maxDepth = 6;
+    private int maxDepth = 3;
     private int initScore = 0;
 
     private int MAX = 10000;
@@ -30,7 +30,7 @@ public class AlphaBetaStrategy extends Intelligence {
 
     private int[] playAlphaBeta(int depth,int alpha, int beta, boolean max,  State state) {
         //merger
-        if (state.getGame().isMerged() &&
+        if (!state.getGame().isMerged() &&
                 state.getGame().nbSeedsInGame <= state.getGame().totalNbSeed/2){
             state.getGame().mergeCells(6);
             state.getGame().setIsMerged();

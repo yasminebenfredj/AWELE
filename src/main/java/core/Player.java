@@ -35,7 +35,7 @@ public class Player {
      */
     private void initIntelligence() {
         if(isComputer) {
-            this.intelligence =  new MiniMaxStrategy(nbCells, myIndexes, otherIndexes);
+            this.intelligence = new AlphaBetaStrategy(nbCells, myIndexes, otherIndexes);
         }
         else {
             this.intelligence = new RandomStrategy(nbCells, myIndexes, otherIndexes);
@@ -125,8 +125,9 @@ public class Player {
         player.seeds = this.seeds  ;
         player.isComputer = this.isComputer ;
         player.nbCells = this.nbCells ;
-        player.myIndexes = this.myIndexes;
+        player.myIndexes = this.myIndexes.clone();
         player.intelligence = this.intelligence;
+        player.intelligence.setIndexes(this.myIndexes.clone());
         return player;
     }
 
