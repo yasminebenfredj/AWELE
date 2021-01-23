@@ -24,23 +24,6 @@ public class RandomStrategy extends Intelligence {
         return resp ;
     }
 
-    /**
-     *  cette methode permet de filter les possible choix du joueur
-     * @return tableau des possiblité
-     */
-    private ArrayList<Integer> allPossibilities(int[] indexes, int[] cells)
-    {
-        ArrayList<Integer> possibilities = new ArrayList<>();
-        for (int index: indexes) {
-            if (super.possible(index, cells))
-            {
-                possibilities.add(index);
-            }
-        }
-        return possibilities;
-    }
-
-
     @Override
     public String toString() {
         return " Stratégie RANDOM ";

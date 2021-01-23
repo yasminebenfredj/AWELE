@@ -14,64 +14,38 @@ public class MiniMaxStrategy extends Intelligence{
         this.isMerged = false;
     }
 
-    public int[] fullIndexes(State state){//only indexes that are not empty
-        ArrayList<Integer> fullIndexes = new ArrayList<Integer>();
-        for (int i = 0; i < super.getIndexes().length; i++) {
-            if (state.getGame().getCells()[super.getIndexes()[i]] != 0){
-                fullIndexes.add(super.getIndexes()[i]);
-            }
-        }
-        int[] indexes = fullIndexes.stream().mapToInt(i ->i).toArray();
-        //super.setIndexes(indexes);
-        return indexes;
-    }
-
-    private ArrayList<State> childPositions(State state){
-        ArrayList<State> childStates = new ArrayList<>();
-        int[] cells = state.getGame().getCells().clone();//shallow copy
-        //int[] indexes = getIndexes().clone();//shallow copy
-        int[] indexes = fullIndexes(state);
-        int [] newCells ;
-        for (int i = 0; i < indexes.length; i++){ //was indexes.length
-            if (cells[indexes[i]] !=0){//the cell is not empty
-                newCells = simulateTurn(indexes[i] , state.getGame().getCells().clone());
-                //position.getGame().playTurn(position.getPlayerComputer());
-                State newState = new State(0,state.getGame());//@TODO not sure
-                childStates.add(newState);
-                cells = state.getGame().getCells().clone();//shallow copy
-            }
-        }
-        //super.setIndexes();
-        return childStates;
-    }
-
-    private int[] simulateTurn(int choice,int[] cells){
-        int nbSeedsIn = cells[choice]; // nombre de graines dans la case choisi
-        cells[choice] = 0 ; // on prend tous les graines de la case choisi pour jouer un tour
+    private State simulateTurn(int choice,State state,boolean isComputer){
+        int[] cells = state.getGame().getCells().clone();
+        int nbSeedsIn = cells[choice];
+        cells[choice] = 0 ;
+        state.getGame().setCells(cells);
 
         int initialPosition = choice;
-        int position = GameEngine.nextPosition(choice, super.getNbCells(),super.getNbCells()*2+1) ;//this.nbCells*2+1 :n'importe quel nombre  > nbCells*2 marche
+        int position = GameEngine.nextPosition(choice, state.getGame().getNbCells(),super.getNbCells()*2+1) ;//this.nbCells*2+1 :n'importe quel nombre  > nbCells*2 marche //
         for (int i = 1  ; i <= nbSeedsIn ; i++ ) {
-
             cells[position] += 1 ;
             choice = position;
-            position = GameEngine.nextPosition(position, super.getNbCells(),initialPosition);
+            position = GameEngine.nextPosition(position, state.getGame().getNbCells(),initialPosition);//
         }
-        return this.simulateCollectSeeds(cells,choice); //on collecte les graines à partir de la dernière case semer (qui est choice)
+        return this.simulateCollectSeeds(cells,choice,state,isComputer);
     }
 
-    private int[] simulateCollectSeeds(int[] cells,int currentIndex){
+    private State simulateCollectSeeds(int[] cells,int currentIndex,State state,boolean isComputer){
         while (cells[currentIndex] == 2 || cells[currentIndex] == 3 ) {
             int gains = cells[currentIndex];
-
-            //@TODO player.addSeeds(gains); //on ajoute les graines récoltées au graines du joueur
-            //this.nbSeedsInGame -= gains; // on soustrait de la somme des graines présente dans le jeu
-            cells[currentIndex] = 0; // la case devient vide
-            currentIndex = GameEngine.precedentPosition(currentIndex, super.getNbCells());
+            if (isComputer){
+                state.getGame().computer.addSeeds(gains);
+                state.getGame().nbSeedsInGame -= gains;
+            }
+            else {
+                state.getGame().player.addSeeds(gains);
+                state.getGame().nbSeedsInGame -= gains;
+            }
+            cells[currentIndex] = 0;
+            currentIndex = GameEngine.precedentPosition(currentIndex, state.getGame().getNbCells());
         }
-        //this.currentPosition = new Position(this, this.computer,this.player,cells);
-        //player.setCurrentPosition(currentPosition);
-        return cells;
+        state.getGame().setCells(cells);
+        return state;
     }
 
     private int evaluation(State state){//@TODO Améliorer
@@ -81,8 +55,8 @@ public class MiniMaxStrategy extends Intelligence{
     }
 
     private int evaluation2(State state){//@TODO Améliorer
-        int nbSeedsComputer = state.getGame().computer.getSeeds();
-        int nbSeedsPlayer = state.getGame().player.getSeeds();
+        int nbSeedsComputer = state.getMe().getSeeds();
+        int nbSeedsPlayer = state.getOtherPlayer().getSeeds();
         int seedsDifference = nbSeedsComputer - nbSeedsPlayer;
         if (seedsDifference > 0){
             return 1;
@@ -122,49 +96,43 @@ public class MiniMaxStrategy extends Intelligence{
         }
         if (maximizingPlayer){
             double value = Double.NEGATIVE_INFINITY;
+            ArrayList<Integer> fullIndexes = super.allPossibilities(super.getIndexes(),state.getGame().getCells());
             int random  =  super.getRandom().nextInt(super.getNbCells());
             int index =  super.getIndexes()[random];
-            for (int i = 0; i < super.getIndexes().length; i++) {
+            for (int i = 0; i < fullIndexes.size(); i++) {
                 //if (position.getCells()[super.getIndexes()[i]] != 0){ // >0
-                if (state.getGame().getCells()[super.getIndexes()[i]] != 0){ // >0
-                    int[] newCells = simulateTurn(super.getIndexes()[i], state.getGame().getCells().clone());
-                    //position = new Position(position.getGame(),position.getPlayerComputer(), position.getPlayer(),newCells);
-                    State newstate = state.clone();
-                    newstate.getGame().setCells(newCells);
-                    double newScore = miniMax(newstate,depth - 1,alpha,beta,false);
-                    if (newScore > value){
-                        value = newScore;
-                        index = super.getIndexes()[i];
-                    }
-                    alpha = Math.max(alpha , value);//pruning
-                    if (alpha >= beta){
-                        break;
-                    }
+                State newState = simulateTurn(fullIndexes.get(i), state.clone(),true);
+                double newScore = miniMax(newState,depth - 1,alpha,beta,false);
+                if (newScore > value){
+                    value = newScore;
+                    //index = fullIndexes.get(i);
                 }
+                alpha = Math.max(alpha , value);//pruning
+                if (alpha >= beta){
+                    break;
+                }
+                index = fullIndexes.get(i);
             }
             return index;
         }
         else {
             double value = Double.POSITIVE_INFINITY;
+            ArrayList<Integer> fullIndexes = super.allPossibilities(super.getOtherIndexes(),state.getGame().getCells());
             int random  =  super.getRandom().nextInt(super.getNbCells());
             int index =  super.getIndexes()[random];
-            for (int i = 0; i < super.getIndexes().length; i++) {
+            for (int i = 0; i < fullIndexes.size(); i++) {
                 //if (position.getCells()[super.getIndexes()[i]] != 0){ // >0
-                if (state.getGame().getCells()[super.getIndexes()[i]] != 0){ // >0
-                    int[] newCells = simulateTurn(super.getIndexes()[i], state.getGame().getCells().clone());
-                    //position = new Position(position.getGame(),position.getPlayerComputer(), position.getPlayer(),newCells);
-                    State newstate = state.clone();
-                    newstate.getGame().setCells(newCells);
-                    double newScore = miniMax(newstate,depth - 1,alpha,beta,true);
-                    if (newScore < value){
-                        value = newScore;
-                        index = super.getIndexes()[i];
-                    }
-                    beta = Math.min(beta , value);
-                    if (alpha >= beta){
-                        break;
-                    }
+                State newState = simulateTurn(fullIndexes.get(i), state.clone(),false);
+                double newScore = miniMax(newState,depth - 1,alpha,beta,true);
+                if (newScore < value){
+                    value = newScore;
+                    //index = fullIndexes.get(i);
                 }
+                beta = Math.min(beta , value);
+                if (alpha >= beta){
+                    break;
+                }
+                index = fullIndexes.get(i);
             }
             return index;
         }
@@ -172,7 +140,7 @@ public class MiniMaxStrategy extends Intelligence{
     @Override
     public int chooseCell(State state) {//@TODO depth 1 ça marche meme avec 1000 partie so ?
         this.currentState = state;
-        int miniMax = miniMax(currentState.clone(), 15,Double.NEGATIVE_INFINITY,Double.POSITIVE_INFINITY,true);
+        int miniMax = miniMax(currentState.clone(), 3,Double.NEGATIVE_INFINITY,Double.POSITIVE_INFINITY,true);
         return miniMax;
     }
 

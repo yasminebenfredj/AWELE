@@ -49,7 +49,7 @@ public class AlphaBetaStrategy extends Intelligence {
         // Si on fait un Max
         if (max) {
             int best = this.MIN;
-            ArrayList<Integer> nodes = allPossibilities(super.getIndexes(),state.getGame().getCells());
+            ArrayList<Integer> nodes = super.allPossibilities(super.getIndexes(),state.getGame().getCells());
             System.out.println(nodes);
             for (int i = 0; i < nodes.size() ; i++) {
                 System.out.println("Index jouer " + nodes.get(i));
@@ -76,7 +76,7 @@ public class AlphaBetaStrategy extends Intelligence {
         else
         {
             int best = this.MAX;
-            ArrayList<Integer> nodes = allPossibilities(super.getOtherIndexes(),state.getGame().getCells());
+            ArrayList<Integer> nodes = super.allPossibilities(super.getOtherIndexes(),state.getGame().getCells());
             System.out.println(nodes);
 
             for (int i = 0; i < nodes.size() ; i++) {
@@ -101,24 +101,6 @@ public class AlphaBetaStrategy extends Intelligence {
             }
             return indexScore;
         }
-    }
-
-
-
-    /**
-     *  cette methode permet de filter les possible choix du joueur
-     * @return tableau des possiblité
-     */
-    private ArrayList<Integer> allPossibilities(int[] indexes, int[] cells)
-    {
-        ArrayList<Integer> possibilities = new ArrayList<>();
-        for (int index: indexes) {
-            if (super.possible(index, cells))
-            {
-                possibilities.add(index);
-            }
-        }
-        return possibilities;
     }
 
     @Override

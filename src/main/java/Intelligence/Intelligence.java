@@ -1,6 +1,8 @@
 package Intelligence;
 
 import core.State;
+
+import java.util.ArrayList;
 import java.util.Random;
 
 public abstract class Intelligence {
@@ -24,6 +26,20 @@ public abstract class Intelligence {
      * @return Choix de l'intelligence
      */
     public abstract int chooseCell(State state);
+
+    /**
+     *  cette methode permet de filter les possible choix du joueur
+     * @return tableau des possiblité
+     */
+    public ArrayList<Integer> allPossibilities(int[] indexes, int[] cells) {
+        ArrayList<Integer> possibilities = new ArrayList<>();
+        for (int index: indexes) {
+            if (possible(index, cells)) {
+                possibilities.add(index);
+            }
+        }
+        return possibilities;
+    }
 
     public abstract String toString();
 

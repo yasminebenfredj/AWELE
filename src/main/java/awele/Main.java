@@ -9,7 +9,7 @@ public class Main {
          **/
         int nbCells = 12;
         int nbSeeds = 4;
-        boolean statMode = true;
+        boolean statMode = false;
 
         /**
          * LANCEMENT DU JEU
@@ -18,8 +18,9 @@ public class Main {
         int computerWins = 0;
         int playerWins = 0;
         int draw = 0;
+        int averageScore = 0;
         if (statMode){
-            for (int i = 0; i < 1000; i++) {
+            for (int i = 0; i < 100; i++) {
                 game.play();
                 int seedsDifference = game.computer.getSeeds() - game.player.getSeeds();
                 if (seedsDifference > 0){
@@ -31,11 +32,13 @@ public class Main {
                 else {
                     draw ++;
                 }
+                averageScore += game.computer.getSeeds();
                 game = new GameEngine(nbCells,nbSeeds);
             }
             System.out.println("Computer winrate : " + computerWins);
             System.out.println("Player winrate : " + playerWins);
             System.out.println("Draw rate : " + draw);
+            System.out.println("Average Score : " + averageScore/100);
         }
         else {
             long startTime = System.currentTimeMillis();
