@@ -48,17 +48,14 @@ public class GameEngine {
         while (!this.endOfGame() ) {
             System.out.println("\n <<<<< Tour N°  "+ i +" >>>>> ");
 
-            if (!isMerged && this.nbSeedsInGame <= this.totalNbSeed/2) {
-                System.out.println("\n<<< *** >>>\nIl ne reste plus que "+ this.nbSeedsInGame +" graines dans le jeu. Le plateau est merger. \n<<< *** >>>\n");
-                this.mergeCells(6);
-                isMerged = true ;
-            }
-
+            checkMerge();
 
             printTable();
             System.out.println("\n      *** Joueur " + computer.getPlayerNumber() + " -" + computer.toString()  + "-*** ");
             playTurn(computer);
 
+            if(this.endOfGame()) break;
+            checkMerge();
 
             printTable();
             if (!this.endOfGame()){
@@ -73,6 +70,15 @@ public class GameEngine {
             i++;
         }
         finalAction();
+    }
+
+    private void checkMerge()
+    {
+        if (!isMerged && this.nbSeedsInGame <= this.totalNbSeed/2) {
+            System.out.println("\n<<< *** >>>\nIl ne reste plus que "+ this.nbSeedsInGame +" graines dans le jeu. Le plateau est merger. \n<<< *** >>>\n");
+            this.mergeCells(6);
+            isMerged = true ;
+        }
     }
 
     /**
