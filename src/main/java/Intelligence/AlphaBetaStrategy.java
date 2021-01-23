@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 public class AlphaBetaStrategy extends Intelligence {
     private State currentState;
-    private int maxDepth = 3;
+    private int maxDepth = 6;
     private int initScore = 0;
 
     private int MAX = 10000;
@@ -20,7 +20,7 @@ public class AlphaBetaStrategy extends Intelligence {
     @Override
     public int chooseCell(State state) {
         this.currentState = state.clone();
-        initScore = state.getGame().computer.getSeeds();
+        initScore = state.getMe().getSeeds();
 
         int[] solution = playAlphaBeta(0,MIN,MAX,true,this.currentState);
         System.out.println(solution[0] + " " + solution[1]);
@@ -29,13 +29,20 @@ public class AlphaBetaStrategy extends Intelligence {
 
 
     private int[] playAlphaBeta(int depth,int alpha, int beta, boolean max,  State state) {
-        int[] x = new int[2];
+        //merger
+        if (state.getGame().isMerged() &&
+                state.getGame().nbSeedsInGame <= state.getGame().totalNbSeed/2){
+            state.getGame().mergeCells(6);
+            state.getGame().setIsMerged();
+        }
+
+        int[] indexScore = new int[2];
         //Si on attend la profondeur max on donne la differeance de score entre les 2 joueurs
         if (depth == this.maxDepth || state.getGame().endOfGame()) {
 
-            state.node =  state.getGame().computer.getSeeds() - initScore ;
-            x = new int[]{0, state.node};
-            return x;
+            int value =  state.getMe().getSeeds() - initScore ;
+            indexScore = new int[]{0, value};
+            return indexScore;
         }
         State finalState = state;
 
@@ -60,11 +67,11 @@ public class AlphaBetaStrategy extends Intelligence {
                     System.out.println("break "+ beta +" <= "+ alpha);
                     break;
                 }
-                x = new int[]{nodes.get(i), best};
+                indexScore = new int[]{nodes.get(i), best};
 
             }
 
-            return x ;
+            return indexScore ;
         }
         else
         {
@@ -75,7 +82,6 @@ public class AlphaBetaStrategy extends Intelligence {
             for (int i = 0; i < nodes.size() ; i++) {
                 System.out.println("Index jouer " + nodes.get(i));
                 State newState = playAction(nodes.get(i),false ,state.clone());
-                newState.choices = nodes.get(i);
                 int value = playAlphaBeta(depth +1 ,alpha , beta ,true, newState)[1];
 
                 if (best > value)
@@ -90,10 +96,10 @@ public class AlphaBetaStrategy extends Intelligence {
 
                     break;
                 }
-                x = new int[]{nodes.get(i), best};
+                indexScore = new int[]{nodes.get(i), best};
 
             }
-            return x;
+            return indexScore;
         }
     }
 

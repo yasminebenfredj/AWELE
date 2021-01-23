@@ -1,7 +1,6 @@
 package Intelligence;
 
 import core.State;
-
 import java.util.Random;
 
 public abstract class Intelligence {
@@ -9,11 +8,11 @@ public abstract class Intelligence {
     private int[] indexes;
     private int nbCells;
     private Random random;
-    private State currentState;
     private int[] otherIndexes;
 
 
-    public  Intelligence(int nbCellsPlayer, int[] indexes, int[] otherIndexes) {
+    public  Intelligence(int nbCellsPlayer, int[] indexes, int[] otherIndexes)
+    {
         this.indexes = indexes;
         this.otherIndexes = otherIndexes;
         this.nbCells = nbCellsPlayer;
@@ -26,13 +25,7 @@ public abstract class Intelligence {
      */
     public abstract int chooseCell(State state);
 
-    public State getCurrentState()
-    {
-        return currentState;
-    }
-
     public abstract String toString();
-
 
     /*
      *
@@ -71,6 +64,5 @@ public abstract class Intelligence {
     public void setOtherIndexes(int[] otherIndexes) {
         this.otherIndexes = otherIndexes;
     }
-
 
 }

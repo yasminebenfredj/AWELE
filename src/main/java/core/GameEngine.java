@@ -86,7 +86,7 @@ public class GameEngine {
      * @param player le joueur qui joue le tour
      */
     public void playTurn (Player player) {
-        int choice = player.chooseCell(new State(this.clone()));  // indice de la case choisi
+        int choice = player.chooseCell(new State(player.getPlayerNumber(),this.clone()));  // indice de la case choisi
         checkValidate(choice);
         int nbSeedsIn = this.cells[choice]; // nombre de graines dans la case choisi
         this.cells[choice] = 0 ; // on prend tous les graines de la case choisi pour jouer un tour
@@ -128,7 +128,7 @@ public class GameEngine {
      * Cette méthode merge les cases du jeu pour passer d'un plateau à 12 cases à un plateau à 6 cases
      * @param newNbCells le nouveau nombre de cellule
      */
-    private void mergeCells(int newNbCells) {
+    public void mergeCells(int newNbCells) {
         int[] newCells = new int[newNbCells*2] ;
         for (int i = 0; i < this.nbCells  ; i++ ) {
             newCells[i] = this.cells[i*2] + this.cells[i*2 + 1] ;
@@ -328,6 +328,10 @@ public class GameEngine {
 
     public boolean isMerged() {
         return isMerged;
+    }
+
+    public void setIsMerged() {
+        isMerged = true;
     }
 
     public int[] getCells() {

@@ -36,7 +36,7 @@ public class MiniMaxStrategy extends Intelligence{
             if (cells[indexes[i]] !=0){//the cell is not empty
                 newCells = simulateTurn(indexes[i] , state.getGame().getCells().clone());
                 //position.getGame().playTurn(position.getPlayerComputer());
-                State newState = new State(state.getGame());//@TODO not sure
+                State newState = new State(0,state.getGame());//@TODO not sure
                 childStates.add(newState);
                 cells = state.getGame().getCells().clone();//shallow copy
             }
@@ -75,8 +75,8 @@ public class MiniMaxStrategy extends Intelligence{
     }
 
     private int evaluation(State state){//@TODO Améliorer
-        int nbSeedsComputer = state.getGame().computer.getSeeds();
-        int nbSeedsPlayer = state.getGame().player.getSeeds();
+        int nbSeedsComputer = state.getMe().getSeeds();
+        int nbSeedsPlayer = state.getOtherPlayer().getSeeds();
         return nbSeedsComputer - nbSeedsPlayer;
     }
 
@@ -172,7 +172,7 @@ public class MiniMaxStrategy extends Intelligence{
     @Override
     public int chooseCell(State state) {//@TODO depth 1 ça marche meme avec 1000 partie so ?
         this.currentState = state;
-        int miniMax = miniMax(currentState.clone(), 8,Double.NEGATIVE_INFINITY,Double.POSITIVE_INFINITY,true);
+        int miniMax = miniMax(currentState.clone(), 15,Double.NEGATIVE_INFINITY,Double.POSITIVE_INFINITY,true);
         return miniMax;
     }
 
