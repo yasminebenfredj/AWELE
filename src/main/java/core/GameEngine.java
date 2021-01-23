@@ -54,17 +54,13 @@ public class GameEngine {
             System.out.println("\n      *** Joueur " + computer.getPlayerNumber() + " -" + computer.toString()  + "-*** ");
             playTurn(computer);
 
-            if(this.endOfGame()) break;
+            if(this.endOfGame()) {break;}
             checkMerge();
 
             printTable();
-            if (!this.endOfGame()){
-                System.out.println("\n      *** Joueur " + player.getPlayerNumber() + " -" + player.toString()  + "-*** ");
-                playTurn(player);
-            }
-            else {
-                break;
-            }
+
+            System.out.println("\n      *** Joueur " + player.getPlayerNumber() + " -" + player.toString()  + "-*** ");
+            playTurn(player);
 
             printScore();
             i++;
