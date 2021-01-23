@@ -1,47 +1,46 @@
 package Intelligence;
 
-import awele.Solution;
-
 import java.util.ArrayList;
+import java.util.List;
 
 import core.GameEngine;
 import core.Player;
-import core.Position;
+import core.State;
 
 /**
  * Cette classe est la stratégie de notre IA
  */
 public class ComputerStrategy extends Intelligence {
-    private Position position;
-    private int depthMax = 3;
+    private State state;
+    private int depthMax = 2;
     private int currentScore ;
 
-    public ComputerStrategy(int nbCellsPlayer, int[] indexes) {
-        super(nbCellsPlayer, indexes);
+    public ComputerStrategy(int nbCellsPlayer, int[] indexes , int[] otherIndexes) {
+        super(nbCellsPlayer, indexes, otherIndexes);
     }
 
     @Override
-    public int chooseCell(int[] cells) {
-        position = super.getCurrentPosition().clone();
-        this.currentScore = (position.getGame().totalNbSeed);
+    public int chooseCell(State state) {
+        this.state = state.clone();
+        this.currentScore = state.getGame().totalNbSeed;
         int index  =  minMaxValue();
-        System.out.println("resultat :"+index) ;
+        //System.out.println("resultat :"+index) ;
         return index ;
     }
 
     public int minMaxValue()
     {
-        ArrayList<Integer> possibilities = this.allPossibilities(position.getGame().computer, position);
+        ArrayList<Integer> possibilities = this.allPossibilities(super.getIndexes(), this.state.getGame().getCells());
         int action = possibilities.get(0);
-        int max = - this.currentScore;
+        int max = -this.currentScore;
 
         for (int i = 0; i < possibilities.size(); i++) {
 
-            Position newPosition = position.clone();
-            newPosition.depth += 1;
-            newPosition = playAction(possibilities.get(i), true, newPosition);
+            State newState = state.clone();
+            newState.depth += 1;
+            newState = playAction(possibilities.get(i), true, newState);
 
-            int newScore = mini(newPosition);
+            int newScore = mini(newState);
             if (newScore > max)
             {
                 max = newScore;
@@ -53,21 +52,21 @@ public class ComputerStrategy extends Intelligence {
     }
 
 
-    private int mini(Position myPosition) {
+    private int mini(State myState) {
         int min = this.currentScore;
-        if (myPosition.depth > depthMax || myPosition.getGame().endOfGame()) {
-            return  myPosition.getGame().computer.getSeeds() - myPosition.getGame().player.getSeeds() ;
+        if (myState.depth > depthMax || myState.getGame().endOfGame()) {
+            return  myState.gain ;
         } else {
 
-            ArrayList<Integer> possibilities = this.allPossibilities(myPosition.getGame().player, myPosition);
+            ArrayList<Integer> possibilities = this.allPossibilities(super.getOtherIndexes(), myState.getGame().getCells());
 
             for (int i = 0; i < possibilities.size(); i++) {
-                Position newPosition = myPosition.clone();
+                State newState = myState.clone();
 
-                newPosition = playAction(possibilities.get(i), false, newPosition);
-                newPosition.depth += 1;
+                newState = playAction(possibilities.get(i), false, newState);
+                newState.depth += 1;
 
-                int newScore = maxi(newPosition);
+                int newScore = maxi(newState);
                 if (min < newScore )
                 {
                     min = newScore;
@@ -78,21 +77,21 @@ public class ComputerStrategy extends Intelligence {
     }
 
 
-    private int maxi(Position myPosition)
+    private int maxi(State myState)
     {
         int max = - currentScore;
 
-        if (myPosition.depth > depthMax || myPosition.getGame().endOfGame()) {
-            return   myPosition.getGame().computer.getSeeds() - myPosition.getGame().player.getSeeds() ;
+        if (myState.depth > depthMax || myState.getGame().endOfGame()) {
+            return   myState.gain ;
         } else {
-            ArrayList<Integer> possibilities = this.allPossibilities(myPosition.getGame().computer, myPosition);
+            ArrayList<Integer> possibilities = this.allPossibilities(super.getIndexes(), myState.getGame().getCells());
             for (int i = 0; i < possibilities.size(); i++) {
-                Position newPosition = myPosition.clone();
+                State newState = myState.clone();
 
-                newPosition = playAction(possibilities.get(i), true , newPosition);
-                newPosition.depth += 1;
+                newState = playAction(possibilities.get(i), true , newState);
+                newState.depth += 1;
 
-                int newScore = mini(newPosition);
+                int newScore = mini(newState);
                 if (newScore > max )
                 {
                     max = newScore;
@@ -101,53 +100,58 @@ public class ComputerStrategy extends Intelligence {
         }
         return max;
     }
-    private Position playAction(int coup, boolean isComp, Position myPosition)
+    private State playAction(int coup, boolean isComp, State myState)
     {
-        System.out.println("---------------------------------------");
+        //System.out.println("---------------------------------------");
 
         if(isComp) {
-            System.out.println("Play coup : "+coup+" || Computer ");
+        //    System.out.println("Play coup : "+coup+" || Computer ");
 
         }
         else {
-            System.out.println("Play coup : " + coup + " || player " );
+         //   System.out.println("Play coup : " + coup + " || player " );
         }
-        int nbSeedsIn = myPosition.getGame().getCells()[coup];
-        myPosition.getGame().getCells()[coup] = 0;
+        int nbSeedsIn = myState.getGame().getCells()[coup];
+
+        int[] cellules = myState.getGame().getCells().clone();
+        cellules[coup] = 0;
+        myState.getGame().setCells(cellules);
+
         int position = coup;
         int initialPosition = coup;
 
         for (int j = 0; j < nbSeedsIn; j++) {
-            int[] cellules = myPosition.getGame().getCells();
+            position = GameEngine.nextPosition(position, myState.getGame().getNbCells(), initialPosition);
+
+            cellules = myState.getGame().getCells().clone();
             cellules[position] = cellules[position] +1;
-            myPosition.getGame().setCells(cellules);
-            coup = position;
-            position = GameEngine.nextPosition(position, myPosition.getGame().getNbCells(), initialPosition);
+            myState.getGame().setCells(cellules);
 
         }
-        while (myPosition.getGame().getCells()[coup] == 2 || myPosition.getGame().getCells()[coup] == 3) {
-            int gains = myPosition.getGame().getCells()[coup];
+        position= GameEngine.precedentPosition(position, myState.getGame().getNbCells());
+        while (myState.getGame().getCells()[position] == 2 || myState.getGame().getCells()[position] == 3) {
+            int gains = myState.getGame().getCells()[position];
             if(isComp) {
-                myPosition.getGame().computer.addSeeds(gains);
+                myState.getGame().computer.addSeeds(gains);
+                myState.gain += gains;
             }
             else {
-                myPosition.getGame().player.addSeeds(gains);
+                myState.getGame().player.addSeeds(gains);
+                myState.gain -= gains;
             }
-            myPosition.getGame().nbSeedsInGame -= gains;
-            myPosition.getGame().getCells()[coup] = 0;
-            coup = GameEngine.precedentPosition(coup, myPosition.getGame().getNbCells());
+            myState.getGame().nbSeedsInGame -= gains;
+
+            cellules = myState.getGame().getCells().clone();
+            cellules[position] = 0;
+            myState.getGame().setCells(cellules);
+            position= GameEngine.precedentPosition(position, myState.getGame().getNbCells());
 
         }
-        if(isComp) {
-            System.out.println("Computer "+" || nb seeds "+myPosition.getGame().computer.getSeeds());
 
-        }
-        else {
-            System.out.println("player " + " || nb seeds " + myPosition.getGame().player.getSeeds());
-        }
-        System.out.println("---------------------------------------");
+        //System.out.println("Computer "+" || gain "+ myState.gain);
+        //System.out.println("---------------------------------------");
 
-        return myPosition;
+        return myState;
     }
 
 
@@ -157,17 +161,16 @@ public class ComputerStrategy extends Intelligence {
      * si pour paire = 0
      * si pour impaire = 1
      */
-    private ArrayList<Integer> allPossibilities(Player player, Position myPosition)
+    private ArrayList<Integer> allPossibilities(int[] indexes, int[] cells)
     {
         ArrayList<Integer> possibilities = new ArrayList<>();
-        for (int index: player.getIndexes()
-             ) {
-            if (super.possible(index,myPosition.getGame().getCells()))
+        for (int index: indexes) {
+            if (super.possible(index, cells))
             {
                 possibilities.add(index);
             }
         }
-        System.out.println(possibilities+" || position depth :"+myPosition.depth);
+        //System.out.println(possibilities+" || position depth :"+ myState.depth);
         return possibilities;
     }
 

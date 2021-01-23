@@ -1,6 +1,6 @@
 package Intelligence;
 
-import core.Position;
+import core.State;
 
 import java.util.Scanner;
 
@@ -9,22 +9,17 @@ import java.util.Scanner;
  */
 public class PlayerStrategy extends Intelligence {
 
-    public PlayerStrategy(int nbCellsPlayer, int[] indexes) {
-        super(nbCellsPlayer, indexes);
+    public PlayerStrategy(int nbCellsPlayer, int[] indexes,  int[] otherIndexes) {
+        super(nbCellsPlayer, indexes, otherIndexes);
     }
 
     @Override
-    public int chooseCell(int[] cells) {
+    public int chooseCell(State state) {
         System.out.println("Entrer le numéro de la case que vous voulez jouer parmis les suivantes : ");
         printCells();
         Scanner scanne = new Scanner(System. in );
         int cell = scanne.nextInt();
         return cell-1 ;
-    }
-
-    @Override
-    public void setCurrentPosition(Position position) {
-
     }
 
     public void printCells() {

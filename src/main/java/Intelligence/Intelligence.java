@@ -1,6 +1,6 @@
 package Intelligence;
 
-import core.Position;
+import core.State;
 
 import java.util.Random;
 
@@ -9,10 +9,13 @@ public abstract class Intelligence {
     private int[] indexes;
     private int nbCells;
     private Random random;
-    private Position currentPosition;
+    private State currentState;
+    private int[] otherIndexes;
 
-    public  Intelligence(int nbCellsPlayer, int[] indexes) {
+
+    public  Intelligence(int nbCellsPlayer, int[] indexes, int[] otherIndexes) {
         this.indexes = indexes;
+        this.otherIndexes = otherIndexes;
         this.nbCells = nbCellsPlayer;
         this.random = new Random();
     }
@@ -21,16 +24,11 @@ public abstract class Intelligence {
      *
      * @return Choix de l'intelligence
      */
-    public abstract int chooseCell(int [] cells);
+    public abstract int chooseCell(State state);
 
-    public void setCurrentPosition(Position position)
+    public State getCurrentState()
     {
-        this.currentPosition = position;
-    }
-
-    public Position getCurrentPosition()
-    {
-        return currentPosition;
+        return currentState;
     }
 
     public abstract String toString();
@@ -64,7 +62,15 @@ public abstract class Intelligence {
 
     public boolean possible(int  index , int[] cells) {
         return cells[index] != 0;
-
     }
+
+    public int[] getOtherIndexes() {
+        return otherIndexes;
+    }
+
+    public void setOtherIndexes(int[] otherIndexes) {
+        this.otherIndexes = otherIndexes;
+    }
+
 
 }

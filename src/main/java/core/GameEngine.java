@@ -12,7 +12,6 @@ public class GameEngine {
     public int nbSeedsInGame;
     public final int totalNbSeed ;
     private boolean isMerged ;
-    private Position currentPosition ;
 
     public GameEngine(int nbCells , int nbSeeds){
         this.isMerged = false ;
@@ -55,17 +54,11 @@ public class GameEngine {
                 isMerged = true ;
             }
 
-            this.currentPosition = new Position(this.clone(), computer.clone(),player.clone(), cells.clone());
-            computer.setCurrentPosition(this.currentPosition);
-            player.setCurrentPosition(this.currentPosition);
 
             printTable();
             System.out.println("\n      *** Joueur " + computer.getPlayerNumber() + " -" + computer.toString()  + "-*** ");
             playTurn(computer);
 
-            this.currentPosition.setGame(this);
-            computer.setCurrentPosition(this.currentPosition);
-            player.setCurrentPosition(this.currentPosition);
 
             printTable();
             if (!this.endOfGame()){
@@ -91,7 +84,7 @@ public class GameEngine {
      * @param player le joueur qui joue le tour
      */
     public void playTurn (Player player) {
-        int choice = player.chooseCell(this.cells);  // indice de la case choisi
+        int choice = player.chooseCell(new State(this.clone()));  // indice de la case choisi
         checkValidate(choice);
         int nbSeedsIn = this.cells[choice]; // nombre de graines dans la case choisi
         this.cells[choice] = 0 ; // on prend tous les graines de la case choisi pour jouer un tour
@@ -164,8 +157,8 @@ public class GameEngine {
      */
     private int seedsPlayerCells(Player player) {
         int seedsInPlayerCells = 0 ;
-        for (int i = 0; i < player.getIndexes().length; i++) {
-                seedsInPlayerCells += this.cells[player.getIndexes()[i]] ;
+        for (int i = 0; i < player.getMyIndexes().length; i++) {
+                seedsInPlayerCells += this.cells[player.getMyIndexes()[i]] ;
         }
         return seedsInPlayerCells ;
     }
@@ -359,6 +352,7 @@ public class GameEngine {
         gameEngine.computer = computer.clone();
         gameEngine.nbSeedsInGame = nbSeedsInGame;
         gameEngine.cells = this.cells.clone();
+        gameEngine.isMerged = isMerged;
         return gameEngine;
 
     }

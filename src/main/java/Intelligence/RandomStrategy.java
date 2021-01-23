@@ -1,33 +1,30 @@
 package Intelligence;
 
 
-import core.Position;
+import core.State;
+
+import java.util.Random;
 
 /**
  * Cette classe est la stratégie Random
  */
 public class RandomStrategy extends Intelligence {
 
-    public RandomStrategy(int nbCellsPlayer, int[] indexes) {
-        super(nbCellsPlayer, indexes);
+    public RandomStrategy(int nbCellsPlayer, int[] indexes, int[] otherIndexes) {
+        super(nbCellsPlayer, indexes, otherIndexes);
     }
 
     @Override
-    public int chooseCell(int[] cells){
+    public int chooseCell(State state){
         int index  =  super.getRandom().nextInt(super.getNbCells());
         int resp =  super.getIndexes()[index];
 
-        while(!super.possible(resp, cells)) {
+        while(!super.possible(resp, super.getCurrentState().getGame().getCells())) {
             index  =  super.getRandom().nextInt(super.getNbCells());
             resp =  super.getIndexes()[index];
         }
 
         return resp ;
-    }
-
-    @Override
-    public void setCurrentPosition(Position position) {
-
     }
 
     @Override

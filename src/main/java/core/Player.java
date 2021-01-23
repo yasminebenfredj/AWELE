@@ -5,7 +5,9 @@ import Intelligence.*;
 public class Player {
     private Intelligence intelligence;
     private int seeds; // seeds taken by the player
-    private int[] indexes ;
+    private int[] myIndexes;
+    private int[] otherIndexes;
+
     private boolean isComputer;
     private int nbCells;
     private int playerNumber; // 1 ou 2
@@ -33,10 +35,10 @@ public class Player {
      */
     private void initIntelligence() {
         if(isComputer) {
-            this.intelligence = new MiniMaxStrategy(nbCells, indexes);
+            this.intelligence =  new ComputerStrategy(nbCells, myIndexes, otherIndexes);
         }
         else {
-            this.intelligence = new ComputerStrategy(nbCells, indexes);
+            this.intelligence = new MiniMaxStrategy(nbCells, myIndexes, otherIndexes);
         }
     }
 
@@ -44,12 +46,12 @@ public class Player {
      * Permet au joueur de choisir une case à jouer parmi les cienne
      * @return le choix du joueur
      */
-    public int chooseCell(int[] cells){
-        int choice = this.intelligence.chooseCell(cells) ;
+    public int chooseCell(State state){
+        int choice = this.intelligence.chooseCell(state) ;
 
         while (( choice  > this.nbCells*2 || choice < 1 ||(choice % 2) == 0 )&& !isComputer) {
             System.out.println("Vous n'avez pas accès à cette case, recommencez ...");
-            choice = this.intelligence.chooseCell(cells) ;
+            choice = this.intelligence.chooseCell(state) ;
         }
         return  choice;
     }
@@ -62,13 +64,16 @@ public class Player {
      *
      */
     public void initIndexes(int nbCells){
-        this.indexes = new int[nbCells];
+        this.myIndexes = new int[nbCells];
+        this.otherIndexes = new int[nbCells];
         for (int i = 0; i < nbCells; i++) {
             if (isComputer) {
-                indexes[i] = (i * 2);
+                myIndexes[i] = (i * 2);
+                otherIndexes[i] =  (i * 2) + 1;
             }
             else {
-                indexes[i] = (i * 2) + 1;
+                myIndexes[i] = (i * 2) + 1;
+                otherIndexes[i]= (i * 2);
             }
         }
     }
@@ -80,7 +85,8 @@ public class Player {
     public void mergeCells(int newNbCells) {
         this.nbCells = newNbCells;
         initIndexes(newNbCells);
-        intelligence.setIndexes(this.indexes);
+        intelligence.setIndexes(this.myIndexes);
+        intelligence.setOtherIndexes(this.otherIndexes);
         intelligence.setNbCells(newNbCells);
 
     }
@@ -102,15 +108,8 @@ public class Player {
         this.seeds += seeds ;
     }
 
-    public int[] getIndexes() {
-        return indexes;
-    }
-    /**
-     * permet de modifier la position de l'inteligence
-     * @param position
-     */
-    public void setCurrentPosition(Position position){
-        this.intelligence.setCurrentPosition(position);
+    public int[] getMyIndexes() {
+        return myIndexes;
     }
 
     @Override
@@ -126,7 +125,7 @@ public class Player {
         player.seeds = this.seeds  ;
         player.isComputer = this.isComputer ;
         player.nbCells = this.nbCells ;
-        player.indexes = this.indexes;
+        player.myIndexes = this.myIndexes;
         player.intelligence = this.intelligence;
         return player;
     }
