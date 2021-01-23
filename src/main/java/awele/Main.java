@@ -9,7 +9,7 @@ public class Main {
          **/
         int nbCells = 12;
         int nbSeeds = 4;
-        boolean statMode = false;
+        boolean statMode = true;
 
         /**
          * LANCEMENT DU JEU
@@ -19,7 +19,7 @@ public class Main {
         int playerWins = 0;
         int draw = 0;
         if (statMode){
-            for (int i = 0; i < 100; i++) {
+            for (int i = 0; i < 1000; i++) {
                 game.play();
                 int seedsDifference = game.computer.getSeeds() - game.player.getSeeds();
                 if (seedsDifference > 0){

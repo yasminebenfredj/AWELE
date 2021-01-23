@@ -19,7 +19,7 @@ public class RandomStrategy extends Intelligence {
         int index  =  super.getRandom().nextInt(super.getNbCells());
         int resp =  super.getIndexes()[index];
 
-        while(!super.possible(resp, super.getCurrentState().getGame().getCells())) {
+        while(!super.possible(resp, state.getGame().getCells())) {
             index  =  super.getRandom().nextInt(super.getNbCells());
             resp =  super.getIndexes()[index];
         }

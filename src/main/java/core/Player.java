@@ -35,10 +35,10 @@ public class Player {
      */
     private void initIntelligence() {
         if(isComputer) {
-            this.intelligence =  new ComputerStrategy(nbCells, myIndexes, otherIndexes);
+            this.intelligence =  new RandomStrategy(nbCells, myIndexes, otherIndexes);
         }
         else {
-            this.intelligence = new MiniMaxStrategy(nbCells, myIndexes, otherIndexes);
+            this.intelligence = new RandomStrategy(nbCells, myIndexes, otherIndexes);
         }
     }
 
