@@ -129,8 +129,9 @@ public class MiniMaxStrategy extends Intelligence{
                 if (state.getGame().getCells()[super.getIndexes()[i]] != 0){ // >0
                     int[] newCells = simulateTurn(super.getIndexes()[i], state.getGame().getCells().clone());
                     //position = new Position(position.getGame(),position.getPlayerComputer(), position.getPlayer(),newCells);
-                    state.getGame().setCells(newCells);
-                    double newScore = miniMax(state,depth - 1,alpha,beta,false);
+                    State newstate = state.clone();
+                    newstate.getGame().setCells(newCells);
+                    double newScore = miniMax(newstate,depth - 1,alpha,beta,false);
                     if (newScore > value){
                         value = newScore;
                         index = super.getIndexes()[i];
@@ -152,8 +153,9 @@ public class MiniMaxStrategy extends Intelligence{
                 if (state.getGame().getCells()[super.getIndexes()[i]] != 0){ // >0
                     int[] newCells = simulateTurn(super.getIndexes()[i], state.getGame().getCells().clone());
                     //position = new Position(position.getGame(),position.getPlayerComputer(), position.getPlayer(),newCells);
-                    state.getGame().setCells(newCells);
-                    double newScore = miniMax(state,depth - 1,alpha,beta,true);
+                    State newstate = state.clone();
+                    newstate.getGame().setCells(newCells);
+                    double newScore = miniMax(newstate,depth - 1,alpha,beta,true);
                     if (newScore < value){
                         value = newScore;
                         index = super.getIndexes()[i];
@@ -170,7 +172,7 @@ public class MiniMaxStrategy extends Intelligence{
     @Override
     public int chooseCell(State state) {//@TODO depth 1 ça marche meme avec 1000 partie so ?
         this.currentState = state;
-        int miniMax = miniMax(currentState, 1,Double.NEGATIVE_INFINITY,Double.POSITIVE_INFINITY,true);
+        int miniMax = miniMax(currentState.clone(), 1,Double.NEGATIVE_INFINITY,Double.POSITIVE_INFINITY,true);
         return miniMax;
     }
 
