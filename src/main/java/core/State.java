@@ -13,9 +13,6 @@ public class State {
         this.game = game;
     }
 
-    public boolean isFinalPosition(){
-        return this.game.endOfGame();
-    }
     public void setGame(GameEngine game) {
         this.game = game;
     }

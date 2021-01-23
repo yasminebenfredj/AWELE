@@ -103,8 +103,8 @@ public class MiniMaxStrategy extends Intelligence{
             isMerged = true;
         }
 
-        if (depth == 0 || state.isFinalPosition()){
-            if (state.isFinalPosition()){
+        if (depth == 0 || state.getGame().endOfGame()){
+            if (state.getGame().endOfGame()){
                 int seedsDifference = state.getGame().computer.getSeeds() - state.getGame().player.getSeeds();
                 if (seedsDifference > 0){//computer wins
                     return state.getGame().getNbCells() * 2 *  state.getGame().getNbSeeds();//96
@@ -172,7 +172,7 @@ public class MiniMaxStrategy extends Intelligence{
     @Override
     public int chooseCell(State state) {//@TODO depth 1 ça marche meme avec 1000 partie so ?
         this.currentState = state;
-        int miniMax = miniMax(currentState.clone(), 1,Double.NEGATIVE_INFINITY,Double.POSITIVE_INFINITY,true);
+        int miniMax = miniMax(currentState.clone(), 8,Double.NEGATIVE_INFINITY,Double.POSITIVE_INFINITY,true);
         return miniMax;
     }
 
