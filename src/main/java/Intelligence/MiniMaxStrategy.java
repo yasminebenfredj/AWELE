@@ -2,6 +2,7 @@ package Intelligence;
 
 import core.GameEngine;
 import core.State;
+import utility.Colors;
 
 import java.util.ArrayList;
 
@@ -21,7 +22,7 @@ public class MiniMaxStrategy extends Intelligence{
         state.getGame().setCells(cells);
 
         int initialPosition = choice;
-        int position = GameEngine.nextPosition(choice, state.getGame().getNbCells(),super.getNbCells()*2+1) ;//this.nbCells*2+1 :n'importe quel nombre  > nbCells*2 marche //
+        int position = GameEngine.nextPosition(choice, state.getGame().getNbCells(),initialPosition) ;//this.nbCells*2+1 :n'importe quel nombre  > nbCells*2 marche //
         for (int i = 1  ; i <= nbSeedsIn ; i++ ) {
             cells[position] += 1 ;
             choice = position;
@@ -34,11 +35,11 @@ public class MiniMaxStrategy extends Intelligence{
         while (cells[currentIndex] == 2 || cells[currentIndex] == 3 ) {
             int gains = cells[currentIndex];
             if (isComputer){
-                state.getGame().computer.addSeeds(gains);
+                state.getMe().addSeeds(gains);
                 state.getGame().nbSeedsInGame -= gains;
             }
             else {
-                state.getGame().player.addSeeds(gains);
+                state.getOtherPlayer().addSeeds(gains);
                 state.getGame().nbSeedsInGame -= gains;
             }
             cells[currentIndex] = 0;
@@ -69,30 +70,46 @@ public class MiniMaxStrategy extends Intelligence{
         }
     }
 
-    private int miniMax(State state, int depth, double alpha, double beta, boolean maximizingPlayer) {
-        if (state.getGame().isMerged() && !isMerged){//@TODO
-            System.out.println("Mergedddddddd");
-            state.getGame().setCells(state.getGame().getCells().clone());
+    public int evaluation3(State state){
+        return 0;
+    }
 
-            isMerged = true;
+    private int[] miniMax(State state, int depth, double alpha, double beta, boolean maximizingPlayer) {
+        if (!state.getGame().isMerged() && state.getGame().nbSeedsInGame <= state.getGame().totalNbSeed/2){
+            state.getGame().mergeCells(6);
+            state.getGame().setIsMerged();
         }
 
-        if (depth == 0 || state.getGame().endOfGame()){
+        int[] tuple = new int[2];//0:index 1:résultat de la méthode d'évaluation
+
+        /*if (depth == 0 || state.getGame().endOfGame()){
             if (state.getGame().endOfGame()){
                 int seedsDifference = state.getGame().computer.getSeeds() - state.getGame().player.getSeeds();
                 if (seedsDifference > 0){//computer wins
-                    return state.getGame().getNbCells() * 2 *  state.getGame().getNbSeeds();//96
+                    tuple[1] = state.getGame().getNbCells() * 2 *  state.getGame().getNbSeeds();
+                    return tuple;
+                    //return state.getGame().getNbCells() * 2 *  state.getGame().getNbSeeds();//96
                 }
                 else if (seedsDifference < 0){//player wins
-                    return -state.getGame().getNbCells() * 2 *  state.getGame().getNbSeeds();//-96
+                    tuple[1] = -state.getGame().getNbCells() * 2 *  state.getGame().getNbSeeds();
+                    return tuple;
+                    //return -state.getGame().getNbCells() * 2 *  state.getGame().getNbSeeds();//-96
                 }
                 else {//draw
-                    return 0;
+                    tuple[1] = 0;
+                    return tuple;
+                    //return 0;
                 }
             }
             else {//depth is zero
-                return evaluation(state); //@TODO update currentPosition when needed in the coming code
+                tuple[1] = evaluation(state);
+                return tuple;
+                //return evaluation(state); //@TODO update currentPosition when needed in the coming code
             }
+        }*/
+        if (depth == 0 || state.getGame().endOfGame()){
+                tuple[1] = evaluation(state);
+                return tuple;
         }
         if (maximizingPlayer){
             double value = Double.NEGATIVE_INFINITY;
@@ -100,20 +117,20 @@ public class MiniMaxStrategy extends Intelligence{
             int random  =  super.getRandom().nextInt(super.getNbCells());
             int index =  super.getIndexes()[random];
             for (int i = 0; i < fullIndexes.size(); i++) {
-                //if (position.getCells()[super.getIndexes()[i]] != 0){ // >0
                 State newState = simulateTurn(fullIndexes.get(i), state.clone(),true);
-                double newScore = miniMax(newState,depth - 1,alpha,beta,false);
+                int newScore = miniMax(newState,depth - 1,alpha,beta,false)[1];
                 if (newScore > value){
                     value = newScore;
                     //index = fullIndexes.get(i);
+                    tuple[0] = fullIndexes.get(i);
+                    tuple[1] = (int) value;
                 }
                 alpha = Math.max(alpha , value);//pruning
                 if (alpha >= beta){
                     break;
                 }
-                index = fullIndexes.get(i);
             }
-            return index;
+            return tuple;
         }
         else {
             double value = Double.POSITIVE_INFINITY;
@@ -121,29 +138,28 @@ public class MiniMaxStrategy extends Intelligence{
             int random  =  super.getRandom().nextInt(super.getNbCells());
             int index =  super.getIndexes()[random];
             for (int i = 0; i < fullIndexes.size(); i++) {
-                //if (position.getCells()[super.getIndexes()[i]] != 0){ // >0
                 State newState = simulateTurn(fullIndexes.get(i), state.clone(),false);
-                double newScore = miniMax(newState,depth - 1,alpha,beta,true);
+                int newScore = miniMax(newState,depth - 1,alpha,beta,true)[1];
                 if (newScore < value){
                     value = newScore;
                     //index = fullIndexes.get(i);
+                    tuple[0] = fullIndexes.get(i);
+                    tuple[1] = (int) value;
                 }
                 beta = Math.min(beta , value);
                 if (alpha >= beta){
                     break;
                 }
-                index = fullIndexes.get(i);
             }
-            return index;
+            return tuple;
         }
     }
     @Override
     public int chooseCell(State state) {//@TODO depth 1 ça marche meme avec 1000 partie so ?
         this.currentState = state;
-        int miniMax = miniMax(currentState.clone(), 6,Double.NEGATIVE_INFINITY,Double.POSITIVE_INFINITY,true);
-        return miniMax;
+        int[] miniMax = miniMax(currentState.clone(), 6,Double.NEGATIVE_INFINITY,Double.POSITIVE_INFINITY,true);
+        return miniMax[0];
     }
-
 
     @Override
     public String toString() {
