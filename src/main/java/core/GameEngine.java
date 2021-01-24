@@ -237,8 +237,11 @@ public class GameEngine {
         System.out.println(Colors.BLUE);
         System.out.println("********************************* FIN DU JEU ***********************************************");
 
-        String printEndGameReason = "Le nombre de graines actuelles en jeu est inférieurs à 8. ";
-        if (this.seedsPlayerCells(this.computer) == 0){
+        String printEndGameReason = "";
+        if(nbSeedsInGame < 8 ) {
+            printEndGameReason = "Le nombre de graines actuelles en jeu est inférieurs à 8. ";
+        }
+        else if (this.seedsPlayerCells(this.computer) == 0){
             this.player.addSeeds(this.nbSeedsInGame);
             this.nbSeedsInGame = 0;
             printEndGameReason = "Le joueur" + computer.toString() + computer.getPlayerNumber() + " a été affamé. " ;
