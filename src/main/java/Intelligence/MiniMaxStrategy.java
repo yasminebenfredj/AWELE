@@ -140,7 +140,7 @@ public class MiniMaxStrategy extends Intelligence{
     @Override
     public int chooseCell(State state) {//@TODO depth 1 ça marche meme avec 1000 partie so ?
         this.currentState = state;
-        int miniMax = miniMax(currentState.clone(), 3,Double.NEGATIVE_INFINITY,Double.POSITIVE_INFINITY,true);
+        int miniMax = miniMax(currentState.clone(), 6,Double.NEGATIVE_INFINITY,Double.POSITIVE_INFINITY,true);
         return miniMax;
     }
 

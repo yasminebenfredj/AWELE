@@ -3,6 +3,8 @@ package core;
 import Exceptions.WrongMoveException;
 import utility.Colors;
 
+import java.io.*;
+
 public class GameEngine {
     int nbCells;
     final int nbSeeds;
@@ -12,7 +14,6 @@ public class GameEngine {
     public int nbSeedsInGame;
     public final int totalNbSeed ;
     private boolean isMerged ;
-
     public GameEngine(int nbCells , int nbSeeds){
         this.isMerged = false ;
         this.nbCells = nbCells;
@@ -45,7 +46,7 @@ public class GameEngine {
         int i = 1;
 
 
-        while (!this.endOfGame() ) {
+        while (!this.endOfGame() && this.seedsPlayerCells(this.computer) != 0) {
             System.out.println("\n <<<<< Tour N°  "+ i +" >>>>> ");
 
             checkMerge();
@@ -54,7 +55,7 @@ public class GameEngine {
             System.out.println("\n      *** Joueur " + computer.getPlayerNumber() + " -" + computer.toString()  + "-*** ");
             playTurn(computer);
 
-            if(this.endOfGame()) {break;}
+            if(this.endOfGame() || this.seedsPlayerCells(this.player) == 0) {break;}
             checkMerge();
 
             printTable();
@@ -89,6 +90,18 @@ public class GameEngine {
         long startTime = System.currentTimeMillis();
 
         int choice = player.chooseCell(new State(player.getPlayerNumber(),this.clone()));  // indice de la case choisi
+
+        if(player.isComputer()) {
+            try {
+                FileWriter chartFile = new FileWriter("src/main/resultat.txt", true);
+                chartFile.write(choice+1+"\n");
+                chartFile.close();
+            } catch (IOException ioe) {
+                System.err.println(ioe.getMessage());
+            }
+
+        }
+
         long endTime = System.currentTimeMillis();
         long timeElapsed = endTime - startTime;
         System.out.println("Temps de reflexion : " + timeElapsed + "ms");
@@ -210,10 +223,9 @@ public class GameEngine {
      */
     public boolean endOfGame() {
         boolean currentSeedsInCells = this.nbSeedsInGame < 8 ;
-        boolean seedsInComputerCells = this.seedsPlayerCells(this.computer) == 0 ;
-        boolean seedsInPlayerCells = this.seedsPlayerCells(this.player) == 0 ;
-        return currentSeedsInCells || seedsInComputerCells || seedsInPlayerCells ;
+        return currentSeedsInCells ;
     }
+
     /**
      * Cette methode permet de terminer la partie :
      * 1) afficher la raison de la fin
