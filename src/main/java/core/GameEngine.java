@@ -86,7 +86,13 @@ public class GameEngine {
      * @param player le joueur qui joue le tour
      */
     public void playTurn (Player player) {
+        long startTime = System.currentTimeMillis();
+
         int choice = player.chooseCell(new State(player.getPlayerNumber(),this.clone()));  // indice de la case choisi
+        long endTime = System.currentTimeMillis();
+        long timeElapsed = endTime - startTime;
+        System.out.println("Temps de reflexion : " + timeElapsed + "ms");
+
         checkValidate(choice);
         int nbSeedsIn = this.cells[choice]; // nombre de graines dans la case choisi
         this.cells[choice] = 0 ; // on prend tous les graines de la case choisi pour jouer un tour
@@ -172,11 +178,11 @@ public class GameEngine {
      * @param currentPosition
      * @return
      */
-    public static int nextPosition(int currentPosition, int nbCells,int initialPosition) {
-        if (currentPosition + 1 == initialPosition){
+    public static int nextPosition(int currentPosition, int nbCells, int initialPosition) {
+        if ((currentPosition + 1) % (nbCells * 2) == initialPosition){
             return (currentPosition + 2 ) % (nbCells * 2);
         }
-        return (currentPosition +1 )% (nbCells * 2);
+        return (currentPosition + 1 )% (nbCells * 2);
     }
 
     /**
@@ -186,8 +192,8 @@ public class GameEngine {
      * @param currentPosition
      * @return
      */
-    public static int precedentPosition(int currentPosition, int nbCells) {
-        int previousPosition = (currentPosition - 1 )% (nbCells * 2) ;
+    public static int precedentPosition(int currentPosition, int nbCells ) {
+        int previousPosition = (currentPosition - 1 ) % (nbCells * 2) ;
         if (previousPosition < 0 ) {
             previousPosition += nbCells*2;
         }
@@ -349,7 +355,6 @@ public class GameEngine {
     public int getNbSeeds() {
         return nbSeeds;
     }
-
     @Override
     public GameEngine clone()
     {
@@ -362,5 +367,4 @@ public class GameEngine {
         return gameEngine;
 
     }
-
 }
