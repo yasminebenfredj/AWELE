@@ -114,14 +114,11 @@ public class MiniMaxStrategy extends Intelligence{
         if (maximizingPlayer){
             double value = Double.NEGATIVE_INFINITY;
             ArrayList<Integer> fullIndexes = super.allPossibilities(super.getIndexes(),state.getGame().getCells());
-            int random  =  super.getRandom().nextInt(super.getNbCells());
-            int index =  super.getIndexes()[random];
             for (int i = 0; i < fullIndexes.size(); i++) {
                 State newState = simulateTurn(fullIndexes.get(i), state.clone(),true);
                 int newScore = miniMax(newState,depth - 1,alpha,beta,false)[1];
                 if (newScore > value){
                     value = newScore;
-                    //index = fullIndexes.get(i);
                     tuple[0] = fullIndexes.get(i);
                     tuple[1] = (int) value;
                 }
@@ -135,18 +132,15 @@ public class MiniMaxStrategy extends Intelligence{
         else {
             double value = Double.POSITIVE_INFINITY;
             ArrayList<Integer> fullIndexes = super.allPossibilities(super.getOtherIndexes(),state.getGame().getCells());
-            int random  =  super.getRandom().nextInt(super.getNbCells());
-            int index =  super.getIndexes()[random];
             for (int i = 0; i < fullIndexes.size(); i++) {
                 State newState = simulateTurn(fullIndexes.get(i), state.clone(),false);
                 int newScore = miniMax(newState,depth - 1,alpha,beta,true)[1];
                 if (newScore < value){
                     value = newScore;
-                    //index = fullIndexes.get(i);
                     tuple[0] = fullIndexes.get(i);
                     tuple[1] = (int) value;
                 }
-                beta = Math.min(beta , value);
+                beta = Math.min(beta , value);//pruning
                 if (alpha >= beta){
                     break;
                 }
