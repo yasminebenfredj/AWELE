@@ -19,11 +19,9 @@ public class Player {
         this.nbCells = nbCellsPlayer;
         this.initIndexes(nbCells);
         this.initIntelligence();
-
     }
-    public Player(){
 
-    }
+    public Player(){}
 
     /**
      * Cette methode va permettre d'initialiser l'inteligence que va adapter le joueur:
@@ -35,10 +33,10 @@ public class Player {
      */
     private void initIntelligence() {
         if(isComputer) {
-            this.intelligence = new MiniMaxStrategy(nbCells, myIndexes, otherIndexes);
+            this.intelligence = new AlphaBetaStrategy(nbCells, myIndexes, otherIndexes);
         }
         else {
-            this.intelligence = new AlphaBetaStrategy(nbCells, myIndexes, otherIndexes);
+            this.intelligence = new MiniMaxStrategy(nbCells, myIndexes, otherIndexes);
         }
     }
 

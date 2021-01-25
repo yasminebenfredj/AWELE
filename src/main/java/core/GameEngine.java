@@ -3,6 +3,7 @@ package core;
 import Exceptions.WrongMoveException;
 import utility.Colors;
 
+import java.awt.*;
 import java.io.*;
 
 public class GameEngine {
@@ -93,7 +94,7 @@ public class GameEngine {
 
         if(player.isComputer()) {
             try {
-                FileWriter chartFile = new FileWriter("src/main/resultat.txt", true);
+                FileWriter chartFile = new FileWriter("src/main/historique.txt", true);
                 chartFile.write(choice+1+"\n");
                 chartFile.close();
             } catch (IOException ioe) {
@@ -110,7 +111,7 @@ public class GameEngine {
         int nbSeedsIn = this.cells[choice]; // nombre de graines dans la case choisi
         this.cells[choice] = 0 ; // on prend tous les graines de la case choisi pour jouer un tour
 
-        System.out.println("Ramasse "+ nbSeedsIn +" graines de la case N° : " + (choice + 1) + " .");
+        System.out.println("Ramasse "+ nbSeedsIn +" graines de la case N° : " +Colors.RED+ (choice + 1) + Colors.RESET +" .");
 
         int initialPosition = choice;
         int position = nextPosition(choice, this.nbCells,this.nbCells*2+1) ;//this.nbCells*2+1 :n'importe quel nombre  > nbCells*2 marche
@@ -176,7 +177,7 @@ public class GameEngine {
      * @param player un joueur
      * @return le nombre de graines dans les cases du joueur
      */
-    private int seedsPlayerCells(Player player) {
+    public int seedsPlayerCells(Player player) {
         int seedsInPlayerCells = 0 ;
         for (int i = 0; i < player.getMyIndexes().length; i++) {
                 seedsInPlayerCells += this.cells[player.getMyIndexes()[i]] ;
