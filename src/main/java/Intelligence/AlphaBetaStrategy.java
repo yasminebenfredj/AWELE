@@ -7,8 +7,7 @@ import java.util.ArrayList;
 
 public class AlphaBetaStrategy extends Intelligence {
     private State currentState;
-    private int maxDepth = 6;
-    private int initScore = 0;
+    private int maxDepth = 10;
 
     private int MAX = 10000;
     private int MIN = -10000;
@@ -21,12 +20,23 @@ public class AlphaBetaStrategy extends Intelligence {
     public int chooseCell(State state) {
 
         this.currentState = state.clone();
-        initScore = state.getMe().getSeeds();
+        evaluateDeathMax();
+
         int[] solution = playAlphaBeta(0,MIN,MAX,true,this.currentState);
-       //System.out.println(solution[0] + " " + solution[1]);
+        System.out.println(maxDepth);
         return solution[0];
     }
 
+    private void evaluateDeathMax()
+    {
+        if (currentState.getGame().isMerged() && maxDepth<20) maxDepth = 18;
+
+        if(super.allPossibilities(super.getIndexes(),
+                currentState.getGame().getCells()).size() < 3  && maxDepth<18 ) maxDepth +=2;
+        if(super.allPossibilities(super.getIndexes(),
+                currentState.getGame().getCells()).size() > 3  && maxDepth>8 ) maxDepth -=2;
+
+    }
 
     private int[] playAlphaBeta(int depth,int alpha, int beta, boolean max,  State state) {
         //merger
@@ -35,6 +45,8 @@ public class AlphaBetaStrategy extends Intelligence {
                 state.getGame().nbSeedsInGame <= state.getGame().totalNbSeed/2){
             state.getGame().mergeCells(6);
             state.getGame().setIsMerged();
+            depth-= 3;
+
         }
 
         int[] indexScore = new int[2];
@@ -50,10 +62,7 @@ public class AlphaBetaStrategy extends Intelligence {
             indexScore[1] = value * 3;
             return indexScore;
         }
-        if(state.getGame().seedsPlayerCells(state.getMe()) == 0 && max) {
-            indexScore[1] = MIN;
-            return indexScore;
-        }
+
 
         //FIN evaluation
 
@@ -63,6 +72,7 @@ public class AlphaBetaStrategy extends Intelligence {
             ArrayList<Integer> nodes = super.allPossibilities(super.getIndexes(),state.getGame().getCells());
            //System.out.println(nodes);
             //if(nodes.size() == 0) indexScore[1]=MIN;
+
             for (int i = 0; i < nodes.size() ; i++) {
                //System.out.println("Index jouer " + nodes.get(i));
 
