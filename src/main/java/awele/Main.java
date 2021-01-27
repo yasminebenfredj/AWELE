@@ -22,7 +22,7 @@ public class Main {
         if (statMode){
             for (int i = 0; i < 100; i++) {
                 game.play();
-                int seedsDifference = game.computer.getSeeds() - game.player.getSeeds();
+                int seedsDifference = game.state.getComputer().getSeeds() - game.state.getPlayer().getSeeds();
                 if (seedsDifference > 0){
                     computerWins ++;
                 }
@@ -32,7 +32,7 @@ public class Main {
                 else {
                     draw ++;
                 }
-                averageScore += game.computer.getSeeds();
+                averageScore += game.state.getComputer().getSeeds();
                 game = new GameEngine(nbCells,nbSeeds);
             }
             System.out.println("Computer winrate : " + computerWins);

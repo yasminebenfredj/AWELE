@@ -16,17 +16,17 @@ public class MiniMaxStrategy extends Intelligence{
     }
 
     private State simulateTurn(int choice,State state,boolean isComputer){
-        int[] cells = state.getGame().getCells().clone();
+        int[] cells = state.getCells().clone();
         int nbSeedsIn = cells[choice];
         cells[choice] = 0 ;
-        state.getGame().setCells(cells);
+        state.setCells(cells);
 
         int initialPosition = choice;
-        int position = GameEngine.nextPosition(choice, state.getGame().getNbCells(),initialPosition) ;//this.nbCells*2+1 :n'importe quel nombre  > nbCells*2 marche //
+        int position = GameEngine.nextPosition(choice, state.getNbCells(),initialPosition) ;//this.nbCells*2+1 :n'importe quel nombre  > nbCells*2 marche //
         for (int i = 1  ; i <= nbSeedsIn ; i++ ) {
             cells[position] += 1 ;
             choice = position;
-            position = GameEngine.nextPosition(position, state.getGame().getNbCells(),initialPosition);//
+            position = GameEngine.nextPosition(position, state.getNbCells(),initialPosition);//
         }
         return this.simulateCollectSeeds(cells,choice,state,isComputer);
     }
@@ -36,16 +36,16 @@ public class MiniMaxStrategy extends Intelligence{
             int gains = cells[currentIndex];
             if (isComputer){
                 state.getMe().addSeeds(gains);
-                state.getGame().nbSeedsInGame -= gains;
+                state.setNbSeedsInGame(state.getNbSeedsInGame()-gains) ;
             }
             else {
                 state.getOtherPlayer().addSeeds(gains);
-                state.getGame().nbSeedsInGame -= gains;
+                state.setNbSeedsInGame(state.getNbSeedsInGame()-gains) ;
             }
             cells[currentIndex] = 0;
-            currentIndex = GameEngine.precedentPosition(currentIndex, state.getGame().getNbCells());
+            currentIndex = GameEngine.precedentPosition(currentIndex, state.getNbCells());
         }
-        state.getGame().setCells(cells);
+        state.setCells(cells);
         return state;
     }
 
@@ -75,25 +75,25 @@ public class MiniMaxStrategy extends Intelligence{
     }
 
     private int[] miniMax(State state, int depth, double alpha, double beta, boolean maximizingPlayer) {
-        if (!state.getGame().isMerged() && state.getGame().nbSeedsInGame <= state.getGame().totalNbSeed/2){
-            state.getGame().mergeCells(6);
-            state.getGame().setIsMerged();
+        if (!state.isMerged() && state.getNbSeedsInGame() <= state.getTotalNbSeed()/2){
+            state.mergeCells(6);
+            state.setIsMerged();
         }
 
         int[] tuple = new int[2];//0:index 1:résultat de la méthode d'évaluation
 
-        /*if (depth == 0 || state.getGame().endOfGame()){
-            if (state.getGame().endOfGame()){
-                int seedsDifference = state.getGame().computer.getSeeds() - state.getGame().player.getSeeds();
+        /*if (depth == 0 || state.endOfGame()){
+            if (state.endOfGame()){
+                int seedsDifference = state.computer.getSeeds() - state.player.getSeeds();
                 if (seedsDifference > 0){//computer wins
-                    tuple[1] = state.getGame().getNbCells() * 2 *  state.getGame().getNbSeeds();
+                    tuple[1] = state.getNbCells() * 2 *  state.getNbSeeds();
                     return tuple;
-                    //return state.getGame().getNbCells() * 2 *  state.getGame().getNbSeeds();//96
+                    //return state.getNbCells() * 2 *  state.getNbSeeds();//96
                 }
                 else if (seedsDifference < 0){//player wins
-                    tuple[1] = -state.getGame().getNbCells() * 2 *  state.getGame().getNbSeeds();
+                    tuple[1] = -state.getNbCells() * 2 *  state.getNbSeeds();
                     return tuple;
-                    //return -state.getGame().getNbCells() * 2 *  state.getGame().getNbSeeds();//-96
+                    //return -state.getNbCells() * 2 *  state.getNbSeeds();//-96
                 }
                 else {//draw
                     tuple[1] = 0;
@@ -107,13 +107,13 @@ public class MiniMaxStrategy extends Intelligence{
                 //return evaluation(state); //@TODO update currentPosition when needed in the coming code
             }
         }*/
-        if (depth == 0 || state.getGame().endOfGame()){
+        if (depth == 0 || state.endOfGame()){
                 tuple[1] = evaluation(state);
                 return tuple;
         }
         if (maximizingPlayer){
             double value = Double.NEGATIVE_INFINITY;
-            ArrayList<Integer> fullIndexes = super.allPossibilities(super.getIndexes(),state.getGame().getCells());
+            ArrayList<Integer> fullIndexes = super.allPossibilities(super.getIndexes(),state.getCells());
             for (int i = 0; i < fullIndexes.size(); i++) {
                 State newState = simulateTurn(fullIndexes.get(i), state.clone(),true);
                 int newScore = miniMax(newState,depth - 1,alpha,beta,false)[1];
@@ -131,7 +131,7 @@ public class MiniMaxStrategy extends Intelligence{
         }
         else {
             double value = Double.POSITIVE_INFINITY;
-            ArrayList<Integer> fullIndexes = super.allPossibilities(super.getOtherIndexes(),state.getGame().getCells());
+            ArrayList<Integer> fullIndexes = super.allPossibilities(super.getOtherIndexes(),state.getCells());
             for (int i = 0; i < fullIndexes.size(); i++) {
                 State newState = simulateTurn(fullIndexes.get(i), state.clone(),false);
                 int newScore = miniMax(newState,depth - 1,alpha,beta,true)[1];
@@ -151,7 +151,7 @@ public class MiniMaxStrategy extends Intelligence{
     @Override
     public int chooseCell(State state) {//@TODO depth 1 ça marche meme avec 1000 partie so ?
         this.currentState = state;
-        int[] miniMax = miniMax(currentState.clone(), 6,Double.NEGATIVE_INFINITY,Double.POSITIVE_INFINITY,true);
+        int[] miniMax = miniMax(currentState.clone(), 10,Double.NEGATIVE_INFINITY,Double.POSITIVE_INFINITY,true);
         return miniMax[0];
     }
 

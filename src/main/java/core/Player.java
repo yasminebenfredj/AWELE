@@ -7,7 +7,6 @@ public class Player {
     private int seeds; // seeds taken by the player
     private int[] myIndexes;
     private int[] otherIndexes;
-
     private boolean isComputer;
     private int nbCells;
     private int playerNumber; // 1 ou 2
@@ -33,7 +32,7 @@ public class Player {
      */
     private void initIntelligence() {
         if(isComputer) {
-            this.intelligence = new AlphaBetaStrategy(nbCells, myIndexes, otherIndexes);
+            this.intelligence = new MiniMaxStrategy(nbCells, myIndexes, otherIndexes);
         }
         else {
             this.intelligence = new MiniMaxStrategy(nbCells, myIndexes, otherIndexes);
@@ -122,7 +121,6 @@ public class Player {
         player.playerNumber = this.playerNumber ;
         player.seeds = this.seeds  ;
         player.isComputer = this.isComputer ;
-        player.nbCells = this.nbCells ;
         player.myIndexes = this.myIndexes.clone();
         player.intelligence = this.intelligence;
         player.intelligence.setIndexes(this.myIndexes.clone());
