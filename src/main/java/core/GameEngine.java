@@ -7,31 +7,10 @@ import java.awt.*;
 import java.io.*;
 
 public class GameEngine {
-    int nbCells;
-    final int nbSeeds;
-    public Player player ;
-    public Player computer ;
-    private int[] cells ;
-    public int nbSeedsInGame;
-    public final int totalNbSeed ;
-    private boolean isMerged ;
+    public State state ;
+
     public GameEngine(int nbCells , int nbSeeds){
-        this.isMerged = false ;
-        this.nbCells = nbCells;
-        this.nbSeeds = nbSeeds;
-        this.computer = new Player(1,nbCells,0,true);
-        this.player =  new Player(2,nbCells,0,false);
-        this.nbSeedsInGame = this.nbSeeds * this.nbCells * 2;
-        this.totalNbSeed = this.nbSeeds * this.nbCells * 2 ;
-        cellsGeneration();
-
-    }
-    public GameEngine(int nbCells , int nbSeeds, boolean isMerged){
-        this.isMerged = isMerged;
-        this.nbCells = nbCells;
-        this.nbSeeds = nbSeeds;
-        this.totalNbSeed = this.nbSeeds * this.nbCells * 2 ;
-
+        this.state = new State(nbCells, nbSeeds);
     }
 
     /**
@@ -47,22 +26,22 @@ public class GameEngine {
         int i = 1;
 
 
-        while (!this.endOfGame() && this.seedsPlayerCells(this.computer) != 0) {
+        while (!state.endOfGame() && state.seedsPlayerCells(state.getComputer()) != 0) {
             System.out.println("\n <<<<< Tour N°  "+ i +" >>>>> ");
 
             checkMerge();
 
             printTable();
-            System.out.println("\n      *** Joueur " + computer.getPlayerNumber() + " -" + computer.toString()  + "-*** ");
-            playTurn(computer);
+            System.out.println("\n      *** Joueur " + state.getComputer().getPlayerNumber() + " -" + state.getComputer().toString()  + "-*** ");
+            playTurn(state.getComputer());
 
-            if(this.endOfGame() || this.seedsPlayerCells(this.player) == 0) {break;}
+            if(state.endOfGame() || state.seedsPlayerCells(state.getPlayer()) == 0) {break;}
             checkMerge();
 
             printTable();
 
-            System.out.println("\n      *** Joueur " + player.getPlayerNumber() + " -" + player.toString()  + "-*** ");
-            playTurn(player);
+            System.out.println("\n      *** Joueur " + state.getPlayer().getPlayerNumber() + " -" + state.getPlayer().toString()  + "-*** ");
+            playTurn(state.getPlayer());
 
             printScore();
             i++;
@@ -72,10 +51,10 @@ public class GameEngine {
 
     private void checkMerge()
     {
-        if (!isMerged && this.nbSeedsInGame <= this.totalNbSeed/2) {
-            System.out.println("\n<<< *** >>>\nIl ne reste plus que "+ this.nbSeedsInGame +" graines dans le jeu. Le plateau est merger. \n<<< *** >>>\n");
-            this.mergeCells(6);
-            isMerged = true ;
+        if (!state.isMerged() && state.getNbSeedsInGame() <= state.getTotalNbSeed()/2) {
+            System.out.println("\n<<< *** >>>\nIl ne reste plus que "+ state.getNbSeedsInGame() +" graines dans le jeu. Le plateau est merger. \n<<< *** >>>\n");
+            state.mergeCells(6);
+            state.setIsMerged() ;
         }
     }
 
@@ -89,8 +68,8 @@ public class GameEngine {
      */
     public void playTurn (Player player) {
         long startTime = System.currentTimeMillis();
-
-        int choice = player.chooseCell(new State(player.getPlayerNumber(),this.clone()));  // indice de la case choisi
+        state.setPlayerNumber( player.getPlayerNumber());
+        int choice = player.chooseCell(state.clone());  // indice de la case choisi
 
         if(player.isComputer()) {
             try {
@@ -108,19 +87,19 @@ public class GameEngine {
         System.out.println("Temps de reflexion : " + timeElapsed + "ms");
 
         checkValidate(choice, player);
-        int nbSeedsIn = this.cells[choice]; // nombre de graines dans la case choisi
-        this.cells[choice] = 0 ; // on prend tous les graines de la case choisi pour jouer un tour
+        int nbSeedsIn = state.getCells()[choice]; // nombre de graines dans la case choisi
+        state.getCells()[choice] = 0 ; // on prend tous les graines de la case choisi pour jouer un tour
 
         System.out.println("Ramasse "+ nbSeedsIn +" graines de la case N° : " +Colors.RED+ (choice + 1) + Colors.RESET +" .");
 
         int initialPosition = choice;
-        int position = nextPosition(choice, this.nbCells,this.nbCells*2+1) ;//this.nbCells*2+1 :n'importe quel nombre  > nbCells*2 marche
+        int position = nextPosition(choice, state.getNbCells(),state.getNbCells()*2+1) ;//this.nbCells*2+1 :n'importe quel nombre  > nbCells*2 marche
         for (int i = 1  ; i <= nbSeedsIn ; i++ ) {
 
-            this.cells[position] += 1 ;
+            state.getCells()[position] += 1 ;
             System.out.println("Ajoute 1 graine à la Case  N° : " + (position + 1) + " .");
             choice = position;
-            position = nextPosition(position, this.nbCells,initialPosition);
+            position = nextPosition(position, state.getNbCells(),initialPosition);
 
         }
         collectSeeds(player , choice); //on collecte les graines à partir de la dernière case semer (qui est choice)
@@ -132,58 +111,18 @@ public class GameEngine {
      * @param player le joueur qui vient de distribuer ses graines, et le meme qui va en collecter
      */
     public void collectSeeds(Player player , int currentIndex){
-        while (this.cells[currentIndex] == 2 || this.cells[currentIndex] == 3 ) {
-            int gains = this.cells[currentIndex] ;
+        while (state.getCells()[currentIndex] == 2 || state.getCells()[currentIndex] == 3 ) {
+            int gains = state.getCells()[currentIndex] ;
 
             System.out.println(">> Récolte " + gains + " graines de la case N° " + (currentIndex + 1));
             player.addSeeds(gains);
-            this.nbSeedsInGame -= gains;
-            this.cells[currentIndex] = 0;
-            currentIndex = precedentPosition(currentIndex, this.nbCells);
+            state.setNbSeedsInGame(state.getNbSeedsInGame()-gains) ;
+            state.getCells()[currentIndex] = 0;
+            currentIndex = precedentPosition(currentIndex, state.getNbCells());
         }
-        System.out.println(">>> Case N° " + ( currentIndex + 1 )+" contient " + this.cells[currentIndex] + " graines. Pas de récolte. \n");
+        System.out.println(">>> Case N° " + ( currentIndex + 1 )+" contient " + state.getCells()[currentIndex] + " graines. Pas de récolte. \n");
     }
 
-    /**
-     * Cette méthode merge les cases du jeu pour passer d'un plateau à 12 cases à un plateau à 6 cases
-     * @param newNbCells le nouveau nombre de cellule
-     */
-    public void mergeCells(int newNbCells) {
-        int[] newCells = new int[newNbCells*2] ;
-        for (int i = 0; i < this.nbCells  ; i++ ) {
-            newCells[i] = this.cells[i*2] + this.cells[i*2 + 1] ;
-        }
-        this.nbCells = newNbCells;
-        this.cells = newCells;
-
-        this.player.mergeCells(newNbCells);
-        this.computer.mergeCells(newNbCells);
-
-    }
-
-    /**
-     * Cette méthode initialise les cases et met nbSeeds graines dans chaque case
-     */
-    private  void cellsGeneration() {
-        this.cells = new int[this.nbCells * 2] ;
-        for (int i = 0; i < this.nbCells * 2  ; i++) {
-            this.cells[i] = this.nbSeeds;
-        }
-    }
-
-    /**
-     * This method computes the number of seeds in the cells belonging to a given player
-     * Cette méthode calcule le nombre de graines dans les cases d'un joueur
-     * @param player un joueur
-     * @return le nombre de graines dans les cases du joueur
-     */
-    public int seedsPlayerCells(Player player) {
-        int seedsInPlayerCells = 0 ;
-        for (int i = 0; i < player.getMyIndexes().length; i++) {
-                seedsInPlayerCells += this.cells[player.getMyIndexes()[i]] ;
-        }
-        return seedsInPlayerCells ;
-    }
 
     /**
      * Cette methode permet de donner la case suivante dans laquel le joueur va poser une graine
@@ -214,18 +153,7 @@ public class GameEngine {
         return previousPosition;
     }
 
-    /**
-     * Le jeu continue tant que:
-     * 1) Le nombre des graine en jeu est supérieur ou égal à 8
-     * 2) Aucun des joueurs n'est affamer
-     * 3) Aucun des joueur ne possède + que la moitié des graines (ici 48)
-     *
-     * @return
-     */
-    public boolean endOfGame() {
-        boolean currentSeedsInCells = this.nbSeedsInGame < 8 ;
-        return currentSeedsInCells ;
-    }
+
 
     /**
      * Cette methode permet de terminer la partie :
@@ -239,19 +167,19 @@ public class GameEngine {
         System.out.println("********************************* FIN DU JEU ***********************************************");
 
         String printEndGameReason = "";
-        if(nbSeedsInGame < 8 ) {
+        if(state.getNbSeedsInGame() < 8 ) {
             printEndGameReason = "Le nombre de graines actuelles en jeu est inférieurs à 8. ";
         }
-        else if (this.seedsPlayerCells(this.computer) == 0){
-            this.player.addSeeds(this.nbSeedsInGame);
-            this.nbSeedsInGame = 0;
-            printEndGameReason = "Le joueur" + computer.toString() + computer.getPlayerNumber() + " a été affamé. " ;
+        else if (state.seedsPlayerCells(state.getComputer()) == 0){
+            state.getPlayer().addSeeds(state.getNbSeedsInGame());
+            state.setNbSeedsInGame(0);
+            printEndGameReason = "Le joueur" + state.getComputer().toString() + state.getComputer().getPlayerNumber() + " a été affamé. " ;
 
         }
-        else if (this.seedsPlayerCells(this.player) == 0){
-            this.computer.addSeeds(this.nbSeedsInGame);
-            this.nbSeedsInGame = 0;
-            printEndGameReason = "Le joueur" + player.toString() + player.getPlayerNumber() + " a été affamé. " ;
+        else if (state.seedsPlayerCells(state.getPlayer()) == 0){
+            state.getComputer().addSeeds(state.getNbSeedsInGame());
+            state.setNbSeedsInGame(0);
+            printEndGameReason = "Le joueur" + state.getPlayer().toString() + state.getPlayer().getPlayerNumber() + " a été affamé. " ;
 
         }
         System.out.println(">> " + printEndGameReason);
@@ -267,19 +195,19 @@ public class GameEngine {
         System.out.print(Colors.YELLOW);
         System.out.println("********************************** GAGNANT ************************************************** ");
 
-        int seedsDifference = computer.getSeeds() - player.getSeeds() ;
+        int seedsDifference = state.getComputer().getSeeds() - state.getPlayer().getSeeds() ;
         if (seedsDifference > 0){
-            System.out.println(">> Joueur " + computer.getPlayerNumber() + Colors.PARTY + computer.toString() + Colors.PARTY+ " remporte la partie" );
+            System.out.println(">> Joueur " + state.getComputer().getPlayerNumber() + Colors.PARTY + state.getComputer().toString() + Colors.PARTY+ " remporte la partie" );
         }
         else if (seedsDifference < 0){
-            System.out.println(">> Joueur " + player.getPlayerNumber() + Colors.PARTY + player.toString() + Colors.PARTY+ " remporte la partie" );
+            System.out.println(">> Joueur " + state.getPlayer().getPlayerNumber() + Colors.PARTY + state.getPlayer().toString() + Colors.PARTY+ " remporte la partie" );
         }
         else {
-            System.out.println(" Égalité entre le joueur " + computer.toString() + " et le joueur " + player.toString()+"\n");
+            System.out.println(" Égalité entre le joueur " + state.getComputer().toString() + " et le joueur " + state.getPlayer().toString()+"\n");
         }
         System.out.println("******************************* SCORE FINAL ************************************************");
-        System.out.println(" Joueur " + computer.getPlayerNumber() + " " + computer.toString() + " : " + computer.getSeeds());
-        System.out.println(" Joueur " + player.getPlayerNumber() + " " +player.toString() + " : " + player.getSeeds());
+        System.out.println(" Joueur " + state.getComputer().getPlayerNumber() + " " + state.getComputer().toString() + " : " + state.getComputer().getSeeds());
+        System.out.println(" Joueur " + state.getPlayer().getPlayerNumber() + " " + state.getPlayer().toString() + " : " + state.getPlayer().getSeeds());
         System.out.println("******************************************************************************************** ");
 
         System.out.println(Colors.RESET);
@@ -294,20 +222,20 @@ public class GameEngine {
         String seeds1 = "Nombre de graine par case :  ";
         String indexes2 = "Numéro des cases          :  ";
         String seeds2 = "Nombre de graine par case :  ";
-        for (int i = 0; i < nbCells  ; i++) {
+        for (int i = 0; i < state.getNbCells()  ; i++) {
             barre += "______";
             indexes1 += "|__"+( i+1 )+"_|";
 
             if (i < 9 ) {
-                seeds1 += "|  "+ this.cells[i]+" |";
+                seeds1 += "|  "+ state.getCells()[i]+" |";
             }else {
-                seeds1 += "|   "+ this.cells[i]+" |";
+                seeds1 += "|   "+ state.getCells()[i]+" |";
             }
 
         }
-        for (int i = nbCells * 2 -1 ; i >= nbCells  ; i--) {
+        for (int i = state.getNbCells() * 2 -1 ; i >= state.getNbCells()  ; i--) {
             indexes2 += "|_"+( i+1 )+"_|";
-            seeds2 += "|  "+ this.cells[i]+" |";
+            seeds2 += "|  "+ state.getCells()[i]+" |";
 
 
         }
@@ -330,8 +258,8 @@ public class GameEngine {
         System.out.println(Colors.RED +"________________________________");
         System.out.println(" < *** > SCORE ACTUELLE < *** > ");
 
-        System.out.println("Joueur " + computer.getPlayerNumber() + " " + computer.toString() + " : " + computer.getSeeds());
-        System.out.println("Joueur " + player.getPlayerNumber() + " " + player.toString() + " : " + player.getSeeds());
+        System.out.println("Joueur " + state.getComputer().getPlayerNumber() + " " + state.getComputer().toString() + " : " + state.getComputer().getSeeds());
+        System.out.println("Joueur " + state.getPlayer().getPlayerNumber() + " " + state.getPlayer().toString() + " : " + state.getPlayer().getSeeds());
         System.out.println("________________________________"+ Colors.RESET);
 
     }
@@ -341,7 +269,7 @@ public class GameEngine {
      * @param choice l'indice d ela cellule choisi
      */
     public void checkValidate( int choice, Player p ) {
-        if( this.cells[choice] == 0) {
+        if( state.getCells()[choice] == 0) {
             System.out.println(Colors.RED+ "FAUX PAS : UNE CASE VIDE A ÉTÉ CHOISI ! "+ Colors.RESET);
             //throw new WrongMoveException("Une case qui ne contient pas de graines a été choisi !") ;
             playTurn(p);
@@ -349,38 +277,12 @@ public class GameEngine {
 
     }
 
-    public boolean isMerged() {
-        return isMerged;
-    }
 
-    public void setIsMerged() {
-        isMerged = true;
-    }
-
-    public int[] getCells() {
-        return cells;
-    }
-
-    public void setCells(int[] cells) {
-        this.cells = cells;
-    }
-
-    public int getNbCells() {
-        return nbCells;
-    }
-
-    public int getNbSeeds() {
-        return nbSeeds;
-    }
     @Override
     public GameEngine clone()
     {
-        GameEngine gameEngine = new GameEngine(nbCells, nbSeeds, false);
-        gameEngine.player = player.clone();
-        gameEngine.computer = computer.clone();
-        gameEngine.nbSeedsInGame = nbSeedsInGame;
-        gameEngine.cells = this.cells.clone();
-        gameEngine.isMerged = isMerged;
+        GameEngine gameEngine = new GameEngine(state.getNbCells(), state.getNbSeeds());
+        gameEngine.state = state.clone();
         return gameEngine;
 
     }
