@@ -107,7 +107,7 @@ public class GameEngine {
         long timeElapsed = endTime - startTime;
         System.out.println("Temps de reflexion : " + timeElapsed + "ms");
 
-        checkValidate(choice);
+        checkValidate(choice, player);
         int nbSeedsIn = this.cells[choice]; // nombre de graines dans la case choisi
         this.cells[choice] = 0 ; // on prend tous les graines de la case choisi pour jouer un tour
 
@@ -340,10 +340,11 @@ public class GameEngine {
      * Cette methode va verifier qu'il y a des graine dans la cellule que le joueur souhaite jouer
      * @param choice l'indice d ela cellule choisi
      */
-    public void checkValidate( int choice ) {
+    public void checkValidate( int choice, Player p ) {
         if( this.cells[choice] == 0) {
-            System.out.println(Colors.RED+ "FAUX PAS : UNE CASE VIDE A ÉTÉ CHOISI ! JEU TERMINÉ ! "+ Colors.RESET);
-            throw new WrongMoveException("Une case qui ne contient pas de graines a été choisi !") ;
+            System.out.println(Colors.RED+ "FAUX PAS : UNE CASE VIDE A ÉTÉ CHOISI ! "+ Colors.RESET);
+            //throw new WrongMoveException("Une case qui ne contient pas de graines a été choisi !") ;
+            playTurn(p);
         }
 
     }

@@ -7,7 +7,9 @@ import java.util.ArrayList;
 
 public class AlphaBetaStrategy extends Intelligence {
     private State currentState;
-    private int maxDepth = 10;
+    private int maxDepth = 16;
+    private int currentDepth = 13;
+    private int minDepth = 11;
 
     private int MAX = 10000;
     private int MIN = -10000;
@@ -23,19 +25,20 @@ public class AlphaBetaStrategy extends Intelligence {
         evaluateDeathMax();
 
         int[] solution = playAlphaBeta(0,MIN,MAX,true,this.currentState);
-        System.out.println(maxDepth);
+        System.out.println(currentDepth + " max>>>>>");
+
+        //System.out.println(maxDepth);
         return solution[0];
     }
 
     private void evaluateDeathMax()
     {
-        if (currentState.getGame().isMerged() && maxDepth<20) maxDepth = 18;
+        if (currentState.getGame().isMerged()) currentDepth = maxDepth;
 
         if(super.allPossibilities(super.getIndexes(),
-                currentState.getGame().getCells()).size() < 3  && maxDepth<18 ) maxDepth +=2;
+                currentState.getGame().getCells()).size() < 5  && currentDepth < maxDepth ) currentDepth +=3;
         if(super.allPossibilities(super.getIndexes(),
-                currentState.getGame().getCells()).size() > 3  && maxDepth>8 ) maxDepth -=2;
-
+                currentState.getGame().getCells()).size() > 6  && currentDepth > minDepth ) currentDepth -=3;
     }
 
     private int[] playAlphaBeta(int depth,int alpha, int beta, boolean max,  State state) {
@@ -46,23 +49,26 @@ public class AlphaBetaStrategy extends Intelligence {
             state.getGame().mergeCells(6);
             state.getGame().setIsMerged();
             depth-= 3;
-
         }
 
         int[] indexScore = new int[2];
 
         // EVALUATION
-        if (depth == this.maxDepth ) {
+        if (depth == this.currentDepth) {
             value =  state.getMe().getSeeds() - state.getOtherPlayer().getSeeds();
             indexScore[1] = value;
             return indexScore;
         }
         if(state.getGame().endOfGame()) {
             value =  state.getMe().getSeeds() - state.getOtherPlayer().getSeeds();
-            indexScore[1] = value * 3;
+            indexScore[1] = value *3;
             return indexScore;
         }
-
+        if(state.getGame().seedsPlayerCells(state.getOtherPlayer()) == 0 && depth != 0)
+        {
+            indexScore[1] = MAX;
+            return indexScore;
+        }
 
         //FIN evaluation
 
@@ -71,7 +77,6 @@ public class AlphaBetaStrategy extends Intelligence {
             int best = this.MIN;
             ArrayList<Integer> nodes = super.allPossibilities(super.getIndexes(),state.getGame().getCells());
            //System.out.println(nodes);
-            //if(nodes.size() == 0) indexScore[1]=MIN;
 
             for (int i = 0; i < nodes.size() ; i++) {
                //System.out.println("Index jouer " + nodes.get(i));
@@ -88,7 +93,6 @@ public class AlphaBetaStrategy extends Intelligence {
 
                 alpha = Math.max(alpha, best);
 
-
                 if(beta <= alpha) {
                     //System.out.println("break "+ beta +" <= "+ alpha);
                     break;
@@ -103,7 +107,6 @@ public class AlphaBetaStrategy extends Intelligence {
             int best = this.MAX;
             ArrayList<Integer> nodes = super.allPossibilities(super.getOtherIndexes(),state.getGame().getCells());
            //System.out.println(nodes);
-            //if(nodes.size() == 0) indexScore[1]=MAX;
 
             for (int i = 0; i < nodes.size() ; i++) {
                //System.out.println("Index jouer " + nodes.get(i));
@@ -113,7 +116,6 @@ public class AlphaBetaStrategy extends Intelligence {
 
                 if(value < best){
                     best = value;
-                    indexScore[0] = nodes.get(i);
                     indexScore[1] = best;
                 }
 
@@ -124,7 +126,6 @@ public class AlphaBetaStrategy extends Intelligence {
                     //System.out.println("break "+ beta +" <= "+ alpha);
                     break;
                 }
-
             }
            //System.out.println(depth+" min>>>>>"+indexScore[0] + " " + indexScore[1]);
 
@@ -144,7 +145,6 @@ public class AlphaBetaStrategy extends Intelligence {
         //System.out.println(isMe + " me  : " + myState.getMe().getSeeds() +
          //        "  other Player  : " + myState.getOtherPlayer().getSeeds());
        //System.out.println(isMe + "  " + (myState.getMe().getSeeds() - myState.getOtherPlayer().getSeeds()));
-
 
         int[] cellules = myState.getGame().getCells().clone();
         int nbSeedsIn = cellules[coup];
