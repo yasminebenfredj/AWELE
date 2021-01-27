@@ -6,9 +6,9 @@ import core.State;
 import java.util.ArrayList;
 
 public class AlphaBetaStrategy extends Intelligence {
-    private int maxDepth = 16;
-    private int currentDepth = 13;
-    private int minDepth = 11;
+    private int maxDepth = 18;
+    private int currentDepth = 9;
+    private int minDepth = 9;
 
     private int MAX = 10000;
     private int MIN = -10000;
@@ -31,12 +31,23 @@ public class AlphaBetaStrategy extends Intelligence {
 
     private void evaluateDeathMax(State currentState)
     {
-        if (currentState.isMerged()) currentDepth = maxDepth;
+        if (currentState.isMerged())
+        {currentDepth = maxDepth; }
+
+        if (difficulty(currentState.getCells()))
+        {currentDepth = minDepth; }
 
         if(super.allPossibilities(super.getIndexes(),
-                currentState.getCells()).size() < 5  && currentDepth < maxDepth ) currentDepth +=3;
-        if(super.allPossibilities(super.getIndexes(),
-                currentState.getCells()).size() > 6  && currentDepth > minDepth ) currentDepth -=3;
+                currentState.getCells()).size() < 9 &&
+                currentDepth < maxDepth &&
+                !difficulty(currentState.getCells()))
+        {currentDepth +=1;}
+
+        if(currentDepth > minDepth &&
+                super.allPossibilities(super.getIndexes(),
+                currentState.getCells()).size() > 6  ||
+                difficulty(currentState.getCells()))
+        {currentDepth -=1;}
     }
 
     private int[] playAlphaBeta(int depth,int alpha, int beta, boolean max,  State state) {
@@ -62,9 +73,17 @@ public class AlphaBetaStrategy extends Intelligence {
             indexScore[1] = value *3;
             return indexScore;
         }
-        if(state.seedsPlayerCells(state.getOtherPlayer()) == 0 && depth != 0)
+        if(state.seedsPlayerCells(state.getOtherPlayer()) == 0 &&
+                depth != 0 && depth % 2 == 1)
         {
             indexScore[1] = MAX;
+            return indexScore;
+        }
+
+        if(state.seedsPlayerCells(state.getMe()) == 0 &&
+                depth != 0 && depth % 2 == 0)
+        {
+            indexScore[1] = MIN;
             return indexScore;
         }
 
@@ -180,4 +199,13 @@ public class AlphaBetaStrategy extends Intelligence {
 
         return myState;
     }
+
+    private boolean difficulty(int[] cells)
+    {
+        for (int i : cells) {
+            if (i > 12 ) return true;
+        }
+        return false;
+    }
+
 }
