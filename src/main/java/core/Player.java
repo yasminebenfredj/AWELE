@@ -32,7 +32,7 @@ public class Player {
      */
     private void initIntelligence() {
         if(isComputer) {
-            this.intelligence = new MiniMaxStrategy(nbCells, myIndexes, otherIndexes);
+            this.intelligence = new AlphaBetaStrategy(nbCells, myIndexes, otherIndexes);
         }
         else {
             this.intelligence = new MiniMaxStrategy(nbCells, myIndexes, otherIndexes);

@@ -6,10 +6,7 @@ public class State {
     private Player player ;
     private Player computer ;
     private int[] cells ;
-
     private int nbSeedsInGame;
-
-
     private final int totalNbSeed ;
     private boolean isMerged ;
 
