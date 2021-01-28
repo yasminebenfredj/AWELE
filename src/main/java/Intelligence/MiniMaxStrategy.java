@@ -2,7 +2,6 @@ package Intelligence;
 
 import core.GameEngine;
 import core.State;
-import utility.Colors;
 
 import java.util.ArrayList;
 
@@ -49,7 +48,7 @@ public class MiniMaxStrategy extends Intelligence{
         return state;
     }
 
-    private int evaluation(State state){//@TODO Améliorer
+    private int evaluation(State state){
         int nbSeedsComputer = state.getMe().getSeeds();
         int nbSeedsPlayer = state.getOtherPlayer().getSeeds();
         return nbSeedsComputer - nbSeedsPlayer;
@@ -70,48 +69,6 @@ public class MiniMaxStrategy extends Intelligence{
         }
     }
 
-    private int count(Integer[] cells){
-        int count = 0;
-        for (int i = 0; i < cells.length; i++) {
-            if (cells[i] == 1 || cells[i] == 2){
-                count ++;
-            }
-        }
-        return count;
-    }
-    private int seeds(State state){
-        int count = 0;
-        for (int i = 0; i < state.getCells().length; i++) {
-            if (state.getCells()[i] >= state.getNbCells() * 2){
-                count ++;
-            }
-        }
-        return count;
-    }
-    private int evaluation3(State state){
-        int total = 0;
-
-        ArrayList<Integer> fullIndexes = super.allPossibilities(super.getIndexes(),state.getCells());
-        Integer[] integer = new Integer[fullIndexes.size()];
-        integer = fullIndexes.toArray(integer);
-        int count12 = count(integer); //cases avec une ou deux graines
-
-        total += count12;
-
-        int bigCell = seeds(state);
-        if (bigCell > 0){//au moins une case qui contient plus que la moitié des graines
-            total += bigCell;
-        }
-
-        if (state.getMe().getSeeds() > state.getOtherPlayer().getSeeds()){
-            total += 1000;
-        }
-        else {
-            total = -1000;
-        }
-        return total;
-    }
-
     private int[] miniMax(State state, int depth, double alpha, double beta, boolean maximizingPlayer) {
         if (!state.isMerged() && state.getNbSeedsInGame() <= state.getTotalNbSeed()/2){
             state.mergeCells(6);
@@ -120,11 +77,12 @@ public class MiniMaxStrategy extends Intelligence{
 
         int[] tuple = new int[2];//0:index 1:résultat de la méthode d'évaluation
         if (state.endOfGame()){
-            tuple[1] = evaluation(state);
+            tuple[1] = evaluation2(state) ;
+            //tuple[1] = evaluation(state) ;
             return tuple;
         }
         if (depth == 0){
-            tuple[1] = evaluation3(state);
+            tuple[1] = evaluation(state);
             return tuple;
         }
 
@@ -144,7 +102,6 @@ public class MiniMaxStrategy extends Intelligence{
                     break;
                 }
             }
-            tuple[1] = state.getMe().getSeeds() - state.getOtherPlayer().getSeeds();
             return tuple;
         }
         else {
@@ -163,23 +120,30 @@ public class MiniMaxStrategy extends Intelligence{
                     break;
                 }
             }
-            tuple[1] = state.getMe().getSeeds() - state.getOtherPlayer().getSeeds();
             return tuple;
         }
     }
+    private void setDynamicDepth(State currentState) {
+        if (currentState.isMerged()) {
+            dynamicDepth = maxDepth;
+        }
+        if(super.allPossibilities(super.getIndexes(),currentState.getCells()).size() < 5  && dynamicDepth < maxDepth ) {
+            dynamicDepth +=3;
+        }
+        if(super.allPossibilities(super.getIndexes(),currentState.getCells()).size() > 6  && dynamicDepth > minDepth ){
+            dynamicDepth -=3;
+        }
+    }
+    private int maxDepth = 16;
+    private int dynamicDepth = 13;
+    private int minDepth = 11;
     @Override
-    public int chooseCell(State state) {//@TODO depth 1 ça marche meme avec 1000 partie so ?
+    public int chooseCell(State state) {
         this.currentState = state;
 
-        int depth ;
-        if (currentState.isMerged()){
-            depth = 16;
-        }
-        else {
-            depth = 10;
-        }
+        setDynamicDepth(state);
 
-        int[] miniMax = miniMax(currentState.clone(), depth,Double.NEGATIVE_INFINITY,Double.POSITIVE_INFINITY,true);
+        int[] miniMax = miniMax(currentState.clone(), dynamicDepth,Double.NEGATIVE_INFINITY,Double.POSITIVE_INFINITY,true);
         return miniMax[0];
     }
 
