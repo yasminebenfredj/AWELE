@@ -81,7 +81,7 @@ public class MiniMaxStrategy extends Intelligence{
             //tuple[1] = evaluation(state) ;
             return tuple;
         }
-        if (depth == 0){
+        if (depth == 0 ){
             tuple[1] = evaluation(state);
             return tuple;
         }
@@ -123,27 +123,12 @@ public class MiniMaxStrategy extends Intelligence{
             return tuple;
         }
     }
-    private void setDynamicDepth(State currentState) {
-        if (currentState.isMerged()) {
-            dynamicDepth = maxDepth;
-        }
-        if(super.allPossibilities(super.getIndexes(),currentState.getCells()).size() < 5  && dynamicDepth < maxDepth ) {
-            dynamicDepth +=3;
-        }
-        if(super.allPossibilities(super.getIndexes(),currentState.getCells()).size() > 6  && dynamicDepth > minDepth ){
-            dynamicDepth -=3;
-        }
-    }
-    private int maxDepth = 16;
-    private int dynamicDepth = 13;
-    private int minDepth = 11;
     @Override
     public int chooseCell(State state) {
         this.currentState = state;
 
-        setDynamicDepth(state);
 
-        int[] miniMax = miniMax(currentState.clone(), dynamicDepth,Double.NEGATIVE_INFINITY,Double.POSITIVE_INFINITY,true);
+        int[] miniMax = miniMax(currentState.clone(), 10,Double.NEGATIVE_INFINITY,Double.POSITIVE_INFINITY,true);
         return miniMax[0];
     }
 
