@@ -76,9 +76,18 @@ public class MiniMaxStrategy extends Intelligence{
         }
 
         int[] tuple = new int[2];//0:index 1:résultat de la méthode d'évaluation
-        if (state.endOfGame()){
+        /*if (state.endOfGame()){
             tuple[1] = evaluation2(state) ;
             //tuple[1] = evaluation(state) ;
+            return tuple;
+        }*/
+        /*if (depth == 0 || state.endOfGame()){
+            tuple[1] = evaluation(state);
+            return tuple;
+        }*/
+        if (state.endOfGame()){
+            //tuple[1] = evaluation2(state) * 1000 ;
+            tuple[1] = evaluation(state) * 1000;
             return tuple;
         }
         if (depth == 0 ){
@@ -126,7 +135,6 @@ public class MiniMaxStrategy extends Intelligence{
     @Override
     public int chooseCell(State state) {
         this.currentState = state;
-
 
         int[] miniMax = miniMax(currentState.clone(), 10,Double.NEGATIVE_INFINITY,Double.POSITIVE_INFINITY,true);
         return miniMax[0];
