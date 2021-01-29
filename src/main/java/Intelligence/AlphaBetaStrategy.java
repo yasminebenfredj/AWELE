@@ -26,9 +26,10 @@ public class AlphaBetaStrategy extends Intelligence {
         evaluateDeathMax(state);
         //System.out.println(currentDepth + " max>>>>>");
         int[] solution = playAlphaBeta(0,MIN,MAX,true,state);
+        if(super.possible(solution[0],state.getCells())) return solution[0];
 
         //System.out.println(solution[0]);
-        return solution[0];
+        return super.allPossibilities(super.getIndexes(),state.getCells()).get(0);
     }
 
     private void evaluateDeathMax(State currentState)
@@ -68,7 +69,7 @@ public class AlphaBetaStrategy extends Intelligence {
         // EVALUATION
         endTime = System.currentTimeMillis();
         timeElapsed = endTime - startTime;
-        if (depth >= this.currentDepth || (timeElapsed >= 2*1400 ))
+        if (depth >= this.currentDepth || (timeElapsed >= 2*1450 ))
         {
             value =  state.getMe().getSeeds() - state.getOtherPlayer().getSeeds();
             indexScore[1] = value;
@@ -173,6 +174,7 @@ public class AlphaBetaStrategy extends Intelligence {
 
                 if(value < best){
                     best = value;
+                    indexScore[0] = nodes.get(i);
                     indexScore[1] = best;
                 }
 
