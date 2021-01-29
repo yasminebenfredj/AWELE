@@ -6,13 +6,9 @@ public class State {
     private Player player ;
     private Player computer ;
     private int[] cells ;
-
     private int nbSeedsInGame;
-
-
     private final int totalNbSeed ;
     private boolean isMerged ;
-
     private int playerNumber;
 
     public State(int nbCells , int nbSeeds){
@@ -140,11 +136,6 @@ public class State {
 
     public int getNbSeeds() {
         return nbSeeds;
-    }
-
-
-    public int getPlayerNumber() {
-        return playerNumber;
     }
 
     public void setPlayerNumber(int playerNumber) {

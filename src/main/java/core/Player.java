@@ -35,7 +35,7 @@ public class Player {
             this.intelligence = new MiniMaxStrategy(nbCells, myIndexes, otherIndexes);
         }
         else {
-            this.intelligence = new MiniMaxStrategy(nbCells, myIndexes, otherIndexes);
+            this.intelligence = new AlphaBetaStrategy(nbCells, myIndexes, otherIndexes);
         }
     }
 
@@ -95,10 +95,6 @@ public class Player {
 
     public int getPlayerNumber() {
         return this.playerNumber;
-    }
-
-    public boolean isComputer() {
-        return this.isComputer;
     }
 
     public void addSeeds(int seeds){

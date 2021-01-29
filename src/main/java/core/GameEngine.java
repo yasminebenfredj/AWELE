@@ -1,9 +1,6 @@
 package core;
 
-import Exceptions.WrongMoveException;
 import utility.Colors;
-
-import java.awt.*;
 import java.io.*;
 
 public class GameEngine {
@@ -25,24 +22,17 @@ public class GameEngine {
         System.out.print("\n<<< ***** >>>  Debut du jeu  <<< ***** >>>\n");
         int i = 1;
 
-
         while (!state.endOfGame() && state.seedsPlayerCells(state.getComputer()) != 0) {
             System.out.println("\n <<<<< Tour N°  "+ i +" >>>>> ");
-
             checkMerge();
-
             printTable();
             System.out.println("\n      *** Joueur " + state.getComputer().getPlayerNumber() + " -" + state.getComputer().toString()  + "-*** ");
             playTurn(state.getComputer());
-
             if(state.endOfGame() || state.seedsPlayerCells(state.getPlayer()) == 0) {break;}
             checkMerge();
-
             printTable();
-
             System.out.println("\n      *** Joueur " + state.getPlayer().getPlayerNumber() + " -" + state.getPlayer().toString()  + "-*** ");
             playTurn(state.getPlayer());
-
             printScore();
             i++;
         }
@@ -70,17 +60,6 @@ public class GameEngine {
         long startTime = System.currentTimeMillis();
         state.setPlayerNumber( player.getPlayerNumber());
         int choice = player.chooseCell(state.clone());  // indice de la case choisi
-
-        if(player.isComputer()) {
-            try {
-                FileWriter chartFile = new FileWriter("src/main/historique.txt", true);
-                chartFile.write(choice+1+"\n");
-                chartFile.close();
-            } catch (IOException ioe) {
-                System.err.println(ioe.getMessage());
-            }
-
-        }
 
         long endTime = System.currentTimeMillis();
         long timeElapsed = endTime - startTime;
@@ -153,8 +132,6 @@ public class GameEngine {
         return previousPosition;
     }
 
-
-
     /**
      * Cette methode permet de terminer la partie :
      * 1) afficher la raison de la fin
@@ -183,7 +160,6 @@ public class GameEngine {
 
         }
         System.out.println(">> " + printEndGameReason);
-
         this.getWinner();
         System.out.println(Colors.RESET);
 
@@ -209,7 +185,6 @@ public class GameEngine {
         System.out.println(" Joueur " + state.getComputer().getPlayerNumber() + " " + state.getComputer().toString() + " : " + state.getComputer().getSeeds());
         System.out.println(" Joueur " + state.getPlayer().getPlayerNumber() + " " + state.getPlayer().toString() + " : " + state.getPlayer().getSeeds());
         System.out.println("******************************************************************************************** ");
-
         System.out.println(Colors.RESET);
     }
 
@@ -236,9 +211,8 @@ public class GameEngine {
         for (int i = state.getNbCells() * 2 -1 ; i >= state.getNbCells()  ; i--) {
             indexes2 += "|_"+( i+1 )+"_|";
             seeds2 += "|  "+ state.getCells()[i]+" |";
-
-
         }
+
         System.out.println(Colors.PURPLE + barre);
         System.out.println(" < Plateau 1 > ");
         System.out.println(indexes1);
@@ -248,7 +222,6 @@ public class GameEngine {
         System.out.println(indexes2);
         System.out.println(seeds2);
         System.out.println(barre + Colors.RESET);
-
     }
 
     /**
@@ -276,7 +249,6 @@ public class GameEngine {
         }
 
     }
-
 
     @Override
     public GameEngine clone()

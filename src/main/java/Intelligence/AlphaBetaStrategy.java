@@ -12,9 +12,9 @@ public class AlphaBetaStrategy extends Intelligence {
 
     private int MAX = 10000;
     private int MIN = -10000;
-    long startTime;
-    long endTime;
-    long timeElapsed;
+    private long startTime;
+    private long endTime;
+    private long timeElapsed;
 
     public AlphaBetaStrategy(int nbCellsPlayer, int[] indexes, int[] otherIndexes) {
         super(nbCellsPlayer, indexes, otherIndexes);
@@ -24,12 +24,9 @@ public class AlphaBetaStrategy extends Intelligence {
     public int chooseCell(State state) {
         startTime = System.currentTimeMillis();
         evaluateDeathMax(state);
-        //System.out.println(currentDepth + " max>>>>>");
         int[] solution = playAlphaBeta(0,MIN,MAX,true,state);
-        if(super.possible(solution[0],state.getCells())) return solution[0];
 
-        //System.out.println(solution[0]);
-        return super.allPossibilities(super.getIndexes(),state.getCells()).get(0);
+        return solution[0];
     }
 
     private void evaluateDeathMax(State currentState)
@@ -50,8 +47,6 @@ public class AlphaBetaStrategy extends Intelligence {
 
         if( currentState.getMe().getSeeds() - currentState.getOtherPlayer().getSeeds() < -10 )
         {currentDepth +=2;}
-
-
     }
 
     private int[] playAlphaBeta(int depth,int alpha, int beta, boolean max,  State state) {
@@ -136,14 +131,11 @@ public class AlphaBetaStrategy extends Intelligence {
         if (max) {
             int best = this.MIN;
             ArrayList<Integer> nodes = super.allPossibilities(super.getIndexes(),state.getCells());
-            //System.out.println(nodes);
 
             for (int i = 0; i < nodes.size() ; i++) {
-               //System.out.println("Index jouer " + nodes.get(i));
 
                 State newState = playAction(nodes.get(i),true, state.clone());
                 value = playAlphaBeta(depth +1 ,alpha , beta ,false,newState)[1];
-                //System.out.println("value = " +value+" best = "+ best);
 
                 if(value > best){
                     best = value;
@@ -153,50 +145,33 @@ public class AlphaBetaStrategy extends Intelligence {
                 alpha = Math.max(alpha, best);
 
                 if(beta <= alpha) {
-                    //System.out.println("break "+ beta +" <= "+ alpha);
                     break;
                 }
             }
-            //System.out.println(depth + " max>>>>>"+indexScore[0] + " " + indexScore[1]);
             return indexScore ;
         }
         else
         {
             int best = this.MAX;
             ArrayList<Integer> nodes = super.allPossibilities(super.getOtherIndexes(),state.getCells());
-           //System.out.println(nodes);
 
-            for (int i = 0; i < nodes.size() ; i++) {
-               //System.out.println("Index jouer " + nodes.get(i));
+            for (int i = 0; i < nodes.size() ; i++)
+            {
                 State newState = playAction(nodes.get(i),false ,state.clone());
                 value = playAlphaBeta(depth +1 ,alpha , beta ,true, newState)[1];
-
-
-                if(value < best){
+                if(value < best)
+                {
                     best = value;
                     indexScore[0] = nodes.get(i);
                     indexScore[1] = best;
                 }
 
                 beta = Math.min(beta, best);
-
-                if(beta <= alpha)
-                {
-                    //System.out.println("break "+ beta +" <= "+ alpha);
-                    break;
-                }
+                if(beta <= alpha) {break;}
             }
-           //System.out.println(depth+" min>>>>>"+indexScore[0] + " " + indexScore[1]);
             return indexScore;
         }
     }
-
-
-    @Override
-    public String toString() {
-        return " Stratégie AlphaBeta ";
-    }
-
 
     private State playAction(int coup, boolean isMe, State myState)
     {
@@ -235,9 +210,14 @@ public class AlphaBetaStrategy extends Intelligence {
 
     private boolean difficulty(int[] cells)
     {
-        for (int i : cells) {
-            if (i > 12 ) return true;
-        }
+        for (int i : cells)
+        {if (i > 12 ) return true; }
         return false;
     }
+
+    @Override
+    public String toString() {
+        return " Stratégie AlphaBeta ";
+    }
+
 }
